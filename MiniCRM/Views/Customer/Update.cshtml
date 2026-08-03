@@ -1,0 +1,223 @@
+﻿@model MiniCRM.Models.Customers
+
+@{
+    ViewData["Title"] = "Müşteri Düzenle";
+}
+
+<style>
+    .form-page {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #0f766e, #0891b2);
+        color: white;
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 12px 30px rgba(8, 145, 178, 0.20);
+    }
+
+    .form-card {
+        border: 0;
+        border-radius: 18px;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+        padding: 11px 14px;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #0891b2;
+            box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.15);
+        }
+
+    .form-check-input:checked {
+        background-color: #0891b2;
+        border-color: #0891b2;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="form-page">
+
+        <div class="form-header mb-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+
+                <div>
+                    <h1 class="h3 fw-bold mb-2">
+                        Müşteri Düzenle
+                    </h1>
+
+                    <p class="mb-0 opacity-75">
+                        Müşteri No: #@Model.Id
+                    </p>
+                </div>
+
+                <div class="align-self-md-center">
+                    <a asp-controller="Customer"
+                       asp-action="Details"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-light">
+                        Detayları Gör
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card form-card">
+            <div class="card-body p-4 p-md-5">
+
+                <form asp-controller="Customer"
+                      asp-action="Update"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           asp-for="Id" />
+
+                    <input type="hidden"
+                           asp-for="CreatedDate" />
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger">
+                    </div>
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+                            <label asp-for="Name"
+                                   class="form-label fw-semibold">
+                                Ad
+                            </label>
+
+                            <input asp-for="Name"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Name"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Surname"
+                                   class="form-label fw-semibold">
+                                Soyad
+                            </label>
+
+                            <input asp-for="Surname"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Surname"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Email"
+                                   class="form-label fw-semibold">
+                                E-posta
+                            </label>
+
+                            <input asp-for="Email"
+                                   type="email"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Email"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Phone"
+                                   class="form-label fw-semibold">
+                                Telefon
+                            </label>
+
+                            <input asp-for="Phone"
+                                   class="form-control"
+                                   placeholder="05XXXXXXXXX" />
+
+                            <span asp-validation-for="Phone"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="CompanyName"
+                                   class="form-label fw-semibold">
+                                Firma Adı
+                            </label>
+
+                            <input asp-for="CompanyName"
+                                   class="form-control" />
+
+                            <span asp-validation-for="CompanyName"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+
+                                <input asp-for="IsActive"
+                                       class="form-check-input"
+                                       type="checkbox" />
+
+                                <label asp-for="IsActive"
+                                       class="form-check-label fw-semibold">
+                                    Müşteri aktif
+                                </label>
+
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="alert alert-light border mb-0">
+
+                                <strong>Kayıt tarihi:</strong>
+
+                                @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <hr />
+
+                            <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
+
+                                <a asp-controller="Customer"
+                                   asp-action="Index"
+                                   class="btn btn-outline-secondary px-4">
+                                    İptal
+                                </a>
+
+                                <button type="submit"
+                                        class="btn btn-info text-white px-4">
+                                    Değişiklikleri Kaydet
+                                </button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
