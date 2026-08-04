@@ -1,4 +1,163 @@
-﻿@page
-@model MiniCRM.Views.Product.DetailsModel
+﻿@model MiniCRM.Models.Product
+
 @{
+    ViewData["Title"] = "Product Details";
 }
+
+<div class="container py-4">
+
+    <div class="mx-auto" style="max-width: 850px;">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+            <div>
+                <h1 class="fw-bold mb-1">
+                    @Model.Name
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Product No: #@Model.Id
+                </p>
+            </div>
+
+            @if (Model.IsActive)
+            {
+                <span class="badge bg-success fs-6">
+                    Active
+                </span>
+            }
+            else
+            {
+                <span class="badge bg-secondary fs-6">
+                    Inactive
+                </span>
+            }
+
+        </div>
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body p-4">
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <div class="text-muted small mb-1">
+                                Product Name
+                            </div>
+
+                            <div class="fw-semibold">
+                                @Model.Name
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <div class="text-muted small mb-1">
+                                Category
+                            </div>
+
+                            <div class="fw-semibold">
+                                @(string.IsNullOrWhiteSpace(Model.CategoryName)
+                                    ? "-"
+                                    : Model.CategoryName)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <div class="text-muted small mb-1">
+                                Price
+                            </div>
+
+                            <div class="fw-semibold fs-5">
+                                @Model.Price.ToString("N2") ₺
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <div class="text-muted small mb-1">
+                                Stock
+                            </div>
+
+                            <div class="fw-semibold">
+
+                                @if (Model.Stock == 0)
+                                {
+                                    <span class="text-danger">
+                                        Out of Stock
+                                    </span>
+                                }
+                                else if (Model.Stock <= 5)
+                                {
+                                    <span class="text-warning">
+                                        Critical Stock: @Model.Stock
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-success">
+                                        @Model.Stock units
+                                    </span>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <div class="text-muted small mb-1">
+                                Created Date
+                            </div>
+
+                            <div class="fw-semibold">
+                                @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <div class="text-muted small mb-1">
+                                Status
+                            </div>
+
+                            <div class="fw-semibold">
+                                @(Model.IsActive ? "Active" : "Inactive")
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a asp-controller="Product"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        Back to List
+                    </a>
+
+                    <a asp-controller="Product"
+                       asp-action="Update"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-primary">
+                        Edit Product
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
