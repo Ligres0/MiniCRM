@@ -1,0 +1,25 @@
+﻿using MiniCRM.Models;
+
+namespace MiniCRM.Repositories
+{
+    public interface IOrderRepository
+    {
+        List<Order> GetFilteredPaged(
+            string? search,
+            int? customerId,
+            Order.OrderStatus? status,
+            int pageNumber,
+            int pageSize);
+        int GetFilteredCount(
+            string? search,
+            int? customerId,
+            Order.OrderStatus? status);
+        Order? GetById(int id);
+        List<OrderDetails> GetDetailsByOrderId(int orderId);
+        int InsertOrder(Order order);
+        int InsertOrderDetail(OrderDetails detail);
+        int Update(Order order);
+        int UpdateStatus(int orderId, Order.OrderStatus status);
+
+    }
+}
