@@ -1,0 +1,244 @@
+﻿@model MiniCRM.ViewModels.OrderCreateViewModel
+
+@{
+    ViewData["Title"] = "Update Order";
+}
+
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2>Update Order</h2>
+        <p class="text-muted">
+            Update the customer and product quantities.
+        </p>
+    </div>
+
+    <form asp-controller="Order"
+          asp-action="Update"
+          asp-route-id="@Model.Id"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="Id"
+               type="hidden" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger">
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                Customer
+            </div>
+
+            <div class="card-body">
+                <input asp-for="CustomerId" type="hidden" />
+
+                @{
+                    var customer = Model.Customers
+                        .FirstOrDefault(x => x.Id == Model.CustomerId);
+                }
+
+                <input type="text"
+                       class="form-control"
+                       value="@(customer == null
+                            ? ""
+                            : customer.Name + " " + customer.Surname)"
+                       readonly />
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header d-flex
+                justify-content-between">
+
+                <span>Order Items</span>
+
+                <button type="button"
+                        id="addItemButton"
+                        class="btn btn-sm btn-success">
+                    Add Product
+                </button>
+            </div>
+
+            <div class="card-body">
+                <div id="orderItemsContainer">
+                    @for (int i = 0; i < Model.Items.Count; i++)
+                    {
+                        <div class="order-item row g-3
+                            align-items-end mb-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    Product
+                                </label>
+
+                                <select asp-for="Items[i].ProductId"
+                                        class="form-select"
+                                        data-field="ProductId">
+
+                                    <option value="0">
+                                        Select Product
+                                    </option>
+
+                                    @foreach (var product in Model.Products)
+                                    {
+                                        <option value="@product.Id">
+                                            @product.Name
+                                            - @product.Price.ToString("N2") TL
+                                            - Stock: @product.Stock
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">
+                                    Quantity
+                                </label>
+
+                                <input asp-for="Items[i].Quantity"
+                                       class="form-control"
+                                       data-field="Quantity"
+                                       min="1" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <button type="button"
+                                        class="btn btn-outline-danger
+                                    remove-item-button">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <a asp-controller="Order"
+               asp-action="Index"
+               class="btn btn-outline-secondary">
+                Cancel
+            </a>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+<template id="orderItemTemplate">
+    <div class="order-item row g-3
+        align-items-end mb-3">
+
+        <div class="col-md-6">
+            <label class="form-label">
+                Product
+            </label>
+
+            <select class="form-select"
+                    data-field="ProductId">
+
+                <option value="0">
+                    Select Product
+                </option>
+
+                @foreach (var product in Model.Products)
+                {
+                    <option value="@product.Id">
+                        @product.Name
+                        - @product.Price.ToString("N2") TL
+                        - Stock: @product.Stock
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">
+                Quantity
+            </label>
+
+            <input type="number"
+                   class="form-control"
+                   data-field="Quantity"
+                   value="1"
+                   min="1" />
+        </div>
+
+        <div class="col-md-3">
+            <button type="button"
+                    class="btn btn-outline-danger
+                remove-item-button">
+                Remove
+            </button>
+        </div>
+    </div>
+</template>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const container =
+            document.getElementById("orderItemsContainer");
+
+        const template =
+            document.getElementById("orderItemTemplate");
+
+        const addButton =
+            document.getElementById("addItemButton");
+
+        function updateIndexes() {
+            const items =
+                container.querySelectorAll(".order-item");
+
+            items.forEach((item, index) => {
+                const product =
+                    item.querySelector(
+                        '[data-field="ProductId"]');
+
+                const quantity =
+                    item.querySelector(
+                        '[data-field="Quantity"]');
+
+                product.name =
+                    `Items[${index}].ProductId`;
+
+                quantity.name =
+                    `Items[${index}].Quantity`;
+            });
+        }
+
+        addButton.addEventListener("click", function() {
+            const clone =
+                template.content.cloneNode(true);
+
+            container.appendChild(clone);
+
+            updateIndexes();
+        });
+
+        container.addEventListener(
+            "click",
+            function(event) {
+
+                if (event.target.classList.contains(
+                    "remove-item-button")) {
+
+                    event.target
+                        .closest(".order-item")
+                        .remove();
+
+                    updateIndexes();
+                }
+            });
+
+        updateIndexes();
+    </script>
+}

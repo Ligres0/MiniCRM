@@ -24,5 +24,8 @@ namespace MiniCRM.ViewModels
 
         // Ekranda genel toplamı göstermek için.
         public decimal TotalAmount { get; set; }
+
+        public int Id { get; set; }
+        public Order.OrderStatus Status { get; set; }
     }
 }

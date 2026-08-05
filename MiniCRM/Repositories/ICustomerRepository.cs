@@ -5,6 +5,7 @@ namespace MiniCRM.Repositories
     public interface ICustomerRepository
     {
         Customers? GetById(int id);
+        List<Customers> GetAllActive();
 
         int Insert(Customers customer);
         int Update(Customers customer);

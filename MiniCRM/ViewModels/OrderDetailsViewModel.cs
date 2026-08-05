@@ -5,6 +5,8 @@ namespace MiniCRM.ViewModels
     public class OrderDetailsViewModel
     {
         public Order Order { get; set; } = new();
+        public List<OrderDetails> Details { get; set; }
+        public Customers Customer { get; set; }
 
         public string CustomerName { get; set; } = string.Empty;
 

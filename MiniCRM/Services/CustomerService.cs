@@ -12,6 +12,10 @@ namespace MiniCRM.Services
         {
             _customerRepository = customerRepository;
         }
+        public List<Customers> GetAllActive()
+        {
+            return _customerRepository.GetAllActive();
+        }
 
         public List<Customers> GetFilteredPaged(
             string? search,

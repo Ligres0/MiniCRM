@@ -21,7 +21,8 @@ namespace MiniCRM.Services
         );
 
         Customers? GetById(int id);
-        
+        List<Customers> GetAllActive();
+
         bool Insert(Customers customer, out string message);
 
         bool Update(Customers customer, out string message);

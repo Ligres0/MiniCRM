@@ -148,12 +148,12 @@
             </span>
 
             <h1 class="hero-title mb-3">
-                Müşteri, ürün ve kategori süreçlerini tek yerden yönet
+                Müşteri, ürün, kategori ve sipariş süreçlerini tek yerden yönet
             </h1>
 
             <p class="hero-description mb-4">
-                Müşterileri yönet, ürünleri kategorilere bağla, stok miktarlarını takip et
-                ve satış yönetimi için gerekli modüllere hızlıca ulaş.
+                Müşterileri yönet, ürünleri kategorilere bağla, stok miktarlarını takip et,
+                sipariş oluştur ve satış yönetimi için gerekli modüllere hızlıca ulaş.
             </p>
 
             <div class="d-flex flex-column flex-sm-row flex-wrap gap-3">
@@ -176,6 +176,12 @@
                     Kategoriler
                 </a>
 
+                <a asp-controller="Order"
+                   asp-action="Index"
+                   class="btn btn-outline-light btn-lg px-4">
+                    Siparişler
+                </a>
+
             </div>
         </div>
     </section>
@@ -194,7 +200,7 @@
 
         <div class="row g-4">
 
-            <div class="col-md-4">
+            <div class="col-md-6 col-lg-3">
                 <a asp-controller="Customer"
                    asp-action="Index"
                    class="feature-link">
@@ -219,7 +225,7 @@
                 </a>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6 col-lg-3">
                 <a asp-controller="Product"
                    asp-action="Index"
                    class="feature-link">
@@ -244,7 +250,7 @@
                 </a>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6 col-lg-3">
                 <a asp-controller="Category"
                    asp-action="Index"
                    class="feature-link">
@@ -262,6 +268,31 @@
                             <p class="feature-description mb-0">
                                 Kategorileri ekle, düzenle, görüntüle ve
                                 ürün formlarında kullanılacak yapıyı yönet.
+                            </p>
+
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <a asp-controller="Order"
+                   asp-action="Index"
+                   class="feature-link">
+                    <div class="card feature-card">
+                        <div class="card-body p-4">
+
+                            <div class="feature-icon mb-4">
+                                S
+                            </div>
+
+                            <h3 class="h5 feature-title">
+                                Sipariş Yönetimi
+                            </h3>
+
+                            <p class="feature-description mb-0">
+                                Siparişleri listele, yeni sipariş oluştur,
+                                detayları incele ve durumlarını yönet.
                             </p>
 
                         </div>
@@ -301,8 +332,14 @@
 
                 <a asp-controller="Category"
                    asp-action="Create"
-                   class="btn btn-primary">
+                   class="btn btn-outline-primary">
                     Yeni Kategori
+                </a>
+
+                <a asp-controller="Order"
+                   asp-action="Create"
+                   class="btn btn-primary">
+                    Yeni Sipariş
                 </a>
             </div>
 
@@ -377,18 +414,24 @@
             </div>
 
             <div class="col-md-6 col-lg-4">
-                <div class="module-card">
+                <div class="module-card d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <h3 class="h5 fw-bold mb-0">Siparişler</h3>
 
-                        <span class="module-status status-planned">
-                            Planlandı
+                        <span class="module-status status-ready">
+                            Hazır
                         </span>
                     </div>
 
-                    <p class="text-secondary mb-0">
-                        Sipariş oluşturma, detay ve durum yönetimi.
+                    <p class="text-secondary">
+                        Sipariş oluşturma, ürün satırları, detay ve durum yönetimi.
                     </p>
+
+                    <a asp-controller="Order"
+                       asp-action="Index"
+                       class="btn btn-sm btn-outline-primary mt-auto align-self-start">
+                        Modülü Aç
+                    </a>
                 </div>
             </div>
 

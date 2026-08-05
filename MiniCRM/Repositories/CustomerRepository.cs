@@ -19,7 +19,27 @@ namespace MiniCRM.Repositories
                 ?? throw new InvalidOperationException(
                     "DefaultConnection bağlantısı bulunamadı.");
         }
+        public List<Customers> GetAllActive()
+        {
+            using var connection = CreateConnection();
 
+            const string sql = """
+        SELECT
+            Id,
+            Name,
+            Surname,
+            Email,
+            Phone,
+            CompanyName,
+            CreatedDate,
+            IsActive
+        FROM Customers
+        WHERE IsActive = 1
+        ORDER BY Name, Surname;
+        """;
+
+            return connection.Query<Customers>(sql).ToList();
+        }
         public Customers? GetById(int id)
         {
             using var connection = CreateConnection();
