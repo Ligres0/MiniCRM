@@ -22,5 +22,8 @@ namespace MiniCRM.Repositories
         int UpdateStatus(int orderId, Order.OrderStatus status);
         int DeleteDetailsByOrderId(int orderId);
 
+        int CreateOrderTransaction(Order order, List<OrderDetails> details, int createdByUserId);
+
+        int CancelOrderTransaction(int orderId, int createdByUserId);
     }
 }

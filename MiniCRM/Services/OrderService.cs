@@ -148,33 +148,28 @@ namespace MiniCRM.Services
                 Status = Order.OrderStatus.Draft
             };
 
-            int orderId =
-                _orderRepository.InsertOrder(order);
-
-            if (orderId <= 0)
+            try
             {
-                message = "Order could not be created.";
-                return false;
-            }
+                int orderId =
+                    _orderRepository.CreateOrderTransaction(
+                        order,
+                        orderDetails,
+                        createdByUserId);
 
-            foreach (var detail in orderDetails)
-            {
-                detail.OrderId = orderId;
-
-                int detailId =
-                    _orderRepository.InsertOrderDetail(detail);
-
-                if (detailId <= 0)
+                if (orderId <= 0)
                 {
-                    message =
-                        "Order details could not be created.";
-
+                    message = "Order could not be created.";
                     return false;
                 }
-            }
 
-            message = "Order created successfully.";
-            return true;
+                message = "Order created successfully.";
+                return true;
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                return false;
+            }
         }
         public bool UpdateOrder(
     int orderId,
