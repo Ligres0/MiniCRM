@@ -86,6 +86,19 @@ namespace MiniCRM.Repositories
                 """;
             return connection.ExecuteScalar<int>(sql, order);
         }
+        public int DeleteDetailsByOrderId(int orderId)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = """
+        DELETE FROM OrderDetails
+        WHERE OrderId = @OrderId;
+        """;
+
+            return connection.Execute(
+                sql,
+                new { OrderId = orderId });
+        }
         public int InsertOrderDetail(OrderDetails detail)
         {
             using var connection = CreateConnection();

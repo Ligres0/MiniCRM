@@ -177,9 +177,9 @@ namespace MiniCRM.Services
             return true;
         }
         public bool UpdateOrder(
-            int orderId,
-            OrderCreateViewModel viewModel,
-            out string message)
+    int orderId,
+    OrderCreateViewModel viewModel,
+    out string message)
         {
             var existingOrder =
                 _orderRepository.GetById(orderId);
@@ -190,19 +190,94 @@ namespace MiniCRM.Services
                 return false;
             }
 
-            if (existingOrder.Status !=
-                Order.OrderStatus.Draft)
+            if (existingOrder.Status != Order.OrderStatus.Draft)
             {
-                message =
-                    "Only draft orders can be updated.";
-
+                message = "Only draft orders can be updated.";
                 return false;
             }
 
-            message =
-                "Order update is not implemented yet.";
+            if (viewModel.Items == null ||
+                viewModel.Items.Count == 0)
+            {
+                message = "Order must have at least one item.";
+                return false;
+            }
 
-            return false;
+            var newDetails = new List<OrderDetails>();
+            decimal totalAmount = 0;
+
+            foreach (var item in viewModel.Items)
+            {
+                if (item.Quantity <= 0)
+                {
+                    message = "Quantity must be greater than zero.";
+                    return false;
+                }
+
+                var product =
+                    _productService.GetById(item.ProductId);
+
+                if (product == null)
+                {
+                    message = "One of the selected products was not found.";
+                    return false;
+                }
+
+                if (!product.IsActive)
+                {
+                    message = $"Product {product.Name} is not active.";
+                    return false;
+                }
+
+                if (item.Quantity > product.Stock)
+                {
+                    message = $"Not enough stock for product {product.Name}.";
+                    return false;
+                }
+
+                decimal unitPrice = product.Price;
+                decimal lineTotal = item.Quantity * unitPrice;
+
+                newDetails.Add(new OrderDetails
+                {
+                    OrderId = orderId,
+                    ProductId = product.Id,
+                    Quantity = item.Quantity,
+                    UnitPrice = unitPrice,
+                    TotalPrice = lineTotal
+                });
+
+                totalAmount += lineTotal;
+            }
+
+            existingOrder.TotalAmount = totalAmount;
+
+            // Müşteri, oluşturulma tarihi ve oluşturan kullanıcı değişmiyor.
+            int updatedRows =
+                _orderRepository.Update(existingOrder);
+
+            if (updatedRows == 0)
+            {
+                message = "Order could not be updated.";
+                return false;
+            }
+
+            _orderRepository.DeleteDetailsByOrderId(orderId);
+
+            foreach (var detail in newDetails)
+            {
+                int detailId =
+                    _orderRepository.InsertOrderDetail(detail);
+
+                if (detailId <= 0)
+                {
+                    message = "Order details could not be updated.";
+                    return false;
+                }
+            }
+
+            message = "Order updated successfully.";
+            return true;
         }
 
         public bool CompleteOrder(

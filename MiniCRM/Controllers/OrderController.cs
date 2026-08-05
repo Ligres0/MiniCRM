@@ -261,7 +261,8 @@ namespace MiniCRM.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
         [HttpPost]
-        public IActionResult Delete(int id)
+        [ValidateAntiForgeryToken]
+        public IActionResult Cancel(int id)
         {
             if (_orderService.CancelOrder(id, out string message))
             {
@@ -271,7 +272,10 @@ namespace MiniCRM.Controllers
             {
                 TempData["ErrorMessage"] = message;
             }
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(
+                nameof(Details),
+                new { id });
         }
 
 

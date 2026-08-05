@@ -20,6 +20,7 @@ namespace MiniCRM.Repositories
         int InsertOrderDetail(OrderDetails detail);
         int Update(Order order);
         int UpdateStatus(int orderId, Order.OrderStatus status);
+        int DeleteDetailsByOrderId(int orderId);
 
     }
 }
