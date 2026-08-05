@@ -337,19 +337,27 @@ namespace MiniCRM.Services
                 }
             }
 
-            int affectedRows =
-                _orderRepository.UpdateStatus(
-                    orderId,
-                    Order.OrderStatus.Completed);
-
-            if (affectedRows == 0)
+            try
             {
-                message = "Order could not be completed.";
+                int result =
+                    _orderRepository.CancelOrderTransaction(
+                        orderId,
+                        order.CreatedByUserId);
+
+                if (result <= 0)
+                {
+                    message = "Order could not be cancelled.";
+                    return false;
+                }
+
+                message = "Order cancelled successfully.";
+                return true;
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
                 return false;
             }
-
-            message = "Order completed successfully.";
-            return true;
         }
         public bool CancelOrder(
             int orderId,

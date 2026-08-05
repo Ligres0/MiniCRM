@@ -250,7 +250,7 @@ namespace MiniCRM.Repositories
                     const string updateProductSql = """
                     UPDATE Products 
                         SET Stock = Stock + @Quantity
-                    WHERE Id = @ProductId AND IsActive = 1;
+                    WHERE Id = @ProductId;
                     """;
 
                     var affectedtransactionRows = connection.Execute(updateProductSql, detail, transaction);
@@ -284,7 +284,7 @@ namespace MiniCRM.Repositories
                 const string updateOrderStatusSql = """
                 UPDATE Orders
                 SET Status = @CancelledStatus
-                WHERE Id = @OrderId AND Status != @CancelledStatus;
+                WHERE Id = @OrderId AND Status = @DraftStatus;
                 """;
                 int affectedOrderRows = connection.Execute(
                     updateOrderStatusSql,
