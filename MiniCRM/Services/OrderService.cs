@@ -337,27 +337,19 @@ namespace MiniCRM.Services
                 }
             }
 
-            try
-            {
-                int result =
-                    _orderRepository.CancelOrderTransaction(
-                        orderId,
-                        order.CreatedByUserId);
+            int affectedRows =
+                _orderRepository.UpdateStatus(
+                    orderId,
+                    Order.OrderStatus.Completed);
 
-                if (result <= 0)
-                {
-                    message = "Order could not be cancelled.";
-                    return false;
-                }
-
-                message = "Order cancelled successfully.";
-                return true;
-            }
-            catch (Exception ex)
+            if (affectedRows == 0)
             {
-                message = ex.Message;
+                message = "Order could not be completed.";
                 return false;
             }
+
+            message = "Order completed successfully.";
+            return true;
         }
         public bool CancelOrder(
             int orderId,
@@ -381,19 +373,27 @@ namespace MiniCRM.Services
                 return false;
             }
 
-            int affectedRows =
-                _orderRepository.UpdateStatus(
-                    orderId,
-                    Order.OrderStatus.Cancelled);
-
-            if (affectedRows == 0)
+            try
             {
-                message = "Order could not be cancelled.";
+                int result =
+                    _orderRepository.CancelOrderTransaction(
+                        orderId,
+                        order.CreatedByUserId);
+
+                if (result <= 0)
+                {
+                    message = "Order could not be cancelled.";
+                    return false;
+                }
+
+                message = "Order cancelled successfully.";
+                return true;
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
                 return false;
             }
-
-            message = "Order cancelled successfully.";
-            return true;
         }
 
 
