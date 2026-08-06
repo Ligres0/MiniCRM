@@ -1,0 +1,146 @@
+﻿@model MiniCRM.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h2>Dashboard</h2>
+        <p class="text-muted">
+            General overview of the MiniCRM system.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Total Customers -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        Total Customers
+                    </h6>
+
+                    <h2 class="mb-0 text-primary">
+                        @Model.TotalCustomers
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Products -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        Active Products
+                    </h6>
+
+                    <h2 class="mb-0 text-success">
+                        @Model.ActiveProducts
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Orders -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        Today's Orders
+                    </h6>
+
+                    <h2 class="mb-0 text-warning">
+                        @Model.TodayOrderCount
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Revenue -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        Today's Revenue
+                    </h6>
+
+                    <h2 class="mb-0 text-danger">
+                        @Model.TodayRevenue.ToString("N2") TL
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Critical Stock Products -->
+    <div class="card shadow-sm mt-5">
+
+        <div class="card-header">
+            <h5 class="mb-0">
+                Critical Stock Products
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (Model.CriticalStockProducts.Any())
+            {
+                <table class="table table-striped table-hover">
+
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category Id</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var product in Model.CriticalStockProducts)
+                        {
+                            <tr>
+
+                                <td>@product.Name</td>
+
+                                <td>@product.CategoryId</td>
+
+                                <td>@product.Price.ToString("N2") TL</td>
+
+                                <td class="text-danger fw-bold">
+                                    @product.Stock
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-success mb-0">
+                    There are no products with critical stock.
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

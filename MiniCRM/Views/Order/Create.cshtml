@@ -36,7 +36,9 @@
                 </label>
 
                 <select asp-for="CustomerId"
+                        id="customerSelect"
                         class="form-select">
+
                     <option value="0">
                         Select Customer
                     </option>
@@ -52,6 +54,51 @@
                 <span asp-validation-for="CustomerId"
                       class="text-danger">
                 </span>
+
+                <!-- AJAX Customer Summary -->
+                <div id="customerSummary"
+                     class="alert alert-light border mt-3 d-none">
+
+                    <h6 class="mb-3">
+                        Customer Summary
+                    </h6>
+
+                    <div>
+                        <strong>Name:</strong>
+
+                        <span id="customerFullName">
+                            -
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Company:</strong>
+
+                        <span id="customerCompany">
+                            -
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Email:</strong>
+
+                        <span id="customerEmail">
+                            -
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Phone:</strong>
+
+                        <span id="customerPhone">
+                            -
+                        </span>
+                    </div>
+
+                    <div id="customerError"
+                         class="text-danger mt-2">
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -108,14 +155,17 @@
                                 <div class="mt-2 small">
                                     <span class="me-3">
                                         Price:
+
                                         <strong class="product-price">
                                             -
                                         </strong>
+
                                         TL
                                     </span>
 
                                     <span>
                                         Available Stock:
+
                                         <strong class="product-stock">
                                             -
                                         </strong>
@@ -154,6 +204,7 @@
                                     <span class="line-total">
                                         0,00
                                     </span>
+
                                     TL
                                 </div>
                             </div>
@@ -163,6 +214,7 @@
                                 <button type="button"
                                         class="btn btn-outline-danger
                                     remove-item-button">
+
                                     Remove
                                 </button>
                             </div>
@@ -172,6 +224,7 @@
 
                 <div id="emptyOrderMessage"
                      class="alert alert-secondary">
+
                     Click “Add Product” to add an order item.
                 </div>
             </div>
@@ -189,6 +242,7 @@
                     <span id="orderTotal">
                         0,00
                     </span>
+
                     TL
                 </div>
             </div>
@@ -198,11 +252,13 @@
         <div class="d-flex justify-content-end gap-2">
             <a href="@Url.Action("Index", "Order")"
                class="btn btn-outline-secondary">
+
                 Cancel
             </a>
 
             <button type="submit"
                     class="btn btn-primary">
+
                 Save Order
             </button>
         </div>
@@ -239,14 +295,17 @@
             <div class="mt-2 small">
                 <span class="me-3">
                     Price:
+
                     <strong class="product-price">
                         -
                     </strong>
+
                     TL
                 </span>
 
                 <span>
                     Available Stock:
+
                     <strong class="product-stock">
                         -
                     </strong>
@@ -281,6 +340,7 @@
                 <span class="line-total">
                     0,00
                 </span>
+
                 TL
             </div>
         </div>
@@ -290,6 +350,7 @@
             <button type="button"
                     class="btn btn-outline-danger
                 remove-item-button">
+
                 Remove
             </button>
         </div>
@@ -316,8 +377,32 @@
         const orderTotalElement =
             document.getElementById("orderTotal");
 
+        const customerSelect =
+            document.getElementById("customerSelect");
+
+        const customerSummary =
+            document.getElementById("customerSummary");
+
+        const customerFullName =
+            document.getElementById("customerFullName");
+
+        const customerCompany =
+            document.getElementById("customerCompany");
+
+        const customerEmail =
+            document.getElementById("customerEmail");
+
+        const customerPhone =
+            document.getElementById("customerPhone");
+
+        const customerError =
+            document.getElementById("customerError");
+
         const productInfoUrl =
             '@Url.Action("GetProductInfo", "Order")';
+
+        const customerInfoUrl =
+            '@Url.Action("GetCustomerInfo", "Order")';
 
         function formatMoney(value) {
             const number = Number(value);
@@ -330,6 +415,80 @@
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
+        }
+
+        function clearCustomerInfo() {
+            customerSummary.classList.add("d-none");
+
+            customerFullName.textContent = "-";
+            customerCompany.textContent = "-";
+            customerEmail.textContent = "-";
+            customerPhone.textContent = "-";
+            customerError.textContent = "";
+        }
+
+        async function loadCustomerInfo() {
+            const customerId =
+                Number(customerSelect.value);
+
+            if (!customerId || customerId <= 0) {
+                clearCustomerInfo();
+                return;
+            }
+
+            customerSummary.classList.remove("d-none");
+
+            customerFullName.textContent = "...";
+            customerCompany.textContent = "...";
+            customerEmail.textContent = "...";
+            customerPhone.textContent = "...";
+            customerError.textContent = "";
+
+            try {
+                const response = await fetch(
+                    `${customerInfoUrl}?customerId=${encodeURIComponent(customerId)}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Customer information could not be loaded."
+                    );
+                }
+
+                const customer =
+                    await response.json();
+
+                const fullName =
+                    `${customer.name ?? ""} ${customer.surname ?? ""}`
+                        .trim();
+
+                customerFullName.textContent =
+                    fullName || "-";
+
+                customerCompany.textContent =
+                    customer.companyName || "-";
+
+                customerEmail.textContent =
+                    customer.email || "-";
+
+                customerPhone.textContent =
+                    customer.phone || "-";
+            }
+            catch (error) {
+                customerFullName.textContent = "-";
+                customerCompany.textContent = "-";
+                customerEmail.textContent = "-";
+                customerPhone.textContent = "-";
+
+                customerError.textContent =
+                    error.message;
+            }
         }
 
         function updateIndexes() {
@@ -489,7 +648,8 @@
                     );
                 }
 
-                const product = await response.json();
+                const product =
+                    await response.json();
 
                 const price =
                     Number(product.price ?? 0);
@@ -537,6 +697,11 @@
         addButton.addEventListener(
             "click",
             addItem
+        );
+
+        customerSelect.addEventListener(
+            "change",
+            loadCustomerInfo
         );
 
         container.addEventListener(
@@ -607,6 +772,10 @@
         );
 
         updateIndexes();
+
+        if (Number(customerSelect.value) > 0) {
+            loadCustomerInfo();
+        }
 
         container
             .querySelectorAll(".product-select")
