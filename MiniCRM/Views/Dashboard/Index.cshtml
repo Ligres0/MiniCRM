@@ -4,140 +4,799 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="container mt-4">
+<style>
+    .dashboard-page {
+        --page-background: #f8fafc;
+        --card-background: #ffffff;
+        --primary: #4f46e5;
+        --primary-light: #eef2ff;
+        --success: #16a34a;
+        --success-light: #dcfce7;
+        --warning: #d97706;
+        --warning-light: #fef3c7;
+        --danger: #dc2626;
+        --danger-light: #fee2e2;
+        --info: #0284c7;
+        --info-light: #e0f2fe;
+        --dark: #0f172a;
+        --muted: #64748b;
+        --border: #e2e8f0;
+    }
 
-    <div class="mb-4">
-        <h2>Dashboard</h2>
-        <p class="text-muted">
-            General overview of the MiniCRM system.
-        </p>
-    </div>
+    .dashboard-header {
+        position: relative;
+        overflow: hidden;
+        padding: 34px;
+        border-radius: 24px;
+        color: white;
+        background: linear-gradient( 135deg, #4f46e5, #7c3aed );
+        box-shadow: 0 18px 40px rgba(79, 70, 229, 0.2);
+    }
 
-    <div class="row g-4">
+        .dashboard-header::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            top: -75px;
+            right: -45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.09);
+        }
+
+    .dashboard-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .dashboard-header h1 {
+        font-weight: 800;
+    }
+
+    .dashboard-header p {
+        max-width: 700px;
+        margin-bottom: 0;
+        color: rgba(255, 255, 255, 0.82);
+    }
+
+    .stat-card {
+        height: 100%;
+        overflow: hidden;
+        border: 0;
+        border-radius: 20px;
+        background: var(--card-background);
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.11);
+        }
+
+    .stat-card-body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 24px;
+    }
+
+    .stat-label {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 650;
+    }
+
+    .stat-value {
+        margin-bottom: 0;
+        color: var(--dark);
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+    .stat-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        font-size: 1.45rem;
+        font-weight: 800;
+    }
+
+    .icon-customers {
+        color: var(--primary);
+        background: var(--primary-light);
+    }
+
+    .icon-products {
+        color: var(--success);
+        background: var(--success-light);
+    }
+
+    .icon-orders {
+        color: var(--warning);
+        background: var(--warning-light);
+    }
+
+    .icon-revenue {
+        color: var(--danger);
+        background: var(--danger-light);
+    }
+
+    .dashboard-section {
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background: var(--card-background);
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        background: #ffffff;
+    }
+
+        .section-header h2 {
+            margin-bottom: 4px;
+            color: var(--dark);
+            font-size: 1.1rem;
+            font-weight: 750;
+        }
+
+        .section-header p {
+            margin-bottom: 0;
+            color: var(--muted);
+            font-size: 0.87rem;
+        }
+
+    .section-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 38px;
+        height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        color: var(--primary);
+        background: var(--primary-light);
+        font-size: 0.82rem;
+        font-weight: 750;
+    }
+
+    .dashboard-table {
+        margin-bottom: 0;
+    }
+
+        .dashboard-table thead th {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            color: var(--muted);
+            background: #f8fafc;
+            font-size: 0.78rem;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .dashboard-table tbody td {
+            padding: 15px 18px;
+            color: #334155;
+            vertical-align: middle;
+            border-color: #f1f5f9;
+        }
+
+        .dashboard-table tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+            .dashboard-table tbody tr:hover {
+                background: #f8fafc;
+            }
+
+    .product-name {
+        color: var(--dark);
+        font-weight: 700;
+    }
+
+    .price-text {
+        font-weight: 650;
+        white-space: nowrap;
+    }
+
+    .stock-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 48px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        color: #991b1b;
+        background: var(--danger-light);
+        font-size: 0.82rem;
+        font-weight: 750;
+    }
+
+    .order-id {
+        color: var(--primary);
+        font-weight: 750;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        padding: 5px 11px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 750;
+    }
+
+    .status-draft {
+        color: #92400e;
+        background: #fef3c7;
+    }
+
+    .status-completed {
+        color: #166534;
+        background: #dcfce7;
+    }
+
+    .status-cancelled {
+        color: #991b1b;
+        background: #fee2e2;
+    }
+
+    .status-default {
+        color: #475569;
+        background: #f1f5f9;
+    }
+
+    .rank-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        color: var(--primary);
+        background: var(--primary-light);
+        font-weight: 800;
+    }
+
+    .sold-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 55px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        color: #166534;
+        background: var(--success-light);
+        font-weight: 750;
+    }
+
+    .empty-state {
+        padding: 42px 20px;
+        text-align: center;
+    }
+
+    .empty-state-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 15px;
+        border-radius: 18px;
+        color: var(--info);
+        background: var(--info-light);
+        font-size: 1.5rem;
+    }
+
+    .empty-state h3 {
+        color: var(--dark);
+        font-size: 1rem;
+        font-weight: 750;
+    }
+
+    .empty-state p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
+
+    @@media (max-width: 767px) {
+        .dashboard-header {
+            padding: 27px 22px;
+        }
+
+        .section-header {
+            align-items: flex-start;
+        }
+
+        .stat-value {
+            font-size: 1.7rem;
+        }
+    }
+</style>
+
+<div class="container py-4 dashboard-page">
+
+    <!-- Header -->
+    <section class="dashboard-header mb-4">
+
+        <div class="dashboard-header-content">
+
+            <span class="badge bg-light text-primary px-3 py-2 mb-3">
+                MiniCRM Overview
+            </span>
+
+            <h1 class="h2 mb-2">
+                Dashboard
+            </h1>
+
+            <p>
+                Review customer, product, order, revenue and stock
+                information from one screen.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Summary Cards -->
+    <section class="row g-4 mb-4">
 
         <!-- Total Customers -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
+        <div class="col-md-6 col-xl-3">
 
-                    <h6 class="text-muted">
-                        Total Customers
-                    </h6>
+            <div class="stat-card">
 
-                    <h2 class="mb-0 text-primary">
-                        @Model.TotalCustomers
-                    </h2>
+                <div class="stat-card-body">
+
+                    <div>
+                        <div class="stat-label">
+                            Total Customers
+                        </div>
+
+                        <h2 class="stat-value">
+                            @Model.TotalCustomers
+                        </h2>
+                    </div>
+
+                    <div class="stat-icon icon-customers">
+                        M
+                    </div>
 
                 </div>
+
             </div>
+
         </div>
 
         <!-- Active Products -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
+        <div class="col-md-6 col-xl-3">
 
-                    <h6 class="text-muted">
-                        Active Products
-                    </h6>
+            <div class="stat-card">
 
-                    <h2 class="mb-0 text-success">
-                        @Model.ActiveProducts
-                    </h2>
+                <div class="stat-card-body">
+
+                    <div>
+                        <div class="stat-label">
+                            Active Products
+                        </div>
+
+                        <h2 class="stat-value">
+                            @Model.ActiveProducts
+                        </h2>
+                    </div>
+
+                    <div class="stat-icon icon-products">
+                        Ü
+                    </div>
 
                 </div>
+
             </div>
+
         </div>
 
         <!-- Today's Orders -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
+        <div class="col-md-6 col-xl-3">
 
-                    <h6 class="text-muted">
-                        Today's Orders
-                    </h6>
+            <div class="stat-card">
 
-                    <h2 class="mb-0 text-warning">
-                        @Model.TodayOrderCount
-                    </h2>
+                <div class="stat-card-body">
+
+                    <div>
+                        <div class="stat-label">
+                            Today's Completed Orders
+                        </div>
+
+                        <h2 class="stat-value">
+                            @Model.TodayOrderCount
+                        </h2>
+                    </div>
+
+                    <div class="stat-icon icon-orders">
+                        S
+                    </div>
 
                 </div>
+
             </div>
+
         </div>
 
         <!-- Today's Revenue -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
+        <div class="col-md-6 col-xl-3">
 
-                    <h6 class="text-muted">
-                        Today's Revenue
-                    </h6>
+            <div class="stat-card">
 
-                    <h2 class="mb-0 text-danger">
-                        @Model.TodayRevenue.ToString("N2") TL
-                    </h2>
+                <div class="stat-card-body">
+
+                    <div>
+                        <div class="stat-label">
+                            Today's Revenue
+                        </div>
+
+                        <h2 class="stat-value">
+                            @Model.TodayRevenue.ToString("N2")
+                            <span class="fs-6">TL</span>
+                        </h2>
+                    </div>
+
+                    <div class="stat-icon icon-revenue">
+                        ₺
+                    </div>
 
                 </div>
+
             </div>
+
         </div>
 
-    </div>
+    </section>
 
-    <!-- Critical Stock Products -->
-    <div class="card shadow-sm mt-5">
+    <div class="row g-4">
 
-        <div class="card-header">
-            <h5 class="mb-0">
-                Critical Stock Products
-            </h5>
-        </div>
+        <!-- Critical Stock -->
+        <div class="col-12 col-xl-5">
 
-        <div class="card-body">
+            <section class="dashboard-section h-100">
 
-            @if (Model.CriticalStockProducts.Any())
-            {
-                <table class="table table-striped table-hover">
+                <div class="section-header">
 
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Category Id</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                        </tr>
-                    </thead>
+                    <div>
+                        <h2>
+                            Critical Stock Products
+                        </h2>
 
-                    <tbody>
+                        <p>
+                            Active products below the critical stock level
+                        </p>
+                    </div>
 
-                        @foreach (var product in Model.CriticalStockProducts)
-                        {
-                            <tr>
+                    <span class="section-count">
+                        @(Model.CriticalStockProducts?.Count ?? 0)
+                    </span>
 
-                                <td>@product.Name</td>
-
-                                <td>@product.CategoryId</td>
-
-                                <td>@product.Price.ToString("N2") TL</td>
-
-                                <td class="text-danger fw-bold">
-                                    @product.Stock
-                                </td>
-
-                            </tr>
-                        }
-
-                    </tbody>
-
-                </table>
-            }
-            else
-            {
-                <div class="alert alert-success mb-0">
-                    There are no products with critical stock.
                 </div>
-            }
+
+                @if (Model.CriticalStockProducts?.Any() == true)
+                {
+                    <div class="table-responsive">
+
+                        <table class="table dashboard-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th class="text-end">Stock</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @foreach (var product in Model.CriticalStockProducts)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            <div class="product-name">
+                                                @product.Name
+                                            </div>
+
+                                            <small class="text-muted">
+                                                Category #@product.CategoryId
+                                            </small>
+                                        </td>
+
+                                        <td class="price-text">
+                                            @product.Price.ToString("N2") TL
+                                        </td>
+
+                                        <td class="text-end">
+                                            <span class="stock-badge">
+                                                @product.Stock
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+
+                        <div class="empty-state-icon">
+                            ✓
+                        </div>
+
+                        <h3>
+                            Stock levels are healthy
+                        </h3>
+
+                        <p>
+                            There are currently no critical stock products.
+                        </p>
+
+                    </div>
+                }
+
+            </section>
+
+        </div>
+
+        <!-- Top Selling Products -->
+        <div class="col-12 col-xl-7">
+
+            <section class="dashboard-section h-100">
+
+                <div class="section-header">
+
+                    <div>
+                        <h2>
+                            Top 5 Selling Products
+                        </h2>
+
+                        <p>
+                            Products with the highest completed sales quantity
+                        </p>
+                    </div>
+
+                    <span class="section-count">
+                        @(Model.TopSellingProducts?.Count ?? 0)
+                    </span>
+
+                </div>
+
+                @if (Model.TopSellingProducts?.Any() == true)
+                {
+                    <div class="table-responsive">
+
+                        <table class="table dashboard-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Product</th>
+                                    <th class="text-end">
+                                        Total Sold
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @{
+                                    int rank = 1;
+                                }
+
+                                @foreach (var product in Model.TopSellingProducts)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            <span class="rank-badge">
+                                                @rank
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <div class="product-name">
+                                                @product.ProductName
+                                            </div>
+
+                                            <small class="text-muted">
+                                                Product #@product.ProductId
+                                            </small>
+                                        </td>
+
+                                        <td class="text-end">
+                                            <span class="sold-badge">
+                                                @product.TotalSoldQuantity
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+                                    rank++;
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+
+                        <div class="empty-state-icon">
+                            ↗
+                        </div>
+
+                        <h3>
+                            No completed sales data
+                        </h3>
+
+                        <p>
+                            Top-selling products will appear after orders
+                            are completed.
+                        </p>
+
+                    </div>
+                }
+
+            </section>
+
+        </div>
+
+        <!-- Last Orders -->
+        <div class="col-12">
+
+            <section class="dashboard-section">
+
+                <div class="section-header">
+
+                    <div>
+                        <h2>
+                            Last 10 Orders
+                        </h2>
+
+                        <p>
+                            The most recently created orders in the system
+                        </p>
+                    </div>
+
+                    <a asp-controller="Order"
+                       asp-action="Index"
+                       class="btn btn-sm btn-outline-primary">
+                        View All Orders
+                    </a>
+
+                </div>
+
+                @if (Model.LastOrders?.Any() == true)
+                {
+                    <div class="table-responsive">
+
+                        <table class="table dashboard-table align-middle">
+
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total Amount</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @foreach (var order in Model.LastOrders)
+                                {
+                                    string statusClass =
+                                        order.Status.ToString() switch
+                                        {
+                                            "Draft" => "status-draft",
+                                            "Completed" => "status-completed",
+                                            "Cancelled" => "status-cancelled",
+                                            _ => "status-default"
+                                        };
+
+                                    <tr>
+
+                                        <td>
+                                            <span class="order-id">
+                                                #@order.Id
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            Customer #@order.CustomerId
+                                        </td>
+
+                                        <td>
+                                            <div>
+                                                @order.OrderDate.ToString("dd.MM.yyyy")
+                                            </div>
+
+                                            <small class="text-muted">
+                                                @order.OrderDate.ToString("HH:mm")
+                                            </small>
+                                        </td>
+
+                                        <td class="price-text">
+                                            @order.TotalAmount.ToString("N2") TL
+                                        </td>
+
+                                        <td>
+                                            <span class="status-badge @statusClass">
+                                                @order.Status
+                                            </span>
+                                        </td>
+
+                                        <td class="text-end">
+
+                                            <a asp-controller="Order"
+                                               asp-action="Details"
+                                               asp-route-id="@order.Id"
+                                               class="btn btn-sm btn-outline-primary">
+                                                Details
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+
+                        <div class="empty-state-icon">
+                            S
+                        </div>
+
+                        <h3>
+                            No orders found
+                        </h3>
+
+                        <p>
+                            New orders will appear in this section.
+                        </p>
+
+                    </div>
+                }
+
+            </section>
 
         </div>
 

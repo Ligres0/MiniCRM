@@ -8,70 +8,70 @@
         --secondary: #7c3aed;
         --dark: #0f172a;
         --muted: #64748b;
+        --light-purple: #eef2ff;
+        --border: #e5e7eb;
     }
 
     .hero-section {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        border-radius: 24px;
-        padding: 60px 45px;
-        color: white;
-        box-shadow: 0 18px 45px rgba(79, 70, 229, 0.22);
-        overflow: hidden;
         position: relative;
+        overflow: hidden;
+        padding: 64px 48px;
+        border-radius: 26px;
+        color: white;
+        background: linear-gradient( 135deg, var(--primary), var(--secondary) );
+        box-shadow: 0 20px 50px rgba(79, 70, 229, 0.24);
     }
 
         .hero-section::after {
             content: "";
             position: absolute;
-            width: 270px;
-            height: 270px;
+            width: 280px;
+            height: 280px;
+            top: -100px;
+            right: -80px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.09);
-            right: -80px;
-            top: -90px;
         }
 
         .hero-section::before {
             content: "";
             position: absolute;
-            width: 180px;
-            height: 180px;
+            width: 190px;
+            height: 190px;
+            right: 170px;
+            bottom: -120px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.07);
-            right: 160px;
-            bottom: -110px;
         }
 
     .hero-content {
         position: relative;
         z-index: 2;
-        max-width: 780px;
+        max-width: 850px;
     }
 
     .hero-title {
+        max-width: 800px;
         font-size: clamp(2rem, 5vw, 3.6rem);
         font-weight: 800;
         line-height: 1.1;
     }
 
     .hero-description {
-        max-width: 650px;
+        max-width: 720px;
         font-size: 1.08rem;
-        color: rgba(255, 255, 255, 0.82);
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.84);
     }
 
-    .feature-card {
-        border: 0;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        height: 100%;
+    .section-title {
+        color: var(--dark);
+        font-weight: 800;
     }
 
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 16px 38px rgba(15, 23, 42, 0.12);
-        }
+    .section-description {
+        color: var(--muted);
+    }
 
     .feature-link {
         color: inherit;
@@ -82,85 +82,156 @@
             color: inherit;
         }
 
+    .feature-card {
+        height: 100%;
+        border: 0;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 17px 40px rgba(15, 23, 42, 0.13);
+        }
+
     .feature-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #eef2ff;
+        width: 58px;
+        height: 58px;
+        border-radius: 17px;
+        background: var(--light-purple);
         color: var(--primary);
-        font-size: 1.5rem;
-        font-weight: 700;
+        font-size: 1.35rem;
+        font-weight: 800;
     }
 
     .feature-title {
         color: var(--dark);
-        font-weight: 700;
+        font-weight: 750;
     }
 
     .feature-description {
         color: var(--muted);
         font-size: 0.94rem;
+        line-height: 1.6;
     }
 
     .module-card {
-        border: 1px solid #e5e7eb;
-        border-radius: 18px;
-        background: white;
-        padding: 22px;
+        display: flex;
+        flex-direction: column;
         height: 100%;
+        padding: 23px;
+        border: 1px solid var(--border);
+        border-radius: 19px;
+        background: white;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
         .module-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+            box-shadow: 0 13px 30px rgba(15, 23, 42, 0.09);
         }
 
     .module-status {
         display: inline-block;
-        padding: 5px 10px;
+        padding: 5px 11px;
         border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 600;
+        font-size: 0.76rem;
+        font-weight: 700;
     }
 
     .status-ready {
-        background: #dcfce7;
         color: #166534;
+        background: #dcfce7;
     }
 
     .status-planned {
-        background: #f1f5f9;
         color: #475569;
+        background: #f1f5f9;
+    }
+
+    .development-card {
+        height: 100%;
+        padding: 22px;
+        border-radius: 18px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+
+    .development-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        margin-bottom: 16px;
+        border-radius: 13px;
+        color: white;
+        background: linear-gradient( 135deg, var(--primary), var(--secondary) );
+        font-weight: 800;
+    }
+
+    .development-card h3 {
+        color: var(--dark);
+        font-size: 1rem;
+        font-weight: 750;
+    }
+
+    .development-card p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    @@media (max-width: 767px) {
+        .hero-section {
+            padding: 42px 25px;
+        }
     }
 </style>
 
 <div class="container py-5 home-page">
 
+    <!-- Hero -->
     <section class="hero-section mb-5">
+
         <div class="hero-content">
 
             <span class="badge bg-light text-primary mb-3 px-3 py-2">
-                Mini CRM / Satış Yönetim Sistemi
+                Mini CRM / Satış ve Stok Yönetim Sistemi
             </span>
 
             <h1 class="hero-title mb-3">
-                Müşteri, ürün, kategori ve sipariş süreçlerini tek yerden yönet
+                Müşteri, ürün, stok ve sipariş süreçlerini tek sistemden yönet
             </h1>
 
             <p class="hero-description mb-4">
-                Müşterileri yönet, ürünleri kategorilere bağla, stok miktarlarını takip et,
-                sipariş oluştur ve satış yönetimi için gerekli modüllere hızlıca ulaş.
+                Müşteri ve ürün kayıtlarını yönet, sipariş oluştur,
+                stok hareketlerini takip et ve Dashboard üzerinden satış
+                verilerini, kritik stokları ve güncel siparişleri incele.
             </p>
 
             <div class="d-flex flex-column flex-sm-row flex-wrap gap-3">
 
-                <a asp-controller="Customer"
+                <a asp-controller="Dashboard"
                    asp-action="Index"
                    class="btn btn-light btn-lg px-4 fw-semibold">
+                    Dashboard'u Aç
+                </a>
+
+                <a asp-controller="Order"
+                   asp-action="Create"
+                   class="btn btn-outline-light btn-lg px-4">
+                    Yeni Sipariş
+                </a>
+
+                <a asp-controller="Customer"
+                   asp-action="Index"
+                   class="btn btn-outline-light btn-lg px-4">
                     Müşteriler
                 </a>
 
@@ -170,41 +241,72 @@
                     Ürünler
                 </a>
 
-                <a asp-controller="Category"
-                   asp-action="Index"
-                   class="btn btn-outline-light btn-lg px-4">
-                    Kategoriler
-                </a>
-
-                <a asp-controller="Order"
-                   asp-action="Index"
-                   class="btn btn-outline-light btn-lg px-4">
-                    Siparişler
-                </a>
-
             </div>
+
         </div>
+
     </section>
 
+    <!-- Main Modules -->
     <section class="mb-5">
 
         <div class="text-center mb-4">
-            <h2 class="fw-bold">
-                Aktif modüller
+
+            <h2 class="section-title">
+                Yönetim Ekranları
             </h2>
 
-            <p class="text-secondary">
-                İlgili karta tıklayarak yönetim ekranına geçebilirsin.
+            <p class="section-description">
+                İşlem yapmak istediğin modülü seçerek ilgili yönetim
+                ekranına geçebilirsin.
             </p>
+
         </div>
 
         <div class="row g-4">
 
-            <div class="col-md-6 col-lg-3">
+            <!-- Dashboard -->
+            <div class="col-md-6 col-lg-4">
+
+                <a asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="feature-link">
+
+                    <div class="card feature-card">
+
+                        <div class="card-body p-4">
+
+                            <div class="feature-icon mb-4">
+                                D
+                            </div>
+
+                            <h3 class="h5 feature-title">
+                                Dashboard
+                            </h3>
+
+                            <p class="feature-description mb-0">
+                                Müşteri, ürün, günlük sipariş ve ciro
+                                bilgilerini görüntüle. Kritik stokları,
+                                son siparişleri ve en çok satan ürünleri incele.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            <!-- Customers -->
+            <div class="col-md-6 col-lg-4">
+
                 <a asp-controller="Customer"
                    asp-action="Index"
                    class="feature-link">
+
                     <div class="card feature-card">
+
                         <div class="card-body p-4">
 
                             <div class="feature-icon mb-4">
@@ -216,20 +318,28 @@
                             </h3>
 
                             <p class="feature-description mb-0">
-                                Müşterileri listele, ara, filtrele, düzenle ve
-                                aktif veya pasif durumlarını yönet.
+                                Müşterileri listele, ara, filtrele,
+                                görüntüle, düzenle ve aktif veya pasif
+                                durumlarını yönet.
                             </p>
 
                         </div>
+
                     </div>
+
                 </a>
+
             </div>
 
-            <div class="col-md-6 col-lg-3">
+            <!-- Products -->
+            <div class="col-md-6 col-lg-4">
+
                 <a asp-controller="Product"
                    asp-action="Index"
                    class="feature-link">
+
                     <div class="card feature-card">
+
                         <div class="card-body p-4">
 
                             <div class="feature-icon mb-4">
@@ -241,20 +351,28 @@
                             </h3>
 
                             <p class="feature-description mb-0">
-                                Ürünleri listele, kategoriye göre filtrele,
-                                fiyat ve stok bilgilerini yönet.
+                                Ürünleri kategorilerine göre yönet,
+                                fiyat ve stok miktarlarını güncelle,
+                                aktif ürünleri takip et.
                             </p>
 
                         </div>
+
                     </div>
+
                 </a>
+
             </div>
 
-            <div class="col-md-6 col-lg-3">
+            <!-- Categories -->
+            <div class="col-md-6 col-lg-4">
+
                 <a asp-controller="Category"
                    asp-action="Index"
                    class="feature-link">
+
                     <div class="card feature-card">
+
                         <div class="card-body p-4">
 
                             <div class="feature-icon mb-4">
@@ -266,20 +384,27 @@
                             </h3>
 
                             <p class="feature-description mb-0">
-                                Kategorileri ekle, düzenle, görüntüle ve
-                                ürün formlarında kullanılacak yapıyı yönet.
+                                Ürünlerde kullanılan kategorileri oluştur,
+                                düzenle, görüntüle ve durumlarını yönet.
                             </p>
 
                         </div>
+
                     </div>
+
                 </a>
+
             </div>
 
-            <div class="col-md-6 col-lg-3">
+            <!-- Orders -->
+            <div class="col-md-6 col-lg-4">
+
                 <a asp-controller="Order"
                    asp-action="Index"
                    class="feature-link">
+
                     <div class="card feature-card">
+
                         <div class="card-body p-4">
 
                             <div class="feature-icon mb-4">
@@ -291,33 +416,188 @@
                             </h3>
 
                             <p class="feature-description mb-0">
-                                Siparişleri listele, yeni sipariş oluştur,
-                                detayları incele ve durumlarını yönet.
+                                Sipariş oluştur, ürün satırlarını yönet,
+                                fiyat ve stok bilgilerini anlık görüntüle,
+                                siparişleri tamamla veya iptal et.
                             </p>
 
                         </div>
+
                     </div>
+
                 </a>
+
+            </div>
+
+            <!-- New Order -->
+            <div class="col-md-6 col-lg-4">
+
+                <a asp-controller="Order"
+                   asp-action="Create"
+                   class="feature-link">
+
+                    <div class="card feature-card">
+
+                        <div class="card-body p-4">
+
+                            <div class="feature-icon mb-4">
+                                +
+                            </div>
+
+                            <h3 class="h5 feature-title">
+                                Hızlı Sipariş Oluştur
+                            </h3>
+
+                            <p class="feature-description mb-0">
+                                Müşteriyi seç, müşteri özetini görüntüle,
+                                ürün ekle, stok ve fiyat bilgilerini alarak
+                                yeni sipariş oluştur.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
             </div>
 
         </div>
+
     </section>
 
+    <!-- Developed Features -->
+    <section class="mb-5">
+
+        <div class="mb-4">
+
+            <h2 class="section-title mb-1">
+                Geliştirilen Özellikler
+            </h2>
+
+            <p class="section-description mb-0">
+                Mini CRM projesinde şu anda çalışan temel sistem özellikleri
+            </p>
+
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="development-card">
+
+                    <div class="development-number">
+                        1
+                    </div>
+
+                    <h3>
+                        Katmanlı Mimari
+                    </h3>
+
+                    <p>
+                        Controller, Service ve Repository katmanları
+                        birbirinden ayrılarak düzenli bir proje yapısı
+                        oluşturuldu.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="development-card">
+
+                    <div class="development-number">
+                        2
+                    </div>
+
+                    <h3>
+                        Transaction ve Stok
+                    </h3>
+
+                    <p>
+                        Sipariş oluşturma ve iptal işlemleri transaction
+                        ile çalışarak stok ve sipariş verilerinin
+                        tutarlılığını koruyor.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="development-card">
+
+                    <div class="development-number">
+                        3
+                    </div>
+
+                    <h3>
+                        AJAX İşlemleri
+                    </h3>
+
+                    <p>
+                        Ürün ve müşteri bilgileri sayfa yenilenmeden
+                        getiriliyor; miktar değiştikçe sipariş toplamları
+                        güncelleniyor.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="development-card">
+
+                    <div class="development-number">
+                        4
+                    </div>
+
+                    <h3>
+                        Raporlama ve Dashboard
+                    </h3>
+
+                    <p>
+                        COUNT, SUM, TOP, GROUP BY ve ORDER BY sorgularıyla
+                        sistem verilerinin özetleri gösteriliyor.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Module Status -->
     <section>
 
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-4">
+        <div class="d-flex flex-column
+            flex-md-row
+            justify-content-between
+            align-items-md-end
+            gap-3
+            mb-4">
 
             <div>
-                <h2 class="fw-bold mb-1">
+
+                <h2 class="section-title mb-1">
                     Uygulama Modülleri
                 </h2>
 
-                <p class="text-secondary mb-0">
-                    Mini CRM geliştirme durumu
+                <p class="section-description mb-0">
+                    Mini CRM geliştirme ve kullanım durumu
                 </p>
+
             </div>
 
             <div class="d-flex flex-wrap gap-2">
+
                 <a asp-controller="Customer"
                    asp-action="Create"
                    class="btn btn-outline-primary">
@@ -341,133 +621,234 @@
                    class="btn btn-primary">
                     Yeni Sipariş
                 </a>
+
             </div>
 
         </div>
 
         <div class="row g-3">
 
+            <!-- Dashboard Status -->
             <div class="col-md-6 col-lg-4">
-                <div class="module-card d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h3 class="h5 fw-bold mb-0">Müşteriler</h3>
+
+                <div class="module-card">
+
+                    <div class="d-flex
+                        justify-content-between
+                        align-items-start
+                        mb-3">
+
+                        <h3 class="h5 fw-bold mb-0">
+                            Dashboard
+                        </h3>
 
                         <span class="module-status status-ready">
                             Hazır
                         </span>
+
                     </div>
 
                     <p class="text-secondary">
-                        CRUD, arama, filtreleme, validation ve pagination.
+                        Genel istatistikler, günlük ciro, kritik stok,
+                        son siparişler ve en çok satan ürün raporları.
+                    </p>
+
+                    <a asp-controller="Dashboard"
+                       asp-action="Index"
+                       class="btn btn-sm
+                        btn-outline-primary
+                        mt-auto
+                        align-self-start">
+                        Dashboard'u Aç
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- Customer Status -->
+            <div class="col-md-6 col-lg-4">
+
+                <div class="module-card">
+
+                    <div class="d-flex
+                        justify-content-between
+                        align-items-start
+                        mb-3">
+
+                        <h3 class="h5 fw-bold mb-0">
+                            Müşteriler
+                        </h3>
+
+                        <span class="module-status status-ready">
+                            Hazır
+                        </span>
+
+                    </div>
+
+                    <p class="text-secondary">
+                        CRUD, detay, arama, filtreleme, validation
+                        ve sayfalama işlemleri.
                     </p>
 
                     <a asp-controller="Customer"
                        asp-action="Index"
-                       class="btn btn-sm btn-outline-primary mt-auto align-self-start">
+                       class="btn btn-sm
+                        btn-outline-primary
+                        mt-auto
+                        align-self-start">
                         Modülü Aç
                     </a>
+
                 </div>
+
             </div>
 
+            <!-- Category Status -->
             <div class="col-md-6 col-lg-4">
-                <div class="module-card d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h3 class="h5 fw-bold mb-0">Kategoriler</h3>
+
+                <div class="module-card">
+
+                    <div class="d-flex
+                        justify-content-between
+                        align-items-start
+                        mb-3">
+
+                        <h3 class="h5 fw-bold mb-0">
+                            Kategoriler
+                        </h3>
 
                         <span class="module-status status-ready">
                             Hazır
                         </span>
+
                     </div>
 
                     <p class="text-secondary">
-                        Kategori listeleme, ekleme, düzenleme ve pasifleştirme.
+                        Kategori listeleme, ekleme, detay, düzenleme
+                        ve pasifleştirme işlemleri.
                     </p>
 
                     <a asp-controller="Category"
                        asp-action="Index"
-                       class="btn btn-sm btn-outline-primary mt-auto align-self-start">
+                       class="btn btn-sm
+                        btn-outline-primary
+                        mt-auto
+                        align-self-start">
                         Modülü Aç
                     </a>
+
                 </div>
+
             </div>
 
+            <!-- Product Status -->
             <div class="col-md-6 col-lg-4">
-                <div class="module-card d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h3 class="h5 fw-bold mb-0">Ürünler</h3>
+
+                <div class="module-card">
+
+                    <div class="d-flex
+                        justify-content-between
+                        align-items-start
+                        mb-3">
+
+                        <h3 class="h5 fw-bold mb-0">
+                            Ürünler
+                        </h3>
 
                         <span class="module-status status-ready">
                             Hazır
                         </span>
+
                     </div>
 
                     <p class="text-secondary">
-                        Ürün, fiyat, kategori, stok ve aktif/pasif yönetimi.
+                        Ürün, kategori, fiyat, stok, filtreleme
+                        ve aktif veya pasif durum yönetimi.
                     </p>
 
                     <a asp-controller="Product"
                        asp-action="Index"
-                       class="btn btn-sm btn-outline-primary mt-auto align-self-start">
+                       class="btn btn-sm
+                        btn-outline-primary
+                        mt-auto
+                        align-self-start">
                         Modülü Aç
                     </a>
+
                 </div>
+
             </div>
 
+            <!-- Order Status -->
             <div class="col-md-6 col-lg-4">
-                <div class="module-card d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h3 class="h5 fw-bold mb-0">Siparişler</h3>
+
+                <div class="module-card">
+
+                    <div class="d-flex
+                        justify-content-between
+                        align-items-start
+                        mb-3">
+
+                        <h3 class="h5 fw-bold mb-0">
+                            Siparişler
+                        </h3>
 
                         <span class="module-status status-ready">
                             Hazır
                         </span>
+
                     </div>
 
                     <p class="text-secondary">
-                        Sipariş oluşturma, ürün satırları, detay ve durum yönetimi.
+                        Sipariş oluşturma, güncelleme, AJAX işlemleri,
+                        transaction, stok düşme ve stok iade süreçleri.
                     </p>
 
                     <a asp-controller="Order"
                        asp-action="Index"
-                       class="btn btn-sm btn-outline-primary mt-auto align-self-start">
+                       class="btn btn-sm
+                        btn-outline-primary
+                        mt-auto
+                        align-self-start">
                         Modülü Aç
                     </a>
+
                 </div>
+
             </div>
 
+            <!-- Users Status -->
             <div class="col-md-6 col-lg-4">
+
                 <div class="module-card">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h3 class="h5 fw-bold mb-0">Kullanıcılar</h3>
+
+                    <div class="d-flex
+                        justify-content-between
+                        align-items-start
+                        mb-3">
+
+                        <h3 class="h5 fw-bold mb-0">
+                            Kullanıcılar
+                        </h3>
 
                         <span class="module-status status-planned">
                             Planlandı
                         </span>
+
                     </div>
 
                     <p class="text-secondary mb-0">
-                        Kullanıcı, rol ve yetki yönetimi.
+                        Kullanıcı girişi, rol yönetimi, yetkilendirme
+                        ve kullanıcı bazlı işlem takibi.
                     </p>
+
                 </div>
-            </div>
 
-            <div class="col-md-6 col-lg-4">
-                <div class="module-card">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h3 class="h5 fw-bold mb-0">Dashboard</h3>
-
-                        <span class="module-status status-planned">
-                            Planlandı
-                        </span>
-                    </div>
-
-                    <p class="text-secondary mb-0">
-                        Özet istatistikler, son siparişler ve kritik stoklar.
-                    </p>
-                </div>
             </div>
 
         </div>
+
     </section>
 
 </div>

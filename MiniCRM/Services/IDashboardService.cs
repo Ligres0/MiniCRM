@@ -1,4 +1,5 @@
 ﻿using MiniCRM.Models;
+using MiniCRM.ViewModels;
 
 namespace MiniCRM.Services
 {
@@ -9,5 +10,7 @@ namespace MiniCRM.Services
         int GetTodayOrderCount();
         decimal GetTodayRevenue();
         List<Product> GetCriticalStockProducts(int criticalStockLevel);
+        List<Order> GetLastOrders();
+        List<TopSellingProductViewModel> GetTopSellingProducts();
     }
 }

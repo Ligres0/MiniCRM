@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using MiniCRM.Models;
 using System.Data;
+using MiniCRM.ViewModels;
 
 namespace MiniCRM.Repositories
 {
@@ -66,6 +67,43 @@ namespace MiniCRM.Repositories
             using var connection = CreateConnection();
             const string sql = "SELECT * FROM Products WHERE Stock <= @CriticalStockLevel AND IsActive = 1 ORDER BY Stock ASC";
             return connection.Query<Product>(sql, new { CriticalStockLevel = criticalStockLevel }).ToList();
+        }
+
+        public List<Order> GetLastOrders()
+        {
+            using var connection = CreateConnection();
+            const string sql = "SELECT TOP 10 * FROM Orders ORDER BY OrderDate DESC";
+            return connection.Query<Order>(sql).ToList();
+        }
+        public List<TopSellingProductViewModel> GetTopSellingProducts()
+        {
+            using var connection = CreateConnection();
+
+            const string sql = """
+                SELECT TOP 5
+                    p.Id AS ProductId,
+                    p.Name AS ProductName,
+                    SUM(od.Quantity) AS TotalSoldQuantity
+                FROM OrderDetails od
+                INNER JOIN Orders o
+                    ON od.OrderId = o.Id
+                INNER JOIN Products p
+                    ON od.ProductId = p.Id
+                WHERE o.Status = @CompletedStatus
+                GROUP BY
+                    p.Id,
+                    p.Name
+                ORDER BY
+                    SUM(od.Quantity) DESC;
+                """;
+
+            return connection.Query<TopSellingProductViewModel>(
+                sql,
+                new
+                {
+                    CompletedStatus = Order.OrderStatus.Completed
+                }
+            ).ToList();
         }
     }
     

@@ -20,13 +20,18 @@ namespace MiniCRM.Controllers
             var totalCustomers = _dashboardService.GetTotalCustomers();
             var todayOrderCount = _dashboardService.GetTodayOrderCount();
             var todayRevenue = _dashboardService.GetTodayRevenue();
-            var criticalStockProducts = _dashboardService.GetCriticalStockProducts(100); 
+            var criticalStockProducts = _dashboardService.GetCriticalStockProducts(100);
+            var lastOrders = _dashboardService.GetLastOrders();
+            var topSellingProducts = _dashboardService.GetTopSellingProducts();
             var viewModel = new DashboardViewModel
             {
                 TotalCustomers = totalCustomers,
                 ActiveProducts = activeProducts,
                 TodayOrderCount = todayOrderCount,
-                TodayRevenue = todayRevenue
+                TodayRevenue = todayRevenue,
+                CriticalStockProducts = criticalStockProducts,
+                LastOrders = lastOrders,
+                TopSellingProducts = topSellingProducts
             };
             return View(viewModel);
         }

@@ -1,5 +1,6 @@
 ﻿using MiniCRM.Repositories;
 using MiniCRM.Models;
+using MiniCRM.ViewModels;
 
 namespace MiniCRM.Services
 {
@@ -32,6 +33,14 @@ namespace MiniCRM.Services
         public List<Product> GetCriticalStockProducts(int criticalStockLevel)
         {
             return _dashboardRepository.GetCriticalStockProducts(criticalStockLevel);
+        }
+        public List<Order> GetLastOrders()
+        {
+            return _dashboardRepository.GetLastOrders();
+        }
+        public List<TopSellingProductViewModel> GetTopSellingProducts()
+        {
+            return _dashboardRepository.GetTopSellingProducts();
         }
     }
 }
