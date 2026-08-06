@@ -278,6 +278,39 @@ namespace MiniCRM.Controllers
                 new { id });
         }
 
+        public IActionResult GetProductInfo(int productId)
+        {
+            var product = _productService.GetById(productId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            var productInfo = new
+            {
+                product.Price,
+                product.Stock
+            };
+            return Json(productInfo);
+
+        }
+
+        public IActionResult GetCustomerInfo(int customerId)
+        {
+            var customer = _customerService.GetById(customerId);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            var customerInfo = new
+            {
+                customer.Name,
+                customer.Surname,
+                customer.CompanyName,
+                customer.Email,
+                customer.Phone
+            };
+            return Json(customerInfo);
+        }
 
 
 
