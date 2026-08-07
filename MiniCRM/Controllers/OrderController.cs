@@ -25,9 +25,14 @@ namespace MiniCRM.Controllers
         public IActionResult Index(string? search,
             int? customerId,
             Order.OrderStatus? status,
+            DateTime? startDate,
+            DateTime? endDate,
+            decimal? minAmount,
+            decimal? maxAmount,
             int pageNumber = 1,
             int pageSize = 10)
         {
+            bool filterError = false;
             if (pageNumber < 1)
             {
                 pageNumber = 1;
@@ -36,11 +41,25 @@ namespace MiniCRM.Controllers
             {
                 pageSize = 10;
             }
+            if(startDate.HasValue && endDate.HasValue && startDate > endDate)
+            {
+                ModelState.AddModelError(string.Empty, "Start date cannot be greater than end date.");
+                filterError = true;
+            }
+            if(minAmount.HasValue && maxAmount.HasValue && minAmount > maxAmount)
+            {
+                ModelState.AddModelError(string.Empty, "Minimum amount cannot be greater than maximum amount.");
+                filterError = true;
+            }
 
             int totalCount = _orderService.GetFilteredCount(
                 search,
                 customerId,
-                status);
+                status,
+                startDate,
+                endDate,
+                minAmount,
+                maxAmount);
 
 
             int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
@@ -49,9 +68,32 @@ namespace MiniCRM.Controllers
 
 
 
-            var orders = _orderService.GetFilteredPaged(search, customerId, status, pageNumber, pageSize);
+            var orders = _orderService.GetFilteredPaged(search, customerId, status,startDate, endDate, minAmount, maxAmount, pageNumber, pageSize);
             var customers =_customerService.GetAllActive();
+            if (filterError)
+            {
+                var errorViewModel = new OrderListViewModel
+                {
+                    Orders = new List<Order>(),
+                    Customers = customers,
 
+                    Search = search,
+                    CustomerId = customerId,
+                    Status = status,
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    MinAmount = minAmount,
+                    MaxAmount = maxAmount,
+
+                    CurrentPage = 1,
+                    TotalPages = 0,
+                    TotalCount = 0,
+                    PageSize = pageSize
+                };
+
+                return View(errorViewModel);
+
+            }
             var viewModel = new OrderListViewModel
             {
                 Orders = orders,
@@ -62,11 +104,13 @@ namespace MiniCRM.Controllers
                 CurrentPage = pageNumber,
                 TotalPages = totalPages,
                 TotalCount = totalCount,
-                PageSize = pageSize
+                PageSize = pageSize,
+                StartDate = startDate,
+                EndDate = endDate,
+                MinAmount = minAmount,
+                MaxAmount = maxAmount,
             };
             return View(viewModel);
-
-
 
         }
 

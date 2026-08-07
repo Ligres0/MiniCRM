@@ -12,9 +12,11 @@ namespace MiniCRM.ViewModels
         public string? Search { get; set; }
 
         public int? CustomerId { get; set; }
-
         public Order.OrderStatus? Status { get; set; }
-
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public decimal? MinAmount { get; set; }
+        public decimal? MaxAmount { get; set; }
         public int CurrentPage { get; set; }
 
         public int TotalPages { get; set; }
@@ -22,5 +24,7 @@ namespace MiniCRM.ViewModels
         public int TotalCount { get; set; }
 
         public int PageSize { get; set; }
+        
+
     }
 }

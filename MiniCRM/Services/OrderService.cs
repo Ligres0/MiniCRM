@@ -25,6 +25,10 @@ namespace MiniCRM.Services
             string? search,
             int? customerId,
             Order.OrderStatus? status,
+            DateTime? startDate,
+            DateTime? endDate,
+            decimal? minAmount,
+            decimal? maxAmount,
             int pageNumber,
             int pageSize)
         {
@@ -37,11 +41,23 @@ namespace MiniCRM.Services
             {
                 pageSize = 10;
             }
+            if(minAmount  < 0)
+            {
+                minAmount = null;
+            }
+            if(maxAmount < 0) 
+            {
+                maxAmount = null;
+            }
 
             return _orderRepository.GetFilteredPaged(
                 search,
                 customerId,
                 status,
+                startDate,
+                endDate,
+                minAmount,
+                maxAmount,
                 pageNumber,
                 pageSize);
         }
@@ -49,12 +65,20 @@ namespace MiniCRM.Services
         public int GetFilteredCount(
             string? search,
             int? customerId,
-            Order.OrderStatus? status)
+            Order.OrderStatus? status,
+            DateTime? startDate,
+            DateTime? endDate,
+            decimal? minAmount,
+            decimal? maxAmount)
         {
             return _orderRepository.GetFilteredCount(
                 search,
                 customerId,
-                status);
+                status,
+                startDate,
+                endDate,
+                minAmount,
+                maxAmount);
         }
 
         public Order? GetById(int id)

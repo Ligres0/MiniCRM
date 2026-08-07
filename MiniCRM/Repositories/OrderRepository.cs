@@ -25,6 +25,10 @@ namespace MiniCRM.Repositories
             string? search,
             int? customerId,
             Order.OrderStatus? status,
+            DateTime? startDate,
+            DateTime? endDate,
+            decimal? minAmount,
+            decimal? maxAmount,
             int pageNumber,
             int pageSize)
         {
@@ -35,12 +39,27 @@ namespace MiniCRM.Repositories
                 SELECT *
                 FROM Orders
                 WHERE (@search IS NULL OR CAST(Id AS NVARCHAR) LIKE '%' + @search + '%')
+                  AND (@startDate IS NULL OR OrderDate >= @startDate)
+                  AND (@endDate IS NULL OR OrderDate < DATEADD(DAY,1,@endDate))
+                  AND (@minAmount IS NULL OR TotalAmount >= @minAmount)
+                  AND (@maxAmount IS NULL OR TotalAmount <= @maxAmount)
                   AND (@customerId IS NULL OR CustomerId = @customerId)
                   AND (@status IS NULL OR Status = @status)
                 ORDER BY Id
                 OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY;
                 """;
-            return connection.Query<Order>(sql, new { search, customerId, status, offset, pageSize }).ToList();
+            return connection.Query<Order>(sql, new
+            {
+                Search = string.IsNullOrWhiteSpace(search) ? null : search,
+                CustomerId = customerId,
+                Status = status,
+                StartDate = startDate,
+                EndDate = endDate,
+                MinAmount = minAmount,
+                MaxAmount = maxAmount,
+                Offset= offset,
+                PageSize = pageSize,
+            }).ToList();
 
 
         }
@@ -49,17 +68,34 @@ namespace MiniCRM.Repositories
         public int GetFilteredCount(
             string? search,
             int? customerId,
-            Order.OrderStatus? status)
+            Order.OrderStatus? status,
+            DateTime? startDate,
+            DateTime? endDate,
+            decimal? minAmount,
+            decimal? maxAmount)
         {
             using var connection = CreateConnection();
             const string sql = """
                 SELECT COUNT(*)
                 FROM Orders
                 WHERE (@search IS NULL OR CAST(Id AS NVARCHAR) LIKE '%' + @search + '%')
+                  AND (@startDate IS NULL OR OrderDate >= @startDate)
+                  AND (@endDate IS NULL OR OrderDate < DATEADD(DAY,1,@endDate))
+                  AND (@minAmount IS NULL OR TotalAmount >= @minAmount)
+                  AND (@maxAmount IS NULL OR TotalAmount <= @maxAmount)
                   AND (@customerId IS NULL OR CustomerId = @customerId)
                   AND (@status IS NULL OR Status = @status);
                 """;
-            return connection.ExecuteScalar<int>(sql, new { search, customerId, status });
+            return connection.ExecuteScalar<int>(sql, new
+            {
+                Search = string.IsNullOrWhiteSpace(search) ? null : search,
+                CustomerId = customerId,
+                Status = status,
+                StartDate = startDate,
+                EndDate = endDate,
+                MinAmount = minAmount,
+                MaxAmount = maxAmount
+            });
         }
 
 

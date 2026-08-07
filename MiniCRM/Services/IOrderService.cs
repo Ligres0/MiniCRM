@@ -9,13 +9,21 @@ namespace MiniCRM.Services
             string? search,
             int? customerId,
             Order.OrderStatus? status,
+            DateTime? startDate,
+            DateTime? endDate,
+            decimal? minAmount,
+            decimal? maxAmount,
             int pageNumber,
             int pageSize);
 
         int GetFilteredCount(
             string? search,
             int? customerId,
-            Order.OrderStatus? status);
+            Order.OrderStatus? status,
+            DateTime? startDate,
+            DateTime? endDate,
+            decimal? minAmount,
+            decimal? maxAmount);
 
         Order? GetById(int id);
 
