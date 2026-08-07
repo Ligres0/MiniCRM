@@ -1,5 +1,10 @@
+@inject MiniCRM.Services.ILocalizationService Localization
+
 @{
     ViewData["Title"] = "Mini CRM";
+
+    var returnUrl =
+        Context.Request.Path + Context.Request.QueryString;
 }
 
 <style>
@@ -10,6 +15,13 @@
         --muted: #64748b;
         --light-purple: #eef2ff;
         --border: #e5e7eb;
+    }
+
+    .language-bar {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-bottom: 18px;
     }
 
     .hero-section {
@@ -196,23 +208,42 @@
 
 <div class="container py-5 home-page">
 
+    <!-- Language Selection -->
+    <div class="language-bar">
+
+        <a asp-controller="Localization"
+           asp-action="ChangeLanguage"
+           asp-route-culture="tr-TR"
+           asp-route-returnUrl="@returnUrl"
+           class="btn btn-sm btn-outline-primary">
+            Türkçe
+        </a>
+
+        <a asp-controller="Localization"
+           asp-action="ChangeLanguage"
+           asp-route-culture="en-US"
+           asp-route-returnUrl="@returnUrl"
+           class="btn btn-sm btn-outline-primary">
+            English
+        </a>
+
+    </div>
+
     <!-- Hero -->
     <section class="hero-section mb-5">
 
         <div class="hero-content">
 
             <span class="badge bg-light text-primary mb-3 px-3 py-2">
-                Mini CRM / Satış ve Stok Yönetim Sistemi
+                @Localization.GetText("HomeBadge")
             </span>
 
             <h1 class="hero-title mb-3">
-                Müşteri, ürün, stok ve sipariş süreçlerini tek sistemden yönet
+                @Localization.GetText("HomeTitle")
             </h1>
 
             <p class="hero-description mb-4">
-                Müşteri ve ürün kayıtlarını yönet, sipariş oluştur,
-                stok hareketlerini takip et ve Dashboard üzerinden satış
-                verilerini, kritik stokları ve güncel siparişleri incele.
+                @Localization.GetText("HomeDescription")
             </p>
 
             <div class="d-flex flex-column flex-sm-row flex-wrap gap-3">
@@ -220,25 +251,25 @@
                 <a asp-controller="Dashboard"
                    asp-action="Index"
                    class="btn btn-light btn-lg px-4 fw-semibold">
-                    Dashboard'u Aç
+                    @Localization.GetText("OpenDashboard")
                 </a>
 
                 <a asp-controller="Order"
                    asp-action="Create"
                    class="btn btn-outline-light btn-lg px-4">
-                    Yeni Sipariş
+                    @Localization.GetText("NewOrder")
                 </a>
 
                 <a asp-controller="Customer"
                    asp-action="Index"
                    class="btn btn-outline-light btn-lg px-4">
-                    Müşteriler
+                    @Localization.GetText("Customers")
                 </a>
 
                 <a asp-controller="Product"
                    asp-action="Index"
                    class="btn btn-outline-light btn-lg px-4">
-                    Ürünler
+                    @Localization.GetText("Products")
                 </a>
 
             </div>
@@ -253,12 +284,11 @@
         <div class="text-center mb-4">
 
             <h2 class="section-title">
-                Yönetim Ekranları
+                @Localization.GetText("ManagementScreens")
             </h2>
 
             <p class="section-description">
-                İşlem yapmak istediğin modülü seçerek ilgili yönetim
-                ekranına geçebilirsin.
+                @Localization.GetText("ManagementScreensDescription")
             </p>
 
         </div>
@@ -281,13 +311,12 @@
                             </div>
 
                             <h3 class="h5 feature-title">
-                                Dashboard
+                                @Localization.GetText("Dashboard")
                             </h3>
 
                             <p class="feature-description mb-0">
-                                Müşteri, ürün, günlük sipariş ve ciro
-                                bilgilerini görüntüle. Kritik stokları,
-                                son siparişleri ve en çok satan ürünleri incele.
+                                @Localization.GetText(
+                                    "DashboardDescription")
                             </p>
 
                         </div>
@@ -314,13 +343,13 @@
                             </div>
 
                             <h3 class="h5 feature-title">
-                                Müşteri Yönetimi
+                                @Localization.GetText(
+                                    "CustomerManagement")
                             </h3>
 
                             <p class="feature-description mb-0">
-                                Müşterileri listele, ara, filtrele,
-                                görüntüle, düzenle ve aktif veya pasif
-                                durumlarını yönet.
+                                @Localization.GetText(
+                                    "CustomerManagementDescription")
                             </p>
 
                         </div>
@@ -347,13 +376,13 @@
                             </div>
 
                             <h3 class="h5 feature-title">
-                                Ürün Yönetimi
+                                @Localization.GetText(
+                                    "ProductManagement")
                             </h3>
 
                             <p class="feature-description mb-0">
-                                Ürünleri kategorilerine göre yönet,
-                                fiyat ve stok miktarlarını güncelle,
-                                aktif ürünleri takip et.
+                                @Localization.GetText(
+                                    "ProductManagementDescription")
                             </p>
 
                         </div>
@@ -380,12 +409,13 @@
                             </div>
 
                             <h3 class="h5 feature-title">
-                                Kategori Yönetimi
+                                @Localization.GetText(
+                                    "CategoryManagement")
                             </h3>
 
                             <p class="feature-description mb-0">
-                                Ürünlerde kullanılan kategorileri oluştur,
-                                düzenle, görüntüle ve durumlarını yönet.
+                                @Localization.GetText(
+                                    "CategoryManagementDescription")
                             </p>
 
                         </div>
@@ -412,13 +442,13 @@
                             </div>
 
                             <h3 class="h5 feature-title">
-                                Sipariş Yönetimi
+                                @Localization.GetText(
+                                    "OrderManagement")
                             </h3>
 
                             <p class="feature-description mb-0">
-                                Sipariş oluştur, ürün satırlarını yönet,
-                                fiyat ve stok bilgilerini anlık görüntüle,
-                                siparişleri tamamla veya iptal et.
+                                @Localization.GetText(
+                                    "OrderManagementDescription")
                             </p>
 
                         </div>
@@ -445,13 +475,13 @@
                             </div>
 
                             <h3 class="h5 feature-title">
-                                Hızlı Sipariş Oluştur
+                                @Localization.GetText(
+                                    "QuickCreateOrder")
                             </h3>
 
                             <p class="feature-description mb-0">
-                                Müşteriyi seç, müşteri özetini görüntüle,
-                                ürün ekle, stok ve fiyat bilgilerini alarak
-                                yeni sipariş oluştur.
+                                @Localization.GetText(
+                                    "QuickCreateOrderDescription")
                             </p>
 
                         </div>
@@ -472,17 +502,19 @@
         <div class="mb-4">
 
             <h2 class="section-title mb-1">
-                Geliştirilen Özellikler
+                @Localization.GetText("DevelopedFeatures")
             </h2>
 
             <p class="section-description mb-0">
-                Mini CRM projesinde şu anda çalışan temel sistem özellikleri
+                @Localization.GetText(
+                    "DevelopedFeaturesDescription")
             </p>
 
         </div>
 
         <div class="row g-3">
 
+            <!-- Layered Architecture -->
             <div class="col-md-6 col-lg-3">
 
                 <div class="development-card">
@@ -492,19 +524,20 @@
                     </div>
 
                     <h3>
-                        Katmanlı Mimari
+                        @Localization.GetText(
+                            "LayeredArchitecture")
                     </h3>
 
                     <p>
-                        Controller, Service ve Repository katmanları
-                        birbirinden ayrılarak düzenli bir proje yapısı
-                        oluşturuldu.
+                        @Localization.GetText(
+                            "LayeredArchitectureDescription")
                     </p>
 
                 </div>
 
             </div>
 
+            <!-- Transaction -->
             <div class="col-md-6 col-lg-3">
 
                 <div class="development-card">
@@ -514,19 +547,20 @@
                     </div>
 
                     <h3>
-                        Transaction ve Stok
+                        @Localization.GetText(
+                            "TransactionAndStock")
                     </h3>
 
                     <p>
-                        Sipariş oluşturma ve iptal işlemleri transaction
-                        ile çalışarak stok ve sipariş verilerinin
-                        tutarlılığını koruyor.
+                        @Localization.GetText(
+                            "TransactionAndStockDescription")
                     </p>
 
                 </div>
 
             </div>
 
+            <!-- Ajax -->
             <div class="col-md-6 col-lg-3">
 
                 <div class="development-card">
@@ -536,19 +570,20 @@
                     </div>
 
                     <h3>
-                        AJAX İşlemleri
+                        @Localization.GetText(
+                            "AjaxOperations")
                     </h3>
 
                     <p>
-                        Ürün ve müşteri bilgileri sayfa yenilenmeden
-                        getiriliyor; miktar değiştikçe sipariş toplamları
-                        güncelleniyor.
+                        @Localization.GetText(
+                            "AjaxOperationsDescription")
                     </p>
 
                 </div>
 
             </div>
 
+            <!-- Reporting -->
             <div class="col-md-6 col-lg-3">
 
                 <div class="development-card">
@@ -558,12 +593,13 @@
                     </div>
 
                     <h3>
-                        Raporlama ve Dashboard
+                        @Localization.GetText(
+                            "ReportingAndDashboard")
                     </h3>
 
                     <p>
-                        COUNT, SUM, TOP, GROUP BY ve ORDER BY sorgularıyla
-                        sistem verilerinin özetleri gösteriliyor.
+                        @Localization.GetText(
+                            "ReportingAndDashboardDescription")
                     </p>
 
                 </div>
@@ -587,11 +623,13 @@
             <div>
 
                 <h2 class="section-title mb-1">
-                    Uygulama Modülleri
+                    @Localization.GetText(
+                        "ApplicationModules")
                 </h2>
 
                 <p class="section-description mb-0">
-                    Mini CRM geliştirme ve kullanım durumu
+                    @Localization.GetText(
+                        "ApplicationModulesDescription")
                 </p>
 
             </div>
@@ -601,25 +639,25 @@
                 <a asp-controller="Customer"
                    asp-action="Create"
                    class="btn btn-outline-primary">
-                    Yeni Müşteri
+                    @Localization.GetText("NewCustomer")
                 </a>
 
                 <a asp-controller="Product"
                    asp-action="Create"
                    class="btn btn-outline-primary">
-                    Yeni Ürün
+                    @Localization.GetText("NewProduct")
                 </a>
 
                 <a asp-controller="Category"
                    asp-action="Create"
                    class="btn btn-outline-primary">
-                    Yeni Kategori
+                    @Localization.GetText("NewCategory")
                 </a>
 
                 <a asp-controller="Order"
                    asp-action="Create"
                    class="btn btn-primary">
-                    Yeni Sipariş
+                    @Localization.GetText("NewOrder")
                 </a>
 
             </div>
@@ -639,18 +677,18 @@
                         mb-3">
 
                         <h3 class="h5 fw-bold mb-0">
-                            Dashboard
+                            @Localization.GetText("Dashboard")
                         </h3>
 
                         <span class="module-status status-ready">
-                            Hazır
+                            @Localization.GetText("Ready")
                         </span>
 
                     </div>
 
                     <p class="text-secondary">
-                        Genel istatistikler, günlük ciro, kritik stok,
-                        son siparişler ve en çok satan ürün raporları.
+                        @Localization.GetText(
+                            "DashboardModuleDescription")
                     </p>
 
                     <a asp-controller="Dashboard"
@@ -659,7 +697,7 @@
                         btn-outline-primary
                         mt-auto
                         align-self-start">
-                        Dashboard'u Aç
+                        @Localization.GetText("OpenDashboard")
                     </a>
 
                 </div>
@@ -677,18 +715,18 @@
                         mb-3">
 
                         <h3 class="h5 fw-bold mb-0">
-                            Müşteriler
+                            @Localization.GetText("Customers")
                         </h3>
 
                         <span class="module-status status-ready">
-                            Hazır
+                            @Localization.GetText("Ready")
                         </span>
 
                     </div>
 
                     <p class="text-secondary">
-                        CRUD, detay, arama, filtreleme, validation
-                        ve sayfalama işlemleri.
+                        @Localization.GetText(
+                            "CustomersModuleDescription")
                     </p>
 
                     <a asp-controller="Customer"
@@ -697,7 +735,7 @@
                         btn-outline-primary
                         mt-auto
                         align-self-start">
-                        Modülü Aç
+                        @Localization.GetText("OpenModule")
                     </a>
 
                 </div>
@@ -715,18 +753,18 @@
                         mb-3">
 
                         <h3 class="h5 fw-bold mb-0">
-                            Kategoriler
+                            @Localization.GetText("Categories")
                         </h3>
 
                         <span class="module-status status-ready">
-                            Hazır
+                            @Localization.GetText("Ready")
                         </span>
 
                     </div>
 
                     <p class="text-secondary">
-                        Kategori listeleme, ekleme, detay, düzenleme
-                        ve pasifleştirme işlemleri.
+                        @Localization.GetText(
+                            "CategoriesModuleDescription")
                     </p>
 
                     <a asp-controller="Category"
@@ -735,7 +773,7 @@
                         btn-outline-primary
                         mt-auto
                         align-self-start">
-                        Modülü Aç
+                        @Localization.GetText("OpenModule")
                     </a>
 
                 </div>
@@ -753,18 +791,18 @@
                         mb-3">
 
                         <h3 class="h5 fw-bold mb-0">
-                            Ürünler
+                            @Localization.GetText("Products")
                         </h3>
 
                         <span class="module-status status-ready">
-                            Hazır
+                            @Localization.GetText("Ready")
                         </span>
 
                     </div>
 
                     <p class="text-secondary">
-                        Ürün, kategori, fiyat, stok, filtreleme
-                        ve aktif veya pasif durum yönetimi.
+                        @Localization.GetText(
+                            "ProductsModuleDescription")
                     </p>
 
                     <a asp-controller="Product"
@@ -773,7 +811,7 @@
                         btn-outline-primary
                         mt-auto
                         align-self-start">
-                        Modülü Aç
+                        @Localization.GetText("OpenModule")
                     </a>
 
                 </div>
@@ -791,18 +829,18 @@
                         mb-3">
 
                         <h3 class="h5 fw-bold mb-0">
-                            Siparişler
+                            @Localization.GetText("Orders")
                         </h3>
 
                         <span class="module-status status-ready">
-                            Hazır
+                            @Localization.GetText("Ready")
                         </span>
 
                     </div>
 
                     <p class="text-secondary">
-                        Sipariş oluşturma, güncelleme, AJAX işlemleri,
-                        transaction, stok düşme ve stok iade süreçleri.
+                        @Localization.GetText(
+                            "OrdersModuleDescription")
                     </p>
 
                     <a asp-controller="Order"
@@ -811,7 +849,7 @@
                         btn-outline-primary
                         mt-auto
                         align-self-start">
-                        Modülü Aç
+                        @Localization.GetText("OpenModule")
                     </a>
 
                 </div>
@@ -829,18 +867,18 @@
                         mb-3">
 
                         <h3 class="h5 fw-bold mb-0">
-                            Kullanıcılar
+                            @Localization.GetText("Users")
                         </h3>
 
                         <span class="module-status status-planned">
-                            Planlandı
+                            @Localization.GetText("Planned")
                         </span>
 
                     </div>
 
                     <p class="text-secondary mb-0">
-                        Kullanıcı girişi, rol yönetimi, yetkilendirme
-                        ve kullanıcı bazlı işlem takibi.
+                        @Localization.GetText(
+                            "UsersModuleDescription")
                     </p>
 
                 </div>
