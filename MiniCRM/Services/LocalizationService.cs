@@ -1,15 +1,18 @@
 ﻿using MiniCRM.Repositories;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace MiniCRM.Services
 {
     public class LocalizationService: ILocalizationService
     {
+        private readonly IMemoryCache _cache;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILocalizationRepository _localizationRepository;
-        public LocalizationService(ILocalizationRepository localizationRepository, IHttpContextAccessor httpContextAccesor)
+        public LocalizationService(ILocalizationRepository localizationRepository, IHttpContextAccessor httpContextAccesor, IMemoryCache cache)
         {
             _localizationRepository = localizationRepository;
             _httpContextAccessor = httpContextAccesor;
+            _cache = cache;
 
         }
         public string GetText(string key)
@@ -24,18 +27,39 @@ namespace MiniCRM.Services
                 culture = "en-US";
             }
 
-            var localizations =
-                _localizationRepository.GetByCulture(culture);
+            string cacheKey = $"Localization:{culture}";
 
-            var localization =
-                localizations.FirstOrDefault(x => x.Key == key);
-
-            if (localization == null)
+            if (!_cache.TryGetValue(
+                cacheKey,
+                out Dictionary<string, string>? dictionary))
             {
-                return key;
+                var localizations =
+                    _localizationRepository.GetByCulture(culture);
+
+                dictionary = localizations.ToDictionary(
+                    x => x.Key,
+                    x => x.Value);
+
+                _cache.Set(
+                    cacheKey,
+                    dictionary,
+                    TimeSpan.FromMinutes(30));
             }
 
-            return localization.Value;
+            if (dictionary != null &&
+                dictionary.TryGetValue(key, out var value))
+            {
+                return value;
+            }
+
+            return key;
+
+            
+        }
+        public void ClearCache(string culture) 
+        {
+            string cacheKey = $"Localization:{culture}";
+            _cache.Remove(cacheKey);
         }
     }
 }

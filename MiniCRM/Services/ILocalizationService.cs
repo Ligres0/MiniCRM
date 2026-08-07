@@ -3,5 +3,6 @@
     public interface ILocalizationService
     {
         string GetText(string key);
+        void ClearCache(string culture);
     }
 }

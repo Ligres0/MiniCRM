@@ -17,6 +17,7 @@ builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<ILocalizationRepository, LocalizationRepository>();
 builder.Services.AddScoped<ILocalizationService, LocalizationService>();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddHttpContextAccessor();
 
