@@ -1,7 +1,7 @@
 ﻿@model MiniCRM.ViewModels.DashboardViewModel
 
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = Localization.GetText("Dashboard");
 }
 
 <style>
@@ -29,7 +29,7 @@
         padding: 34px;
         border-radius: 24px;
         color: white;
-        background: linear-gradient( 135deg, #4f46e5, #7c3aed );
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
         box-shadow: 0 18px 40px rgba(79, 70, 229, 0.2);
     }
 
@@ -315,6 +315,7 @@
     }
 
     @@media (max-width: 767px) {
+
         .dashboard-header {
             padding: 27px 22px;
         }
@@ -337,16 +338,15 @@
         <div class="dashboard-header-content">
 
             <span class="badge bg-light text-primary px-3 py-2 mb-3">
-                MiniCRM Overview
+                @Localization.GetText("DashboardOverview")
             </span>
 
             <h1 class="h2 mb-2">
-                Dashboard
+                @Localization.GetText("Dashboard")
             </h1>
 
             <p>
-                Review customer, product, order, revenue and stock
-                information from one screen.
+                @Localization.GetText("DashboardPageDescription")
             </p>
 
         </div>
@@ -364,13 +364,15 @@
                 <div class="stat-card-body">
 
                     <div>
+
                         <div class="stat-label">
-                            Total Customers
+                            @Localization.GetText("TotalCustomers")
                         </div>
 
                         <h2 class="stat-value">
                             @Model.TotalCustomers
                         </h2>
+
                     </div>
 
                     <div class="stat-icon icon-customers">
@@ -391,13 +393,15 @@
                 <div class="stat-card-body">
 
                     <div>
+
                         <div class="stat-label">
-                            Active Products
+                            @Localization.GetText("ActiveProducts")
                         </div>
 
                         <h2 class="stat-value">
                             @Model.ActiveProducts
                         </h2>
+
                     </div>
 
                     <div class="stat-icon icon-products">
@@ -418,13 +422,15 @@
                 <div class="stat-card-body">
 
                     <div>
+
                         <div class="stat-label">
-                            Today's Completed Orders
+                            @Localization.GetText("TodayCompletedOrders")
                         </div>
 
                         <h2 class="stat-value">
                             @Model.TodayOrderCount
                         </h2>
+
                     </div>
 
                     <div class="stat-icon icon-orders">
@@ -445,14 +451,21 @@
                 <div class="stat-card-body">
 
                     <div>
+
                         <div class="stat-label">
-                            Today's Revenue
+                            @Localization.GetText("TodayRevenue")
                         </div>
 
                         <h2 class="stat-value">
+
                             @Model.TodayRevenue.ToString("N2")
-                            <span class="fs-6">TL</span>
+
+                            <span class="fs-6">
+                                TL
+                            </span>
+
                         </h2>
+
                     </div>
 
                     <div class="stat-icon icon-revenue">
@@ -467,6 +480,7 @@
 
     </section>
 
+
     <div class="row g-4">
 
         <!-- Critical Stock -->
@@ -477,13 +491,15 @@
                 <div class="section-header">
 
                     <div>
+
                         <h2>
-                            Critical Stock Products
+                            @Localization.GetText("CriticalStockProducts")
                         </h2>
 
                         <p>
-                            Active products below the critical stock level
+                            @Localization.GetText("CriticalStockDescription")
                         </p>
+
                     </div>
 
                     <span class="section-count">
@@ -499,11 +515,23 @@
                         <table class="table dashboard-table">
 
                             <thead>
+
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th class="text-end">Stock</th>
+
+                                    <th>
+                                        @Localization.GetText("Product")
+                                    </th>
+
+                                    <th>
+                                        @Localization.GetText("Price")
+                                    </th>
+
+                                    <th class="text-end">
+                                        @Localization.GetText("Stock")
+                                    </th>
+
                                 </tr>
+
                             </thead>
 
                             <tbody>
@@ -513,23 +541,33 @@
                                     <tr>
 
                                         <td>
+
                                             <div class="product-name">
                                                 @product.Name
                                             </div>
 
                                             <small class="text-muted">
-                                                Category #@product.CategoryId
+
+                                                @Localization.GetText("Category")
+                                                #@product.CategoryId
+
                                             </small>
+
                                         </td>
 
                                         <td class="price-text">
-                                            @product.Price.ToString("N2") TL
+
+                                            @product.Price.ToString("N2")
+                                            TL
+
                                         </td>
 
                                         <td class="text-end">
+
                                             <span class="stock-badge">
                                                 @product.Stock
                                             </span>
+
                                         </td>
 
                                     </tr>
@@ -550,11 +588,11 @@
                         </div>
 
                         <h3>
-                            Stock levels are healthy
+                            @Localization.GetText("StockLevelsHealthy")
                         </h3>
 
                         <p>
-                            There are currently no critical stock products.
+                            @Localization.GetText("NoCriticalStockProducts")
                         </p>
 
                     </div>
@@ -564,6 +602,7 @@
 
         </div>
 
+
         <!-- Top Selling Products -->
         <div class="col-12 col-xl-7">
 
@@ -572,13 +611,15 @@
                 <div class="section-header">
 
                     <div>
+
                         <h2>
-                            Top 5 Selling Products
+                            @Localization.GetText("Top5SellingProducts")
                         </h2>
 
                         <p>
-                            Products with the highest completed sales quantity
+                            @Localization.GetText("TopSellingProductsDescription")
                         </p>
+
                     </div>
 
                     <span class="section-count">
@@ -594,13 +635,23 @@
                         <table class="table dashboard-table">
 
                             <thead>
+
                                 <tr>
-                                    <th>Rank</th>
-                                    <th>Product</th>
-                                    <th class="text-end">
-                                        Total Sold
+
+                                    <th>
+                                        @Localization.GetText("Rank")
                                     </th>
+
+                                    <th>
+                                        @Localization.GetText("Product")
+                                    </th>
+
+                                    <th class="text-end">
+                                        @Localization.GetText("TotalSold")
+                                    </th>
+
                                 </tr>
+
                             </thead>
 
                             <tbody>
@@ -614,25 +665,34 @@
                                     <tr>
 
                                         <td>
+
                                             <span class="rank-badge">
                                                 @rank
                                             </span>
+
                                         </td>
 
                                         <td>
+
                                             <div class="product-name">
                                                 @product.ProductName
                                             </div>
 
                                             <small class="text-muted">
-                                                Product #@product.ProductId
+
+                                                @Localization.GetText("Product")
+                                                #@product.ProductId
+
                                             </small>
+
                                         </td>
 
                                         <td class="text-end">
+
                                             <span class="sold-badge">
                                                 @product.TotalSoldQuantity
                                             </span>
+
                                         </td>
 
                                     </tr>
@@ -655,12 +715,11 @@
                         </div>
 
                         <h3>
-                            No completed sales data
+                            @Localization.GetText("NoCompletedSalesData")
                         </h3>
 
                         <p>
-                            Top-selling products will appear after orders
-                            are completed.
+                            @Localization.GetText("TopSellingEmptyDescription")
                         </p>
 
                     </div>
@@ -670,6 +729,7 @@
 
         </div>
 
+
         <!-- Last Orders -->
         <div class="col-12">
 
@@ -678,19 +738,23 @@
                 <div class="section-header">
 
                     <div>
+
                         <h2>
-                            Last 10 Orders
+                            @Localization.GetText("Last10Orders")
                         </h2>
 
                         <p>
-                            The most recently created orders in the system
+                            @Localization.GetText("LastOrdersDescription")
                         </p>
+
                     </div>
 
                     <a asp-controller="Order"
                        asp-action="Index"
                        class="btn btn-sm btn-outline-primary">
-                        View All Orders
+
+                        @Localization.GetText("ViewAllOrders")
+
                     </a>
 
                 </div>
@@ -702,14 +766,35 @@
                         <table class="table dashboard-table align-middle">
 
                             <thead>
+
                                 <tr>
-                                    <th>Order</th>
-                                    <th>Customer</th>
-                                    <th>Date</th>
-                                    <th>Total Amount</th>
-                                    <th>Status</th>
-                                    <th class="text-end">Action</th>
+
+                                    <th>
+                                        @Localization.GetText("Order")
+                                    </th>
+
+                                    <th>
+                                        @Localization.GetText("Customer")
+                                    </th>
+
+                                    <th>
+                                        @Localization.GetText("Date")
+                                    </th>
+
+                                    <th>
+                                        @Localization.GetText("TotalAmount")
+                                    </th>
+
+                                    <th>
+                                        @Localization.GetText("Status")
+                                    </th>
+
+                                    <th class="text-end">
+                                        @Localization.GetText("Action")
+                                    </th>
+
                                 </tr>
+
                             </thead>
 
                             <tbody>
@@ -725,19 +810,40 @@
                                             _ => "status-default"
                                         };
 
+                                    string statusText =
+                                        order.Status.ToString() switch
+                                        {
+                                            "Draft" =>
+                                                Localization.GetText("StatusDraft"),
+
+                                            "Completed" =>
+                                                Localization.GetText("StatusCompleted"),
+
+                                            "Cancelled" =>
+                                                Localization.GetText("StatusCancelled"),
+
+                                            _ => order.Status.ToString()
+                                        };
+
                                     <tr>
 
                                         <td>
+
                                             <span class="order-id">
                                                 #@order.Id
                                             </span>
+
                                         </td>
 
                                         <td>
-                                            Customer #@order.CustomerId
+
+                                            @Localization.GetText("Customer")
+                                            #@order.CustomerId
+
                                         </td>
 
                                         <td>
+
                                             <div>
                                                 @order.OrderDate.ToString("dd.MM.yyyy")
                                             </div>
@@ -745,16 +851,22 @@
                                             <small class="text-muted">
                                                 @order.OrderDate.ToString("HH:mm")
                                             </small>
+
                                         </td>
 
                                         <td class="price-text">
-                                            @order.TotalAmount.ToString("N2") TL
+
+                                            @order.TotalAmount.ToString("N2")
+                                            TL
+
                                         </td>
 
                                         <td>
+
                                             <span class="status-badge @statusClass">
-                                                @order.Status
+                                                @statusText
                                             </span>
+
                                         </td>
 
                                         <td class="text-end">
@@ -763,7 +875,9 @@
                                                asp-action="Details"
                                                asp-route-id="@order.Id"
                                                class="btn btn-sm btn-outline-primary">
-                                                Details
+
+                                                @Localization.GetText("Details")
+
                                             </a>
 
                                         </td>
@@ -786,11 +900,11 @@
                         </div>
 
                         <h3>
-                            No orders found
+                            @Localization.GetText("NoOrdersFound")
                         </h3>
 
                         <p>
-                            New orders will appear in this section.
+                            @Localization.GetText("NewOrdersWillAppear")
                         </p>
 
                     </div>

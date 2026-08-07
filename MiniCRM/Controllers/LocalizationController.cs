@@ -18,7 +18,8 @@ namespace MiniCRM.Controllers
                 culture,
                 new CookieOptions
                 {
-                    Expires = DateTimeOffset.UtcNow.AddYears(1)
+                    Expires = DateTimeOffset.UtcNow.AddYears(1),
+                    Path = "/"
                 });
 
             return LocalRedirect(returnUrl);

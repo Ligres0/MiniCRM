@@ -1,16 +1,33 @@
 ﻿@model MiniCRM.ViewModels.OrderCreateViewModel
 
 @{
-    ViewData["Title"] = "Create Order";
+    ViewData["Title"] = Localization.GetText("CreateOrder");
+
+    var currentCulture =
+        Context.Request.Cookies["Culture"] ?? "en-US";
+
+    var customerInfoLoadError =
+        Localization.GetText("CustomerInfoLoadError");
+
+    var productInfoLoadError =
+        Localization.GetText("ProductInfoLoadError");
+
+    var maximumAvailableStockText =
+        Localization.GetText("MaximumAvailableStock");
 }
 
 <div class="container mt-4">
+
     <div class="mb-4">
-        <h2>Create New Order</h2>
+
+        <h2>
+            @Localization.GetText("CreateNewOrder")
+        </h2>
 
         <p class="text-muted">
-            Select a customer and add products to the order.
+            @Localization.GetText("CreateOrderDescription")
         </p>
+
     </div>
 
     <form asp-controller="Order"
@@ -25,14 +42,18 @@
 
         <!-- Customer -->
         <div class="card mb-4">
+
             <div class="card-header">
-                Customer Information
+                @Localization.GetText("CustomerInformation")
             </div>
 
             <div class="card-body">
+
                 <label asp-for="CustomerId"
                        class="form-label">
-                    Customer
+
+                    @Localization.GetText("Customer")
+
                 </label>
 
                 <select asp-for="CustomerId"
@@ -40,7 +61,7 @@
                         class="form-select">
 
                     <option value="0">
-                        Select Customer
+                        @Localization.GetText("SelectCustomer")
                     </option>
 
                     @foreach (var customer in Model.Customers)
@@ -49,75 +70,102 @@
                             @customer.Name @customer.Surname
                         </option>
                     }
+
                 </select>
 
                 <span asp-validation-for="CustomerId"
                       class="text-danger">
                 </span>
 
-                <!-- AJAX Customer Summary -->
                 <div id="customerSummary"
                      class="alert alert-light border mt-3 d-none">
 
                     <h6 class="mb-3">
-                        Customer Summary
+                        @Localization.GetText("CustomerSummary")
                     </h6>
 
                     <div>
-                        <strong>Name:</strong>
+
+                        <strong>
+                            @Localization.GetText("Name"):
+                        </strong>
 
                         <span id="customerFullName">
                             -
                         </span>
+
                     </div>
 
                     <div>
-                        <strong>Company:</strong>
+
+                        <strong>
+                            @Localization.GetText("Company"):
+                        </strong>
 
                         <span id="customerCompany">
                             -
                         </span>
+
                     </div>
 
                     <div>
-                        <strong>Email:</strong>
+
+                        <strong>
+                            @Localization.GetText("Email"):
+                        </strong>
 
                         <span id="customerEmail">
                             -
                         </span>
+
                     </div>
 
                     <div>
-                        <strong>Phone:</strong>
+
+                        <strong>
+                            @Localization.GetText("Phone"):
+                        </strong>
 
                         <span id="customerPhone">
                             -
                         </span>
+
                     </div>
 
                     <div id="customerError"
                          class="text-danger mt-2">
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
 
         <!-- Order Items -->
         <div class="card mb-4">
+
             <div class="card-header d-flex
                 justify-content-between
                 align-items-center">
 
-                <span>Order Items</span>
+                <span>
+                    @Localization.GetText("OrderItems")
+                </span>
 
                 <button type="button"
                         id="addItemButton"
                         class="btn btn-sm btn-success">
-                    Add Product
+
+                    @Localization.GetText("AddProduct")
+
                 </button>
+
             </div>
 
             <div class="card-body">
+
                 <div id="orderItemsContainer">
 
                     @for (int i = 0; i < Model.Items.Count; i++)
@@ -126,10 +174,10 @@
                             align-items-end mb-3
                             border-bottom pb-3">
 
-                            <!-- Product -->
                             <div class="col-md-5">
+
                                 <label class="form-label">
-                                    Product
+                                    @Localization.GetText("Product")
                                 </label>
 
                                 <select asp-for="Items[i].ProductId"
@@ -137,7 +185,7 @@
                                         data-field="ProductId">
 
                                     <option value="0">
-                                        Select Product
+                                        @Localization.GetText("SelectProduct")
                                     </option>
 
                                     @foreach (var product in Model.Products)
@@ -146,6 +194,7 @@
                                             @product.Name
                                         </option>
                                     }
+
                                 </select>
 
                                 <span asp-validation-for="Items[i].ProductId"
@@ -153,34 +202,43 @@
                                 </span>
 
                                 <div class="mt-2 small">
+
                                     <span class="me-3">
-                                        Price:
+
+                                        @Localization.GetText("Price"):
 
                                         <strong class="product-price">
                                             -
                                         </strong>
 
                                         TL
+
                                     </span>
 
                                     <span>
-                                        Available Stock:
+
+                                        @Localization.GetText("AvailableStock"):
 
                                         <strong class="product-stock">
                                             -
                                         </strong>
+
                                     </span>
+
                                 </div>
 
                                 <div class="product-error
-                                    text-danger small mt-1">
+                                    text-danger
+                                    small mt-1">
                                 </div>
+
                             </div>
 
-                            <!-- Quantity -->
+
                             <div class="col-md-2">
+
                                 <label class="form-label">
-                                    Quantity
+                                    @Localization.GetText("Quantity")
                                 </label>
 
                                 <input asp-for="Items[i].Quantity"
@@ -192,96 +250,124 @@
                                 <span asp-validation-for="Items[i].Quantity"
                                       class="text-danger">
                                 </span>
+
                             </div>
 
-                            <!-- Line Total -->
+
                             <div class="col-md-3">
+
                                 <label class="form-label">
-                                    Line Total
+                                    @Localization.GetText("LineTotal")
                                 </label>
 
                                 <div class="form-control bg-light">
+
                                     <span class="line-total">
                                         0,00
                                     </span>
 
                                     TL
+
                                 </div>
+
                             </div>
 
-                            <!-- Remove -->
+
                             <div class="col-md-2">
-                                <button type="button"
-                                        class="btn btn-outline-danger
-                                    remove-item-button">
 
-                                    Remove
+                                <button type="button"
+                                        class="btn btn-outline-danger remove-item-button">
+
+                                    @Localization.GetText("Remove")
+
                                 </button>
+
                             </div>
+
                         </div>
                     }
+
                 </div>
 
                 <div id="emptyOrderMessage"
                      class="alert alert-secondary">
 
-                    Click “Add Product” to add an order item.
+                    @Localization.GetText("AddProductInstruction")
+
                 </div>
+
             </div>
+
         </div>
 
-        <!-- Order Total -->
+
+        <!-- Total -->
         <div class="card mb-4">
+
             <div class="card-body d-flex
                 justify-content-between
                 align-items-center">
 
-                <strong>Order Total</strong>
+                <strong>
+                    @Localization.GetText("OrderTotal")
+                </strong>
 
                 <div class="fs-4">
+
                     <span id="orderTotal">
                         0,00
                     </span>
 
                     TL
+
                 </div>
+
             </div>
+
         </div>
 
-        <!-- Buttons -->
+
         <div class="d-flex justify-content-end gap-2">
+
             <a href="@Url.Action("Index", "Order")"
                class="btn btn-outline-secondary">
 
-                Cancel
+                @Localization.GetText("Cancel")
+
             </a>
 
             <button type="submit"
                     class="btn btn-primary">
 
-                Save Order
+                @Localization.GetText("SaveOrder")
+
             </button>
+
         </div>
+
     </form>
+
 </div>
 
-<!-- Dynamic Order Item Template -->
+
+<!-- Dynamic Item Template -->
 <template id="orderItemTemplate">
+
     <div class="order-item row g-3
         align-items-end mb-3
         border-bottom pb-3">
 
-        <!-- Product -->
         <div class="col-md-5">
+
             <label class="form-label">
-                Product
+                @Localization.GetText("Product")
             </label>
 
             <select class="form-select product-select"
                     data-field="ProductId">
 
                 <option value="0">
-                    Select Product
+                    @Localization.GetText("SelectProduct")
                 </option>
 
                 @foreach (var product in Model.Products)
@@ -290,37 +376,47 @@
                         @product.Name
                     </option>
                 }
+
             </select>
 
             <div class="mt-2 small">
+
                 <span class="me-3">
-                    Price:
+
+                    @Localization.GetText("Price"):
 
                     <strong class="product-price">
                         -
                     </strong>
 
                     TL
+
                 </span>
 
                 <span>
-                    Available Stock:
+
+                    @Localization.GetText("AvailableStock"):
 
                     <strong class="product-stock">
                         -
                     </strong>
+
                 </span>
+
             </div>
 
             <div class="product-error
-                text-danger small mt-1">
+                text-danger
+                small mt-1">
             </div>
+
         </div>
 
-        <!-- Quantity -->
+
         <div class="col-md-2">
+
             <label class="form-label">
-                Quantity
+                @Localization.GetText("Quantity")
             </label>
 
             <input type="number"
@@ -328,40 +424,80 @@
                    data-field="Quantity"
                    value="1"
                    min="1" />
+
         </div>
 
-        <!-- Line Total -->
+
         <div class="col-md-3">
+
             <label class="form-label">
-                Line Total
+                @Localization.GetText("LineTotal")
             </label>
 
             <div class="form-control bg-light">
+
                 <span class="line-total">
                     0,00
                 </span>
 
                 TL
+
             </div>
+
         </div>
 
-        <!-- Remove -->
+
         <div class="col-md-2">
-            <button type="button"
-                    class="btn btn-outline-danger
-                remove-item-button">
 
-                Remove
+            <button type="button"
+                    class="btn btn-outline-danger remove-item-button">
+
+                @Localization.GetText("Remove")
+
             </button>
+
         </div>
+
     </div>
+
 </template>
+
 
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
+
+        const currentCulture =
+            @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(
+            currentCulture
+            )
+            );
+
+        const customerInfoLoadError =
+            @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(
+            customerInfoLoadError
+            )
+            );
+
+        const productInfoLoadError =
+            @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(
+            productInfoLoadError
+            )
+            );
+
+        const maximumAvailableStockText =
+            @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(
+            maximumAvailableStockText
+            )
+            );
+
+
         const container =
             document.getElementById("orderItemsContainer");
 
@@ -404,20 +540,27 @@
         const customerInfoUrl =
             '@Url.Action("GetCustomerInfo", "Order")';
 
+
         function formatMoney(value) {
+
             const number = Number(value);
 
             if (!Number.isFinite(number)) {
                 return "0,00";
             }
 
-            return number.toLocaleString("tr-TR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
+            return number.toLocaleString(
+                currentCulture,
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
         }
 
+
         function clearCustomerInfo() {
+
             customerSummary.classList.add("d-none");
 
             customerFullName.textContent = "-";
@@ -427,11 +570,14 @@
             customerError.textContent = "";
         }
 
+
         async function loadCustomerInfo() {
+
             const customerId =
                 Number(customerSelect.value);
 
             if (!customerId || customerId <= 0) {
+
                 clearCustomerInfo();
                 return;
             }
@@ -445,6 +591,7 @@
             customerError.textContent = "";
 
             try {
+
                 const response = await fetch(
                     `${customerInfoUrl}?customerId=${encodeURIComponent(customerId)}`,
                     {
@@ -456,9 +603,7 @@
                 );
 
                 if (!response.ok) {
-                    throw new Error(
-                        "Customer information could not be loaded."
-                    );
+                    throw new Error(customerInfoLoadError);
                 }
 
                 const customer =
@@ -481,6 +626,7 @@
                     customer.phone || "-";
             }
             catch (error) {
+
                 customerFullName.textContent = "-";
                 customerCompany.textContent = "-";
                 customerEmail.textContent = "-";
@@ -491,11 +637,14 @@
             }
         }
 
+
         function updateIndexes() {
+
             const items =
                 container.querySelectorAll(".order-item");
 
             items.forEach((item, index) => {
+
                 const product =
                     item.querySelector(
                         '[data-field="ProductId"]'
@@ -507,6 +656,7 @@
                     );
 
                 if (product) {
+
                     product.name =
                         `Items[${index}].ProductId`;
 
@@ -515,6 +665,7 @@
                 }
 
                 if (quantity) {
+
                     quantity.name =
                         `Items[${index}].Quantity`;
 
@@ -529,13 +680,16 @@
                     : "none";
         }
 
+
         function updateOrderTotal() {
+
             const items =
                 container.querySelectorAll(".order-item");
 
             let total = 0;
 
             items.forEach(item => {
+
                 const lineTotal =
                     Number(item.dataset.lineTotal || 0);
 
@@ -546,7 +700,9 @@
                 formatMoney(total);
         }
 
+
         function updateLineTotal(item) {
+
             const quantityInput =
                 item.querySelector(".quantity-input");
 
@@ -571,7 +727,9 @@
             updateOrderTotal();
         }
 
+
         function clearProductInfo(item) {
+
             item.dataset.unitPrice = "0";
             item.dataset.lineTotal = "0";
             item.dataset.stock = "0";
@@ -603,7 +761,9 @@
             updateOrderTotal();
         }
 
+
         async function loadProductInfo(productSelect) {
+
             const item =
                 productSelect.closest(".order-item");
 
@@ -623,6 +783,7 @@
                 item.querySelector(".quantity-input");
 
             if (!productId || productId <= 0) {
+
                 clearProductInfo(item);
                 return;
             }
@@ -632,6 +793,7 @@
             errorElement.textContent = "";
 
             try {
+
                 const response = await fetch(
                     `${productInfoUrl}?productId=${encodeURIComponent(productId)}`,
                     {
@@ -643,9 +805,7 @@
                 );
 
                 if (!response.ok) {
-                    throw new Error(
-                        "Product information could not be loaded."
-                    );
+                    throw new Error(productInfoLoadError);
                 }
 
                 const product =
@@ -670,6 +830,7 @@
                     stock.toString();
 
                 if (quantityInput) {
+
                     quantityInput.max =
                         stock.toString();
                 }
@@ -677,6 +838,7 @@
                 updateLineTotal(item);
             }
             catch (error) {
+
                 clearProductInfo(item);
 
                 errorElement.textContent =
@@ -684,7 +846,9 @@
             }
         }
 
+
         function addItem() {
+
             const clone =
                 template.content.cloneNode(true);
 
@@ -694,19 +858,23 @@
             updateOrderTotal();
         }
 
+
         addButton.addEventListener(
             "click",
             addItem
         );
+
 
         customerSelect.addEventListener(
             "change",
             loadCustomerInfo
         );
 
+
         container.addEventListener(
             "change",
             function(event) {
+
                 if (
                     event.target.classList.contains(
                         "product-select"
@@ -717,14 +885,17 @@
             }
         );
 
+
         container.addEventListener(
             "input",
             function(event) {
+
                 if (
                     event.target.classList.contains(
                         "quantity-input"
                     )
                 ) {
+
                     const item =
                         event.target.closest(".order-item");
 
@@ -742,7 +913,7 @@
                         quantity > stock
                     ) {
                         errorElement.textContent =
-                            `Maximum available stock is ${stock}.`;
+                            `${maximumAvailableStockText} ${stock}.`;
                     }
                     else {
                         errorElement.textContent = "";
@@ -753,14 +924,17 @@
             }
         );
 
+
         container.addEventListener(
             "click",
             function(event) {
+
                 if (
                     event.target.classList.contains(
                         "remove-item-button"
                     )
                 ) {
+
                     event.target
                         .closest(".order-item")
                         .remove();
@@ -771,20 +945,26 @@
             }
         );
 
+
         updateIndexes();
+
 
         if (Number(customerSelect.value) > 0) {
             loadCustomerInfo();
         }
 
+
         container
             .querySelectorAll(".product-select")
             .forEach(productSelect => {
+
                 if (Number(productSelect.value) > 0) {
                     loadProductInfo(productSelect);
                 }
             });
 
+
         updateOrderTotal();
+
     </script>
 }

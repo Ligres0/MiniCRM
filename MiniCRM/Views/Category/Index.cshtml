@@ -1,92 +1,143 @@
 ﻿@model List<MiniCRM.Models.Category>
 
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = Localization.GetText("Categories");
+
+    var deactivateMessage =
+        Localization.GetText("ConfirmDeactivateCategory");
 }
 
 <div class="container py-4">
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div class="d-flex flex-column
+        flex-md-row
+        justify-content-between
+        align-items-md-center
+        gap-3
+        mb-4">
+
         <div>
-            <h1 class="fw-bold mb-1">Categories</h1>
+
+            <h1 class="fw-bold mb-1">
+                @Localization.GetText("Categories")
+            </h1>
+
             <p class="text-muted mb-0">
-                Manage product categories.
+                @Localization.GetText("ManageProductCategories")
             </p>
+
         </div>
 
         <a asp-controller="Category"
            asp-action="Create"
            class="btn btn-primary">
-            + New Category
+
+            + @Localization.GetText("NewCategory")
+
         </a>
+
     </div>
+
 
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show">
+
             @TempData["SuccessMessage"]
 
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert">
             </button>
+
         </div>
     }
+
 
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger alert-dismissible fade show">
+
             @TempData["ErrorMessage"]
 
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert">
             </button>
+
         </div>
     }
 
+
     <div class="card border-0 shadow-sm">
+
         <div class="card-body p-0">
 
             @if (Model.Count > 0)
             {
                 <div class="table-responsive">
+
                     <table class="table table-hover align-middle mb-0">
 
                         <thead class="table-light">
+
                             <tr>
-                                <th class="ps-4">Id</th>
-                                <th>Name</th>
-                                <th>Status</th>
-                                <th class="text-end pe-4">Actions</th>
+
+                                <th class="ps-4">
+                                    Id
+                                </th>
+
+                                <th>
+                                    @Localization.GetText("Name")
+                                </th>
+
+                                <th>
+                                    @Localization.GetText("Status")
+                                </th>
+
+                                <th class="text-end pe-4">
+                                    @Localization.GetText("Actions")
+                                </th>
+
                             </tr>
+
                         </thead>
 
                         <tbody>
+
                             @foreach (var category in Model)
                             {
                                 <tr>
+
                                     <td class="ps-4">
                                         #@category.Id
                                     </td>
 
                                     <td>
-                                        <strong>@category.Name</strong>
+                                        <strong>
+                                            @category.Name
+                                        </strong>
                                     </td>
 
                                     <td>
+
                                         @if (category.IsActive)
                                         {
                                             <span class="badge bg-success">
-                                                Active
+
+                                                @Localization.GetText("Active")
+
                                             </span>
                                         }
                                         else
                                         {
                                             <span class="badge bg-secondary">
-                                                Inactive
+
+                                                @Localization.GetText("Inactive")
+
                                             </span>
                                         }
+
                                     </td>
 
                                     <td class="text-end pe-4">
@@ -95,14 +146,18 @@
                                            asp-action="Details"
                                            asp-route-id="@category.Id"
                                            class="btn btn-sm btn-outline-info">
-                                            Details
+
+                                            @Localization.GetText("Details")
+
                                         </a>
 
                                         <a asp-controller="Category"
                                            asp-action="Update"
                                            asp-route-id="@category.Id"
                                            class="btn btn-sm btn-outline-primary">
-                                            Edit
+
+                                            @Localization.GetText("Edit")
+
                                         </a>
 
                                         @if (category.IsActive)
@@ -117,34 +172,47 @@
 
                                                 <button type="submit"
                                                         class="btn btn-sm btn-outline-danger"
-                                                        onclick="return confirm('Are you sure you want to deactivate this category?');">
-                                                    Deactivate
+                                                        onclick="return confirm('@deactivateMessage');">
+
+                                                    @Localization.GetText("Deactivate")
+
                                                 </button>
+
                                             </form>
                                         }
 
                                     </td>
+
                                 </tr>
                             }
+
                         </tbody>
 
                     </table>
+
                 </div>
             }
             else
             {
                 <div class="text-center py-5">
-                    <h3 class="h5">No categories found.</h3>
+
+                    <h3 class="h5">
+                        @Localization.GetText("NoCategoriesFound")
+                    </h3>
 
                     <a asp-controller="Category"
                        asp-action="Create"
                        class="btn btn-primary mt-2">
-                        Create First Category
+
+                        @Localization.GetText("CreateFirstCategory")
+
                     </a>
+
                 </div>
             }
 
         </div>
+
     </div>
 
 </div>

@@ -1,7 +1,10 @@
 ﻿@model MiniCRM.ViewModels.ProductFormViewModel
 
 @{
-    ViewData["Title"] = "Create Product";
+    ViewData["Title"] = Localization.GetText("CreateProduct");
+
+    var productNamePlaceholder =
+        Localization.GetText("EnterProductName");
 }
 
 <div class="container py-4">
@@ -9,11 +12,15 @@
     <div class="mx-auto" style="max-width: 800px;">
 
         <div class="mb-4">
-            <h1 class="fw-bold">Create Product</h1>
+
+            <h1 class="fw-bold">
+                @Localization.GetText("CreateProduct")
+            </h1>
 
             <p class="text-muted">
-                Enter product information.
+                @Localization.GetText("EnterProductInformation")
             </p>
+
         </div>
 
         <div class="card border-0 shadow-sm">
@@ -33,31 +40,38 @@
                     <div class="row g-3">
 
                         <div class="col-md-6">
+
                             <label asp-for="Name"
                                    class="form-label fw-semibold">
-                                Product Name
+
+                                @Localization.GetText("ProductName")
+
                             </label>
 
                             <input asp-for="Name"
                                    class="form-control"
-                                   placeholder="Enter product name" />
+                                   placeholder="@productNamePlaceholder" />
 
                             <span asp-validation-for="Name"
                                   class="text-danger">
                             </span>
+
                         </div>
 
                         <div class="col-md-6">
+
                             <label asp-for="CategoryId"
                                    class="form-label fw-semibold">
-                                Category
+
+                                @Localization.GetText("Category")
+
                             </label>
 
                             <select asp-for="CategoryId"
                                     class="form-select">
 
                                 <option value="0">
-                                    Select a category
+                                    @Localization.GetText("SelectCategory")
                                 </option>
 
                                 @foreach (var category in Model.Categories)
@@ -72,12 +86,16 @@
                             <span asp-validation-for="CategoryId"
                                   class="text-danger">
                             </span>
+
                         </div>
 
                         <div class="col-md-6">
+
                             <label asp-for="Price"
                                    class="form-label fw-semibold">
-                                Price
+
+                                @Localization.GetText("Price")
+
                             </label>
 
                             <input asp-for="Price"
@@ -89,12 +107,16 @@
                             <span asp-validation-for="Price"
                                   class="text-danger">
                             </span>
+
                         </div>
 
                         <div class="col-md-6">
+
                             <label asp-for="Stock"
                                    class="form-label fw-semibold">
-                                Stock
+
+                                @Localization.GetText("Stock")
+
                             </label>
 
                             <input asp-for="Stock"
@@ -105,9 +127,11 @@
                             <span asp-validation-for="Stock"
                                   class="text-danger">
                             </span>
+
                         </div>
 
                         <div class="col-12">
+
                             <div class="form-check form-switch">
 
                                 <input asp-for="IsActive"
@@ -115,13 +139,17 @@
 
                                 <label asp-for="IsActive"
                                        class="form-check-label fw-semibold">
-                                    Product is active
+
+                                    @Localization.GetText("ProductIsActive")
+
                                 </label>
 
                             </div>
+
                         </div>
 
                         <div class="col-12">
+
                             <hr />
 
                             <div class="d-flex justify-content-end gap-2">
@@ -129,15 +157,20 @@
                                 <a asp-controller="Product"
                                    asp-action="Index"
                                    class="btn btn-outline-secondary">
-                                    Cancel
+
+                                    @Localization.GetText("Cancel")
+
                                 </a>
 
                                 <button type="submit"
                                         class="btn btn-primary">
-                                    Save Product
+
+                                    @Localization.GetText("SaveProduct")
+
                                 </button>
 
                             </div>
+
                         </div>
 
                     </div>
@@ -145,6 +178,7 @@
                 </form>
 
             </div>
+
         </div>
 
     </div>

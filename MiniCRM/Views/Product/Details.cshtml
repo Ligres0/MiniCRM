@@ -1,35 +1,46 @@
 ﻿@model MiniCRM.Models.Product
 
 @{
-    ViewData["Title"] = "Product Details";
+    ViewData["Title"] = Localization.GetText("ProductDetails");
 }
 
 <div class="container py-4">
 
     <div class="mx-auto" style="max-width: 850px;">
 
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div class="d-flex
+            flex-column
+            flex-md-row
+            justify-content-between
+            align-items-md-center
+            gap-3
+            mb-4">
 
             <div>
+
                 <h1 class="fw-bold mb-1">
                     @Model.Name
                 </h1>
 
                 <p class="text-muted mb-0">
-                    Product No: #@Model.Id
+
+                    @Localization.GetText("ProductNumber"):
+                    #@Model.Id
+
                 </p>
+
             </div>
 
             @if (Model.IsActive)
             {
                 <span class="badge bg-success fs-6">
-                    Active
+                    @Localization.GetText("Active")
                 </span>
             }
             else
             {
                 <span class="badge bg-secondary fs-6">
-                    Inactive
+                    @Localization.GetText("Inactive")
                 </span>
             }
 
@@ -42,47 +53,63 @@
                 <div class="row g-3">
 
                     <div class="col-md-6">
+
                         <div class="border rounded p-3 h-100">
+
                             <div class="text-muted small mb-1">
-                                Product Name
+                                @Localization.GetText("ProductName")
                             </div>
 
                             <div class="fw-semibold">
                                 @Model.Name
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
+
                         <div class="border rounded p-3 h-100">
+
                             <div class="text-muted small mb-1">
-                                Category
+                                @Localization.GetText("Category")
                             </div>
 
                             <div class="fw-semibold">
+
                                 @(string.IsNullOrWhiteSpace(Model.CategoryName)
                                     ? "-"
                                     : Model.CategoryName)
+
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
+
                         <div class="border rounded p-3 h-100">
+
                             <div class="text-muted small mb-1">
-                                Price
+                                @Localization.GetText("Price")
                             </div>
 
                             <div class="fw-semibold fs-5">
                                 @Model.Price.ToString("N2") ₺
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
+
                         <div class="border rounded p-3 h-100">
+
                             <div class="text-muted small mb-1">
-                                Stock
+                                @Localization.GetText("Stock")
                             </div>
 
                             <div class="fw-semibold">
@@ -90,48 +117,70 @@
                                 @if (Model.Stock == 0)
                                 {
                                     <span class="text-danger">
-                                        Out of Stock
+
+                                        @Localization.GetText("OutOfStock")
+
                                     </span>
                                 }
                                 else if (Model.Stock <= 5)
                                 {
                                     <span class="text-warning">
-                                        Critical Stock: @Model.Stock
+
+                                        @Localization.GetText("CriticalStock"):
+                                        @Model.Stock
+
                                     </span>
                                 }
                                 else
                                 {
                                     <span class="text-success">
-                                        @Model.Stock units
+
+                                        @Model.Stock
+                                        @Localization.GetText("Units")
+
                                     </span>
                                 }
 
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
+
                         <div class="border rounded p-3 h-100">
+
                             <div class="text-muted small mb-1">
-                                Created Date
+                                @Localization.GetText("CreatedDate")
                             </div>
 
                             <div class="fw-semibold">
                                 @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
+
                         <div class="border rounded p-3 h-100">
+
                             <div class="text-muted small mb-1">
-                                Status
+                                @Localization.GetText("Status")
                             </div>
 
                             <div class="fw-semibold">
-                                @(Model.IsActive ? "Active" : "Inactive")
+
+                                @(Model.IsActive
+                                    ? Localization.GetText("Active")
+                                    : Localization.GetText("Inactive"))
+
                             </div>
+
                         </div>
+
                     </div>
 
                 </div>
@@ -143,19 +192,24 @@
                     <a asp-controller="Product"
                        asp-action="Index"
                        class="btn btn-outline-secondary">
-                        Back to List
+
+                        @Localization.GetText("BackToList")
+
                     </a>
 
                     <a asp-controller="Product"
                        asp-action="Update"
                        asp-route-id="@Model.Id"
                        class="btn btn-primary">
-                        Edit Product
+
+                        @Localization.GetText("EditProduct")
+
                     </a>
 
                 </div>
 
             </div>
+
         </div>
 
     </div>

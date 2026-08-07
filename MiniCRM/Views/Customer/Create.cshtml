@@ -1,7 +1,11 @@
 ﻿@model MiniCRM.Models.Customers
 
 @{
-    ViewData["Title"] = "Yeni Müşteri";
+    ViewData["Title"] = Localization.GetText("NewCustomer");
+
+    var namePlaceholder = Localization.GetText("EnterCustomerName");
+    var surnamePlaceholder = Localization.GetText("EnterCustomerSurname");
+    var companyPlaceholder = Localization.GetText("EnterCompanyName");
 }
 
 <style>
@@ -43,17 +47,23 @@
 </style>
 
 <div class="container py-4">
+
     <div class="form-page">
 
         <div class="form-header mb-4">
-            <h1 class="h3 fw-bold mb-2">Yeni Müşteri Ekle</h1>
+
+            <h1 class="h3 fw-bold mb-2">
+                @Localization.GetText("AddNewCustomer")
+            </h1>
 
             <p class="mb-0 opacity-75">
-                Yeni müşterinin iletişim ve firma bilgilerini giriniz.
+                @Localization.GetText("AddCustomerDescription")
             </p>
+
         </div>
 
         <div class="card form-card">
+
             <div class="card-body p-4 p-md-5">
 
                 <form asp-controller="Customer"
@@ -69,39 +79,50 @@
                     <div class="row g-4">
 
                         <div class="col-md-6">
+
                             <label asp-for="Name"
                                    class="form-label fw-semibold">
-                                Ad
+
+                                @Localization.GetText("Name")
+
                             </label>
 
                             <input asp-for="Name"
                                    class="form-control"
-                                   placeholder="Müşteri adını giriniz" />
+                                   placeholder="@namePlaceholder" />
 
                             <span asp-validation-for="Name"
                                   class="text-danger">
                             </span>
+
                         </div>
 
                         <div class="col-md-6">
+
                             <label asp-for="Surname"
                                    class="form-label fw-semibold">
-                                Soyad
+
+                                @Localization.GetText("Surname")
+
                             </label>
 
                             <input asp-for="Surname"
                                    class="form-control"
-                                   placeholder="Müşteri soyadını giriniz" />
+                                   placeholder="@surnamePlaceholder" />
 
                             <span asp-validation-for="Surname"
                                   class="text-danger">
                             </span>
+
                         </div>
 
                         <div class="col-md-6">
+
                             <label asp-for="Email"
                                    class="form-label fw-semibold">
-                                E-posta
+
+                                @Localization.GetText("Email")
+
                             </label>
 
                             <input asp-for="Email"
@@ -112,12 +133,16 @@
                             <span asp-validation-for="Email"
                                   class="text-danger">
                             </span>
+
                         </div>
 
                         <div class="col-md-6">
+
                             <label asp-for="Phone"
                                    class="form-label fw-semibold">
-                                Telefon
+
+                                @Localization.GetText("Phone")
+
                             </label>
 
                             <input asp-for="Phone"
@@ -127,61 +152,85 @@
                             <span asp-validation-for="Phone"
                                   class="text-danger">
                             </span>
+
                         </div>
 
                         <div class="col-12">
+
                             <label asp-for="CompanyName"
                                    class="form-label fw-semibold">
-                                Firma Adı
+
+                                @Localization.GetText("CompanyName")
+
                             </label>
 
                             <input asp-for="CompanyName"
                                    class="form-control"
-                                   placeholder="Müşterinin firma adını giriniz" />
+                                   placeholder="@companyPlaceholder" />
 
                             <span asp-validation-for="CompanyName"
                                   class="text-danger">
                             </span>
+
                         </div>
 
                         <div class="col-12">
+
                             <div class="form-check form-switch">
+
                                 <input asp-for="IsActive"
                                        class="form-check-input"
                                        type="checkbox" />
 
                                 <label asp-for="IsActive"
                                        class="form-check-label fw-semibold">
-                                    Müşteri aktif olarak oluşturulsun
+
+                                    @Localization.GetText("CreateCustomerActive")
+
                                 </label>
+
                             </div>
+
                         </div>
 
                         <div class="col-12">
+
                             <hr />
 
-                            <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
+                            <div class="d-flex flex-column
+                                flex-sm-row
+                                justify-content-end
+                                gap-2">
 
                                 <a asp-controller="Customer"
                                    asp-action="Index"
                                    class="btn btn-outline-secondary px-4">
-                                    İptal
+
+                                    @Localization.GetText("Cancel")
+
                                 </a>
 
                                 <button type="submit"
                                         class="btn btn-primary px-4">
-                                    Müşteriyi Kaydet
+
+                                    @Localization.GetText("SaveCustomer")
+
                                 </button>
 
                             </div>
+
                         </div>
 
                     </div>
+
                 </form>
 
             </div>
+
         </div>
+
     </div>
+
 </div>
 
 @section Scripts {

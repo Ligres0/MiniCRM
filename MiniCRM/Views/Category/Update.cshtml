@@ -1,7 +1,7 @@
 ﻿@model MiniCRM.Models.Category
 
 @{
-    ViewData["Title"] = "Update Category";
+    ViewData["Title"] = Localization.GetText("UpdateCategory");
 }
 
 <div class="container py-4">
@@ -9,14 +9,19 @@
     <div class="mx-auto" style="max-width: 700px;">
 
         <div class="mb-4">
-            <h1 class="fw-bold">Update Category</h1>
+
+            <h1 class="fw-bold">
+                @Localization.GetText("UpdateCategory")
+            </h1>
 
             <p class="text-muted">
-                Edit category information.
+                @Localization.GetText("EditCategoryInformation")
             </p>
+
         </div>
 
         <div class="card border-0 shadow-sm">
+
             <div class="card-body p-4">
 
                 <form asp-controller="Category"
@@ -33,9 +38,12 @@
                     </div>
 
                     <div class="mb-3">
+
                         <label asp-for="Name"
                                class="form-label fw-semibold">
-                            Category Name
+
+                            @Localization.GetText("CategoryName")
+
                         </label>
 
                         <input asp-for="Name"
@@ -44,16 +52,21 @@
                         <span asp-validation-for="Name"
                               class="text-danger">
                         </span>
+
                     </div>
 
                     <div class="form-check form-switch mb-4">
+
                         <input asp-for="IsActive"
                                class="form-check-input" />
 
                         <label asp-for="IsActive"
                                class="form-check-label">
-                            Active
+
+                            @Localization.GetText("Active")
+
                         </label>
+
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
@@ -61,12 +74,16 @@
                         <a asp-controller="Category"
                            asp-action="Index"
                            class="btn btn-outline-secondary">
-                            Cancel
+
+                            @Localization.GetText("Cancel")
+
                         </a>
 
                         <button type="submit"
                                 class="btn btn-primary">
-                            Save Changes
+
+                            @Localization.GetText("SaveChanges")
+
                         </button>
 
                     </div>
@@ -74,6 +91,7 @@
                 </form>
 
             </div>
+
         </div>
 
     </div>

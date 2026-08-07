@@ -1,59 +1,75 @@
 ﻿@model MiniCRM.Models.Category
 
 @{
-    ViewData["Title"] = "Category Details";
+    ViewData["Title"] = Localization.GetText("CategoryDetails");
 }
 
 <div class="container py-4">
 
     <div class="mx-auto" style="max-width: 700px;">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex
+            justify-content-between
+            align-items-center
+            mb-4">
+
             <div>
+
                 <h1 class="fw-bold mb-1">
-                    Category Details
+                    @Localization.GetText("CategoryDetails")
                 </h1>
 
                 <p class="text-muted mb-0">
-                    Category information
+                    @Localization.GetText("CategoryInformation")
                 </p>
+
             </div>
 
             @if (Model.IsActive)
             {
                 <span class="badge bg-success fs-6">
-                    Active
+
+                    @Localization.GetText("Active")
+
                 </span>
             }
             else
             {
                 <span class="badge bg-secondary fs-6">
-                    Inactive
+
+                    @Localization.GetText("Inactive")
+
                 </span>
             }
+
         </div>
 
         <div class="card border-0 shadow-sm">
+
             <div class="card-body p-4">
 
                 <div class="mb-3">
+
                     <div class="text-muted small">
-                        Category Id
+                        @Localization.GetText("CategoryId")
                     </div>
 
                     <div class="fw-semibold">
                         #@Model.Id
                     </div>
+
                 </div>
 
                 <div class="mb-4">
+
                     <div class="text-muted small">
-                        Category Name
+                        @Localization.GetText("CategoryName")
                     </div>
 
                     <div class="fw-semibold fs-5">
                         @Model.Name
                     </div>
+
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">
@@ -61,19 +77,24 @@
                     <a asp-controller="Category"
                        asp-action="Index"
                        class="btn btn-outline-secondary">
-                        Back to List
+
+                        @Localization.GetText("BackToList")
+
                     </a>
 
                     <a asp-controller="Category"
                        asp-action="Update"
                        asp-route-id="@Model.Id"
                        class="btn btn-primary">
-                        Edit Category
+
+                        @Localization.GetText("EditCategory")
+
                     </a>
 
                 </div>
 
             </div>
+
         </div>
 
     </div>

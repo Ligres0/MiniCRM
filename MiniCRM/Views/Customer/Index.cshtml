@@ -1,7 +1,16 @@
 ﻿@model MiniCRM.ViewModels.CustomerListViewModel
 
 @{
-    ViewData["Title"] = "Müşteri Yönetimi";
+    ViewData["Title"] = Localization.GetText("CustomerManagement");
+
+    var searchPlaceholder =
+        Localization.GetText("CustomerSearchPlaceholder");
+
+    var companyPlaceholder =
+        Localization.GetText("CompanySearchPlaceholder");
+
+    var deactivateMessage =
+        Localization.GetText("ConfirmDeactivateCustomer");
 }
 
 <style>
@@ -41,9 +50,9 @@
         transition: background-color 0.2s ease;
     }
 
-    .customer-table tbody tr:hover {
-        background-color: #f8fafc;
-    }
+        .customer-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
 
     .customer-avatar {
         width: 42px;
@@ -115,28 +124,43 @@
 
 <div class="container-fluid py-4 customer-page">
 
-    <!-- Üst başlık alanı -->
+    <!-- Header -->
     <div class="customer-header mb-4">
-        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+
+        <div class="d-flex flex-column
+            flex-lg-row
+            align-items-lg-center
+            justify-content-between
+            gap-3">
+
             <div>
-                <h1 class="h3 fw-bold mb-2">Müşteri Yönetimi</h1>
+
+                <h1 class="h3 fw-bold mb-2">
+                    @Localization.GetText("CustomerManagement")
+                </h1>
 
                 <p class="mb-0 opacity-75">
-                    Müşterileri görüntüleyebilir, filtreleyebilir ve yönetebilirsin.
+                    @Localization.GetText("CustomerManagementPageDescription")
                 </p>
+
             </div>
 
             <div>
+
                 <a asp-controller="Customer"
                    asp-action="Create"
                    class="btn btn-light fw-semibold px-4 py-2">
-                    + Yeni Müşteri
+
+                    + @Localization.GetText("NewCustomer")
+
                 </a>
+
             </div>
+
         </div>
+
     </div>
 
-    <!-- Başarı mesajı -->
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show shadow-sm"
@@ -148,10 +172,10 @@
                     class="btn-close"
                     data-bs-dismiss="alert">
             </button>
+
         </div>
     }
 
-    <!-- Hata mesajı -->
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger alert-dismissible fade show shadow-sm"
@@ -163,11 +187,13 @@
                     class="btn-close"
                     data-bs-dismiss="alert">
             </button>
+
         </div>
     }
 
-    <!-- Filtreleme alanı -->
+    <!-- Filters -->
     <div class="card filter-card mb-4">
+
         <div class="card-body p-4">
 
             <form asp-controller="Customer"
@@ -177,117 +203,197 @@
                 <div class="row g-3 align-items-end">
 
                     <div class="col-12 col-md-4">
+
                         <label asp-for="Search"
                                class="form-label fw-semibold">
-                            Müşteri ara
+
+                            @Localization.GetText("SearchCustomer")
+
                         </label>
 
                         <input asp-for="Search"
                                class="form-control"
-                               placeholder="Ad veya soyad giriniz" />
+                               placeholder="@searchPlaceholder" />
+
                     </div>
 
                     <div class="col-12 col-md-3">
+
                         <label asp-for="CompanyName"
                                class="form-label fw-semibold">
-                            Firma adı
+
+                            @Localization.GetText("CompanyName")
+
                         </label>
 
                         <input asp-for="CompanyName"
                                class="form-control"
-                               placeholder="Firma adı giriniz" />
+                               placeholder="@companyPlaceholder" />
+
                     </div>
 
                     <div class="col-12 col-md-2">
+
                         <label asp-for="IsActive"
                                class="form-label fw-semibold">
-                            Durum
+
+                            @Localization.GetText("Status")
+
                         </label>
 
                         <select asp-for="IsActive"
                                 class="form-select">
 
-                            <option value="">Tümü</option>
-                            <option value="true">Aktif</option>
-                            <option value="false">Pasif</option>
+                            <option value="">
+                                @Localization.GetText("All")
+                            </option>
+
+                            <option value="true">
+                                @Localization.GetText("Active")
+                            </option>
+
+                            <option value="false">
+                                @Localization.GetText("Passive")
+                            </option>
+
                         </select>
+
                     </div>
 
                     <div class="col-12 col-md-3">
+
                         <div class="d-grid d-md-flex gap-2">
 
                             <button type="submit"
                                     class="btn btn-primary flex-grow-1">
-                                Filtrele
+
+                                @Localization.GetText("Filter")
+
                             </button>
 
                             <a asp-controller="Customer"
                                asp-action="Index"
                                class="btn btn-outline-secondary flex-grow-1">
-                                Temizle
+
+                                @Localization.GetText("Clear")
+
                             </a>
 
                         </div>
+
                     </div>
 
                 </div>
+
             </form>
+
         </div>
+
     </div>
 
-    <!-- Listeleme kartı -->
+    <!-- Customer list -->
     <div class="card customer-card">
+
         <div class="card-header bg-white border-0 p-4">
-            <div class="d-flex flex-column flex-md-row justify-content-between gap-2">
+
+            <div class="d-flex flex-column
+                flex-md-row
+                justify-content-between
+                gap-2">
+
                 <div>
-                    <h2 class="h5 fw-bold mb-1">Müşteri Listesi</h2>
+
+                    <h2 class="h5 fw-bold mb-1">
+                        @Localization.GetText("CustomerList")
+                    </h2>
 
                     <span class="text-secondary">
-                        Filtrelere uyan toplam
-                        <strong>@Model.TotalCount</strong>
-                        müşteri bulundu.
+
+                        @Localization.GetText("TotalMatchingCustomers")
+
+                        <strong>
+                            @Model.TotalCount
+                        </strong>
+
                     </span>
+
                 </div>
 
                 @if (Model.TotalPages > 0)
                 {
                     <div class="text-secondary">
-                        Sayfa
+
+                        @Localization.GetText("Page")
+
                         <strong>@Model.CurrentPage</strong>
+
                         /
+
                         <strong>@Model.TotalPages</strong>
+
                     </div>
                 }
+
             </div>
+
         </div>
 
         <div class="card-body p-0">
 
-            @if (Model.Customers != null && Model.Customers.Count > 0)
+            @if (Model.Customers != null &&
+                 Model.Customers.Count > 0)
             {
                 <div class="table-responsive">
+
                     <table class="table customer-table align-middle mb-0">
+
                         <thead>
+
                             <tr>
-                                <th class="ps-4">Müşteri</th>
-                                <th>İletişim</th>
-                                <th>Firma</th>
-                                <th>Kayıt Tarihi</th>
-                                <th>Durum</th>
-                                <th class="text-end pe-4">İşlemler</th>
+
+                                <th class="ps-4">
+                                    @Localization.GetText("Customer")
+                                </th>
+
+                                <th>
+                                    @Localization.GetText("Contact")
+                                </th>
+
+                                <th>
+                                    @Localization.GetText("Company")
+                                </th>
+
+                                <th>
+                                    @Localization.GetText("CreatedDate")
+                                </th>
+
+                                <th>
+                                    @Localization.GetText("Status")
+                                </th>
+
+                                <th class="text-end pe-4">
+                                    @Localization.GetText("Actions")
+                                </th>
+
                             </tr>
+
                         </thead>
 
                         <tbody>
+
                             @foreach (var customer in Model.Customers)
                             {
                                 string firstLetter =
                                     string.IsNullOrWhiteSpace(customer.Name)
                                         ? "?"
-                                        : customer.Name.Substring(0, 1).ToUpper();
+                                        : customer.Name
+                                            .Substring(0, 1)
+                                            .ToUpper();
 
                                 <tr>
+
                                     <td class="ps-4">
+
                                         <div class="d-flex align-items-center gap-3">
 
                                             <div class="customer-avatar">
@@ -295,36 +401,50 @@
                                             </div>
 
                                             <div>
+
                                                 <div class="customer-name">
                                                     @customer.Name @customer.Surname
                                                 </div>
 
                                                 <div class="customer-secondary">
-                                                    Müşteri No: #@customer.Id
+
+                                                    @Localization.GetText("CustomerNumber"):
+                                                    #@customer.Id
+
                                                 </div>
+
                                             </div>
 
                                         </div>
+
                                     </td>
 
                                     <td>
+
                                         <div>
+
                                             @(string.IsNullOrWhiteSpace(customer.Email)
-                                                ? "E-posta bulunmuyor"
+                                                ? Localization.GetText("NoEmailFound")
                                                 : customer.Email)
+
                                         </div>
 
                                         <div class="customer-secondary">
+
                                             @(string.IsNullOrWhiteSpace(customer.Phone)
-                                                ? "Telefon bulunmuyor"
+                                                ? Localization.GetText("NoPhoneFound")
                                                 : customer.Phone)
+
                                         </div>
+
                                     </td>
 
                                     <td>
+
                                         @(string.IsNullOrWhiteSpace(customer.CompanyName)
                                             ? "-"
                                             : customer.CompanyName)
+
                                     </td>
 
                                     <td>
@@ -332,35 +452,53 @@
                                     </td>
 
                                     <td>
+
                                         @if (customer.IsActive)
                                         {
                                             <span class="status-badge status-active">
-                                                ● Aktif
+
+                                                ● @Localization.GetText("Active")
+
                                             </span>
                                         }
                                         else
                                         {
                                             <span class="status-badge status-passive">
-                                                ● Pasif
+
+                                                ● @Localization.GetText("Passive")
+
                                             </span>
                                         }
+
                                     </td>
 
                                     <td class="text-end pe-4">
-                                        <div class="d-inline-flex flex-wrap justify-content-end gap-2">
+
+                                        <div class="d-inline-flex
+                                            flex-wrap
+                                            justify-content-end
+                                            gap-2">
 
                                             <a asp-controller="Customer"
                                                asp-action="Details"
                                                asp-route-id="@customer.Id"
-                                               class="btn btn-sm btn-outline-info action-button">
-                                                Detay
+                                               class="btn btn-sm
+                                                btn-outline-info
+                                                action-button">
+
+                                                @Localization.GetText("Details")
+
                                             </a>
 
                                             <a asp-controller="Customer"
                                                asp-action="Update"
                                                asp-route-id="@customer.Id"
-                                               class="btn btn-sm btn-outline-primary action-button">
-                                                Düzenle
+                                               class="btn btn-sm
+                                                btn-outline-primary
+                                                action-button">
+
+                                                @Localization.GetText("Edit")
+
                                             </a>
 
                                             @if (customer.IsActive)
@@ -374,54 +512,75 @@
                                                     @Html.AntiForgeryToken()
 
                                                     <button type="submit"
-                                                            class="btn btn-sm btn-outline-danger action-button"
-                                                            onclick="return confirm('Bu müşteriyi pasif yapmak istediğinize emin misiniz?');">
-                                                        Pasifleştir
+                                                            class="btn btn-sm
+                                                        btn-outline-danger
+                                                        action-button"
+                                                            onclick="return confirm('@deactivateMessage');">
+
+                                                        @Localization.GetText("Deactivate")
+
                                                     </button>
+
                                                 </form>
                                             }
 
                                         </div>
+
                                     </td>
+
                                 </tr>
                             }
+
                         </tbody>
+
                     </table>
+
                 </div>
             }
             else
             {
                 <div class="empty-state">
-                    <div class="display-5 mb-3">☷</div>
+
+                    <div class="display-5 mb-3">
+                        ☷
+                    </div>
 
                     <h3 class="h5 fw-bold text-dark">
-                        Müşteri bulunamadı
+                        @Localization.GetText("NoCustomersFound")
                     </h3>
 
                     <p class="mb-3">
-                        Arama kriterlerini değiştirerek tekrar deneyebilirsin.
+                        @Localization.GetText("NoCustomersDescription")
                     </p>
 
                     <a asp-controller="Customer"
                        asp-action="Index"
                        class="btn btn-outline-primary">
-                        Filtreleri temizle
+
+                        @Localization.GetText("ClearFilters")
+
                     </a>
+
                 </div>
             }
 
         </div>
 
-        <!-- Pagination -->
         @if (Model.TotalPages > 1)
         {
             <div class="card-footer bg-white border-0 p-4">
 
-                <nav aria-label="Müşteri sayfaları">
-                    <ul class="pagination justify-content-center flex-wrap mb-0">
+                <nav>
 
-                        <!-- Önceki -->
-                        <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <ul class="pagination
+                        justify-content-center
+                        flex-wrap
+                        mb-0">
+
+                        <li class="page-item
+                            @(Model.CurrentPage == 1
+                                ? "disabled"
+                                : "")">
 
                             <a class="page-link"
                                asp-controller="Customer"
@@ -430,17 +589,21 @@
                                asp-route-search="@Model.Search"
                                asp-route-companyName="@Model.CompanyName"
                                asp-route-isActive="@Model.IsActive">
-                                Önceki
+
+                                @Localization.GetText("Previous")
+
                             </a>
 
                         </li>
 
-                        <!-- Sayfa numaraları -->
                         @for (int pageNumber = 1;
-                               pageNumber <= Model.TotalPages;
-                               pageNumber++)
+                              pageNumber <= Model.TotalPages;
+                              pageNumber++)
                         {
-                            <li class="page-item @(pageNumber == Model.CurrentPage ? "active" : "")">
+                            <li class="page-item
+                                @(pageNumber == Model.CurrentPage
+                                    ? "active"
+                                    : "")">
 
                                 <a class="page-link"
                                    asp-controller="Customer"
@@ -453,11 +616,14 @@
                                     @pageNumber
 
                                 </a>
+
                             </li>
                         }
 
-                        <!-- Sonraki -->
-                        <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                        <li class="page-item
+                            @(Model.CurrentPage == Model.TotalPages
+                                ? "disabled"
+                                : "")">
 
                             <a class="page-link"
                                asp-controller="Customer"
@@ -466,15 +632,20 @@
                                asp-route-search="@Model.Search"
                                asp-route-companyName="@Model.CompanyName"
                                asp-route-isActive="@Model.IsActive">
-                                Sonraki
+
+                                @Localization.GetText("Next")
+
                             </a>
 
                         </li>
 
                     </ul>
+
                 </nav>
 
             </div>
         }
+
     </div>
+
 </div>

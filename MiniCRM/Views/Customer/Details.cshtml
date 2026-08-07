@@ -1,7 +1,7 @@
 ﻿@model MiniCRM.Models.Customers
 
 @{
-    ViewData["Title"] = "Müşteri Detayı";
+    ViewData["Title"] = Localization.GetText("CustomerDetails");
 
     string initials = string.Empty;
 
@@ -93,18 +93,27 @@
 </style>
 
 <div class="container py-4">
+
     <div class="details-page">
 
         <div class="details-header mb-4">
-            <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
+
+            <div class="d-flex flex-column
+                flex-md-row
+                align-items-md-center
+                gap-3">
 
                 <div class="profile-avatar">
                     @initials
                 </div>
 
                 <div class="flex-grow-1">
+
                     <div class="small opacity-75 mb-1">
-                        Müşteri No: #@Model.Id
+
+                        @Localization.GetText("CustomerNumber"):
+                        #@Model.Id
+
                     </div>
 
                     <h1 class="h3 fw-bold mb-1">
@@ -112,143 +121,219 @@
                     </h1>
 
                     <div class="opacity-75">
+
                         @(string.IsNullOrWhiteSpace(Model.CompanyName)
-                            ? "Firma bilgisi bulunmuyor"
+                            ? Localization.GetText("NoCompanyInformation")
                             : Model.CompanyName)
+
                     </div>
+
                 </div>
 
                 <div>
+
                     @if (Model.IsActive)
                     {
                         <span class="status-badge bg-white text-success">
-                            ● Aktif Müşteri
+
+                            ● @Localization.GetText("ActiveCustomer")
+
                         </span>
                     }
                     else
                     {
                         <span class="status-badge bg-white text-danger">
-                            ● Pasif Müşteri
+
+                            ● @Localization.GetText("PassiveCustomer")
+
                         </span>
                     }
+
                 </div>
 
             </div>
+
         </div>
 
         <div class="card details-card">
+
             <div class="card-body p-4 p-md-5">
 
                 <h2 class="h5 fw-bold mb-4">
-                    Müşteri Bilgileri
+                    @Localization.GetText("CustomerInformation")
                 </h2>
 
                 <div class="row g-3">
 
                     <div class="col-md-6">
-                        <div class="detail-item">
-                            <div class="detail-label">Ad</div>
-                            <div class="detail-value">@Model.Name</div>
-                        </div>
-                    </div>
 
-                    <div class="col-md-6">
                         <div class="detail-item">
-                            <div class="detail-label">Soyad</div>
-                            <div class="detail-value">@Model.Surname</div>
-                        </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <div class="detail-item">
-                            <div class="detail-label">E-posta</div>
+                            <div class="detail-label">
+                                @Localization.GetText("Name")
+                            </div>
 
                             <div class="detail-value">
+                                @Model.Name
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="detail-item">
+
+                            <div class="detail-label">
+                                @Localization.GetText("Surname")
+                            </div>
+
+                            <div class="detail-value">
+                                @Model.Surname
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="detail-item">
+
+                            <div class="detail-label">
+                                @Localization.GetText("Email")
+                            </div>
+
+                            <div class="detail-value">
+
                                 @(string.IsNullOrWhiteSpace(Model.Email)
-                                    ? "E-posta bilgisi bulunmuyor"
+                                    ? Localization.GetText("NoEmailInformation")
                                     : Model.Email)
+
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
+
                         <div class="detail-item">
-                            <div class="detail-label">Telefon</div>
+
+                            <div class="detail-label">
+                                @Localization.GetText("Phone")
+                            </div>
 
                             <div class="detail-value">
+
                                 @(string.IsNullOrWhiteSpace(Model.Phone)
-                                    ? "Telefon bilgisi bulunmuyor"
+                                    ? Localization.GetText("NoPhoneInformation")
                                     : Model.Phone)
+
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
+
                         <div class="detail-item">
-                            <div class="detail-label">Firma</div>
+
+                            <div class="detail-label">
+                                @Localization.GetText("Company")
+                            </div>
 
                             <div class="detail-value">
+
                                 @(string.IsNullOrWhiteSpace(Model.CompanyName)
-                                    ? "Firma bilgisi bulunmuyor"
+                                    ? Localization.GetText("NoCompanyInformation")
                                     : Model.CompanyName)
+
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
+
                         <div class="detail-item">
-                            <div class="detail-label">Kayıt Tarihi</div>
+
+                            <div class="detail-label">
+                                @Localization.GetText("CreatedDate")
+                            </div>
 
                             <div class="detail-value">
                                 @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
+
                         <div class="detail-item">
-                            <div class="detail-label">Durum</div>
+
+                            <div class="detail-label">
+                                @Localization.GetText("Status")
+                            </div>
 
                             <div class="detail-value">
+
                                 @if (Model.IsActive)
                                 {
                                     <span class="status-badge status-active">
-                                        Aktif
+                                        @Localization.GetText("Active")
                                     </span>
                                 }
                                 else
                                 {
                                     <span class="status-badge status-passive">
-                                        Pasif
+                                        @Localization.GetText("Passive")
                                     </span>
                                 }
+
                             </div>
+
                         </div>
+
                     </div>
 
                 </div>
 
                 <hr class="my-4" />
 
-                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
+                <div class="d-flex flex-column
+                    flex-sm-row
+                    justify-content-end
+                    gap-2">
 
                     <a asp-controller="Customer"
                        asp-action="Index"
                        class="btn btn-outline-secondary px-4">
-                        Listeye Dön
+
+                        @Localization.GetText("BackToList")
+
                     </a>
 
                     <a asp-controller="Customer"
                        asp-action="Update"
                        asp-route-id="@Model.Id"
                        class="btn btn-primary px-4">
-                        Müşteriyi Düzenle
+
+                        @Localization.GetText("EditCustomer")
+
                     </a>
 
                 </div>
 
             </div>
+
         </div>
 
     </div>
+
 </div>
