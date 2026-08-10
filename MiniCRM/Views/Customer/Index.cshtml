@@ -1,4 +1,5 @@
 ﻿@model MiniCRM.ViewModels.CustomerListViewModel
+@inject MiniCRM.Services.IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = Localization.GetText("CustomerManagement");
@@ -11,6 +12,26 @@
 
     var deactivateMessage =
         Localization.GetText("ConfirmDeactivateCustomer");
+
+    int? userId = Context.Session.GetInt32("UserId");
+
+    bool canCreate =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Customer.Create");
+
+    bool canEdit =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Customer.Edit");
+
+    bool canDelete =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Customer.Delete");
 }
 
 <style>
@@ -145,17 +166,20 @@
 
             </div>
 
-            <div>
+            @if (canCreate)
+            {
+                <div>
 
-                <a asp-controller="Customer"
-                   asp-action="Create"
-                   class="btn btn-light fw-semibold px-4 py-2">
+                    <a asp-controller="Customer"
+                       asp-action="Create"
+                       class="btn btn-light fw-semibold px-4 py-2">
 
-                    + @Localization.GetText("NewCustomer")
+                        + @Localization.GetText("NewCustomer")
 
-                </a>
+                    </a>
 
-            </div>
+                </div>
+            }
 
         </div>
 
@@ -489,40 +513,43 @@
                                                 @Localization.GetText("Details")
 
                                             </a>
+                                           
+@if (canEdit)
+{
+    <a asp-controller="Customer"
+       asp-action="Update"
+       asp-route-id="@customer.Id"
+       class="btn btn-sm
+        btn-outline-primary
+        action-button">
 
-                                            <a asp-controller="Customer"
-                                               asp-action="Update"
-                                               asp-route-id="@customer.Id"
-                                               class="btn btn-sm
-                                                btn-outline-primary
-                                                action-button">
+        @Localization.GetText("Edit")
 
-                                                @Localization.GetText("Edit")
+    </a>
+}
 
-                                            </a>
+@if (canDelete && customer.IsActive)
+{
+    <form asp-controller="Customer"
+          asp-action="Deactivate"
+          asp-route-id="@customer.Id"
+          method="post"
+          class="d-inline">
 
-                                            @if (customer.IsActive)
-                                            {
-                                                <form asp-controller="Customer"
-                                                      asp-action="Deactivate"
-                                                      asp-route-id="@customer.Id"
-                                                      method="post"
-                                                      class="d-inline">
+        @Html.AntiForgeryToken()
 
-                                                    @Html.AntiForgeryToken()
+        <button type="submit"
+                class="btn btn-sm
+                btn-outline-danger
+                action-button"
+                onclick="return confirm('@deactivateMessage');">
 
-                                                    <button type="submit"
-                                                            class="btn btn-sm
-                                                        btn-outline-danger
-                                                        action-button"
-                                                            onclick="return confirm('@deactivateMessage');">
+            @Localization.GetText("Deactivate")
 
-                                                        @Localization.GetText("Deactivate")
+        </button>
 
-                                                    </button>
-
-                                                </form>
-                                            }
+    </form>
+}
 
                                         </div>
 

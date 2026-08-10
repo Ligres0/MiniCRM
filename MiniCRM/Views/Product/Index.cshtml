@@ -1,4 +1,5 @@
 ﻿@model MiniCRM.ViewModels.ProductListViewModel
+@inject MiniCRM.Services.IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = Localization.GetText("Products");
@@ -8,6 +9,26 @@
 
     var deactivateMessage =
         Localization.GetText("ConfirmDeactivateProduct");
+
+    int? userId = Context.Session.GetInt32("UserId");
+
+    bool canCreate =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Product.Create");
+
+    bool canEdit =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Product.Edit");
+
+    bool canDelete =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Product.Delete");
 }
 
 <div class="container py-4">
@@ -32,13 +53,16 @@
 
         </div>
 
-        <a asp-controller="Product"
-           asp-action="Create"
-           class="btn btn-primary">
+        @if (canCreate)
+        {
+            <a asp-controller="Product"
+               asp-action="Create"
+               class="btn btn-primary">
 
-            + @Localization.GetText("NewProduct")
+                + @Localization.GetText("NewProduct")
 
-        </a>
+            </a>
+        }
 
     </div>
 
@@ -357,48 +381,52 @@
                                         @product.CreatedDate.ToString("dd.MM.yyyy")
                                     </td>
 
-                                    <td class="text-end pe-4">
+                                    
+                                        <td class="text-end pe-4">
 
-                                        <a asp-controller="Product"
-                                           asp-action="Details"
-                                           asp-route-id="@product.Id"
-                                           class="btn btn-sm btn-outline-info">
+                                            <a asp-controller="Product"
+                                               asp-action="Details"
+                                               asp-route-id="@product.Id"
+                                               class="btn btn-sm btn-outline-info">
 
-                                            @Localization.GetText("Details")
+                                                @Localization.GetText("Details")
 
-                                        </a>
+                                            </a>
 
-                                        <a asp-controller="Product"
-                                           asp-action="Update"
-                                           asp-route-id="@product.Id"
-                                           class="btn btn-sm btn-outline-primary">
+                                            @if (canEdit)
+                                            {
+                                                <a asp-controller="Product"
+                                                   asp-action="Update"
+                                                   asp-route-id="@product.Id"
+                                                   class="btn btn-sm btn-outline-primary">
 
-                                            @Localization.GetText("Edit")
+                                                    @Localization.GetText("Edit")
 
-                                        </a>
+                                                </a>
+                                            }
 
-                                        @if (product.IsActive)
-                                        {
-                                            <form asp-controller="Product"
-                                                  asp-action="Deactivate"
-                                                  asp-route-id="@product.Id"
-                                                  method="post"
-                                                  class="d-inline">
+                                            @if (canDelete && product.IsActive)
+                                            {
+                                                <form asp-controller="Product"
+                                                      asp-action="Deactivate"
+                                                      asp-route-id="@product.Id"
+                                                      method="post"
+                                                      class="d-inline">
 
-                                                @Html.AntiForgeryToken()
+                                                    @Html.AntiForgeryToken()
 
-                                                <button type="submit"
-                                                        class="btn btn-sm btn-outline-danger"
-                                                        onclick="return confirm('@deactivateMessage');">
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            onclick="return confirm('@deactivateMessage');">
 
-                                                    @Localization.GetText("Deactivate")
+                                                        @Localization.GetText("Deactivate")
 
-                                                </button>
+                                                    </button>
 
-                                            </form>
-                                        }
+                                                </form>
+                                            }
 
-                                    </td>
+                                        </td>
 
                                 </tr>
                             }
@@ -421,13 +449,16 @@
                         @Localization.GetText("NoProductsDescription")
                     </p>
 
-                    <a asp-controller="Product"
-                       asp-action="Create"
-                       class="btn btn-primary">
+                    @if (canCreate)
+                    {
+                        <a asp-controller="Product"
+                           asp-action="Create"
+                           class="btn btn-primary">
 
-                        @Localization.GetText("CreateProduct")
+                            @Localization.GetText("CreateProduct")
 
-                    </a>
+                        </a>
+                    }
 
                 </div>
             }

@@ -1,4 +1,5 @@
 ﻿@model MiniCRM.ViewModels.OrderListViewModel
+@inject MiniCRM.Services.IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] =
@@ -6,6 +7,20 @@
 
     var orderSearchPlaceholder =
         Localization.GetText("OrderNumber");
+
+    int? userId = Context.Session.GetInt32("UserId");
+
+    bool canCreate =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Order.Create");
+
+    bool canEdit =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Order.Edit");
 }
 
 <div class="container mt-4">
@@ -28,13 +43,16 @@
 
         </div>
 
-        <a asp-controller="Order"
-           asp-action="Create"
-           class="btn btn-primary">
+        @if (canCreate)
+        {
+            <a asp-controller="Order"
+               asp-action="Create"
+               class="btn btn-primary">
 
-            @Localization.GetText("CreateNewOrder")
+                @Localization.GetText("CreateNewOrder")
 
-        </a>
+            </a>
+        }
 
     </div>
 
@@ -462,9 +480,10 @@
                                         </a>
 
                                         @if (
-                                            order.Status ==
-                                            MiniCRM.Models.Order.OrderStatus.Draft
-                                        )
+                                             canEdit &&
+                                             order.Status ==
+                                             MiniCRM.Models.Order.OrderStatus.Draft
+ )
                                         {
                                             <a asp-action="Update"
                                                asp-route-id="@order.Id"

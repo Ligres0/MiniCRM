@@ -2,29 +2,157 @@
     ViewData["Title"] = "Login";
 }
 
-<h2>Login</h2>
-
-<form asp-controller="Auth"
-      asp-action="Login"
-      method="post">
-
-    <div>
-        <label>Username</label>
-        <input type="text" name="username" />
-    </div>
-
-    <div>
-        <label>Password</label>
-        <input type="password" name="password" />
-    </div>
-    @if (ViewBag.Error != null)
-    {
-        <div class="alert alert-danger">
-            @ViewBag.Error
-        </div>
+<style>
+    .login-page {
+        min-height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    <button type="submit">
-        Giriş Yap  
-    </button>
-</form>
+    .login-card {
+        width: 100%;
+        max-width: 430px;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(15, 23, 42, 0.12);
+        overflow: hidden;
+    }
+
+    .login-header {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+
+        .login-header h2 {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            margin-bottom: 0;
+            opacity: 0.8;
+        }
+
+    .login-body {
+        padding: 32px;
+        background-color: white;
+    }
+
+    .login-input {
+        border-radius: 10px;
+        padding: 11px 13px;
+    }
+
+    .login-button {
+        border-radius: 10px;
+        padding: 11px;
+        font-weight: 600;
+    }
+
+    .login-logo {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+</style>
+
+
+<div class="login-page">
+
+    <div class="card login-card">
+
+        <div class="login-header">
+
+            <div class="login-logo">
+                MiniCRM
+            </div>
+
+            <h2 class="h4 mt-3">
+                Giriş Yap
+            </h2>
+
+            <p>
+                Hesabınıza giriş yaparak devam edin
+            </p>
+
+        </div>
+
+
+        <div class="login-body">
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger"
+                     role="alert">
+
+                    @ViewBag.Error
+
+                </div>
+            }
+
+
+            <form asp-controller="Auth"
+                  asp-action="Login"
+                  method="post">
+
+                <div class="mb-3">
+
+                    <label for="username"
+                           class="form-label fw-semibold">
+
+                        Kullanıcı Adı
+
+                    </label>
+
+                    <input type="text"
+                           id="username"
+                           name="username"
+                           class="form-control login-input"
+                           placeholder="Kullanıcı adınızı girin"
+                           autocomplete="username"
+                           required />
+
+                </div>
+
+
+                <div class="mb-4">
+
+                    <label for="password"
+                           class="form-label fw-semibold">
+
+                        Şifre
+
+                    </label>
+
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           class="form-control login-input"
+                           placeholder="Şifrenizi girin"
+                           autocomplete="current-password"
+                           required />
+
+                </div>
+
+
+                <div class="d-grid">
+
+                    <button type="submit"
+                            class="btn btn-primary login-button">
+
+                        Giriş Yap
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

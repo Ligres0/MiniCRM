@@ -1,4 +1,5 @@
 ﻿@model MiniCRM.ViewModels.OrderDetailsViewModel
+@inject MiniCRM.Services.IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] =
@@ -6,6 +7,20 @@
 
     var completeConfirm =
         Localization.GetText("ConfirmCompleteOrder");
+
+    int? userId = Context.Session.GetInt32("UserId");
+
+    bool canEdit =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Order.Edit");
+
+    bool canDelete =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Order.Delete");
 
     string statusText =
         Model.Order.Status switch
@@ -237,53 +252,57 @@
 
 
     @if (
-        Model.Order.Status ==
-        MiniCRM.Models.Order.OrderStatus.Draft
-    )
+    Model.Order.Status ==
+    MiniCRM.Models.Order.OrderStatus.Draft
+)
     {
         <div class="d-flex gap-2">
 
-            <a asp-action="Update"
-               asp-route-id="@Model.Order.Id"
-               class="btn btn-primary">
+            @if (canEdit)
+            {
+                <a asp-action="Update"
+                   asp-route-id="@Model.Order.Id"
+                   class="btn btn-primary">
 
-                @Localization.GetText("UpdateOrder")
+                    @Localization.GetText("UpdateOrder")
 
-            </a>
+                </a>
 
+                <form asp-action="Complete"
+                      asp-route-id="@Model.Order.Id"
+                      method="post">
 
-            <form asp-action="Complete"
-                  asp-route-id="@Model.Order.Id"
-                  method="post">
+                    @Html.AntiForgeryToken()
 
-                @Html.AntiForgeryToken()
+                    <button type="submit"
+                            class="btn btn-success"
+                            onclick="return confirm('@completeConfirm');">
 
-                <button type="submit"
-                        class="btn btn-success"
-                        onclick="return confirm('@completeConfirm');">
+                        @Localization.GetText("Complete")
 
-                    @Localization.GetText("Complete")
+                    </button>
 
-                </button>
+                </form>
+            }
 
-            </form>
+            @if (canDelete)
+            {
+                <form asp-controller="Order"
+                      asp-action="Cancel"
+                      asp-route-id="@Model.Order.Id"
+                      method="post">
 
+                    @Html.AntiForgeryToken()
 
-            <form asp-controller="Order"
-                  asp-action="Cancel"
-                  asp-route-id="@Model.Order.Id"
-                  method="post">
+                    <button type="submit"
+                            class="btn btn-danger">
 
-                @Html.AntiForgeryToken()
+                        @Localization.GetText("CancelOrder")
 
-                <button type="submit"
-                        class="btn btn-danger">
+                    </button>
 
-                    @Localization.GetText("CancelOrder")
-
-                </button>
-
-            </form>
+                </form>
+            }
 
         </div>
     }

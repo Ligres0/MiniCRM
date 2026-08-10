@@ -1,10 +1,31 @@
 ﻿@model List<MiniCRM.Models.Category>
+@inject MiniCRM.Services.IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = Localization.GetText("Categories");
 
     var deactivateMessage =
         Localization.GetText("ConfirmDeactivateCategory");
+
+    int? userId = Context.Session.GetInt32("UserId");
+
+    bool canCreate =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Product.Create");
+
+    bool canEdit =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Product.Edit");
+
+    bool canDelete =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Product.Delete");
 }
 
 <div class="container py-4">
@@ -28,13 +49,16 @@
 
         </div>
 
-        <a asp-controller="Category"
-           asp-action="Create"
-           class="btn btn-primary">
+        @if (canCreate)
+        {
+            <a asp-controller="Category"
+               asp-action="Create"
+               class="btn btn-primary">
 
-            + @Localization.GetText("NewCategory")
+                + @Localization.GetText("NewCategory")
 
-        </a>
+            </a>
+        }
 
     </div>
 
@@ -151,16 +175,19 @@
 
                                         </a>
 
-                                        <a asp-controller="Category"
-                                           asp-action="Update"
-                                           asp-route-id="@category.Id"
-                                           class="btn btn-sm btn-outline-primary">
+                                        @if (canEdit)
+                                        {
+                                            <a asp-controller="Category"
+                                               asp-action="Update"
+                                               asp-route-id="@category.Id"
+                                               class="btn btn-sm btn-outline-primary">
 
-                                            @Localization.GetText("Edit")
+                                                @Localization.GetText("Edit")
 
-                                        </a>
+                                            </a>
+                                        }
 
-                                        @if (category.IsActive)
+                                        @if (canDelete && category.IsActive)
                                         {
                                             <form asp-controller="Category"
                                                   asp-action="Deactivate"
@@ -200,13 +227,16 @@
                         @Localization.GetText("NoCategoriesFound")
                     </h3>
 
-                    <a asp-controller="Category"
-                       asp-action="Create"
-                       class="btn btn-primary mt-2">
+                    @if (canCreate)
+                    {
+                        <a asp-controller="Category"
+                           asp-action="Create"
+                           class="btn btn-primary mt-2">
 
-                        @Localization.GetText("CreateFirstCategory")
+                            @Localization.GetText("CreateFirstCategory")
 
-                    </a>
+                        </a>
+                    }
 
                 </div>
             }

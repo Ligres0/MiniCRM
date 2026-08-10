@@ -40,5 +40,13 @@ namespace MiniCRM.Controllers
 
             return RedirectToAction("Index","Dashboard");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("Login", "Auth");
+        }
     }
 }

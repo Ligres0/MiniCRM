@@ -59,14 +59,30 @@ namespace MiniCRM.Controllers
             return View(viewModel);
         }
 
+        [HttpGet]
         public IActionResult Details(int id)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Customer.View"))
+            {
+                return Forbid();
+            }
+
             var customer = _customerService.GetById(id);
 
             if (customer == null)
             {
-                return RedirectToAction("Index");
+                return NotFound();
             }
+
             return View(customer);
         }
 
