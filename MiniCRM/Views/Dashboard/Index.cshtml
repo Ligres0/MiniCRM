@@ -1,6 +1,7 @@
 ﻿@inject MiniCRM.Services.IAuthorizationService AuthorizationService
 @using Microsoft.AspNetCore.Http
 @using System.Linq
+@model MiniCRM.ViewModels.DashboardViewModel
 
 @{
     int? userId = Context.Session.GetInt32("UserId");
