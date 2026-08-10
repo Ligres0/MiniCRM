@@ -11,15 +11,18 @@ namespace MiniCRM.Controllers
         private readonly IOrderService _orderService;
         private readonly ICustomerService _customerService;
         private readonly IProductService _productService;
+        private readonly IAuthorizationService _authorizationService;
 
         public OrderController(
             IOrderService orderService,
             ICustomerService customerService,
-            IProductService productService)
+            IProductService productService,
+            IAuthorizationService authorizationService)
         {
             _orderService = orderService;
             _customerService = customerService;
             _productService = productService;
+            _authorizationService = authorizationService;
         }
 
         public IActionResult Index(string? search,
@@ -32,6 +35,20 @@ namespace MiniCRM.Controllers
             int pageNumber = 1,
             int pageSize = 10)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Order.View"))
+            {
+                return Forbid();
+            }
+
             bool filterError = false;
             if (pageNumber < 1)
             {
@@ -117,6 +134,21 @@ namespace MiniCRM.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
+
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Order.View"))
+            {
+                return Forbid();
+            }
+
             var order = _orderService.GetById(id);
 
             if (order == null)
@@ -161,6 +193,18 @@ namespace MiniCRM.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Order.Create"))
+            {
+                return Forbid();
+            }
             var viewModel = new OrderCreateViewModel();
 
             FillCreateLists(viewModel);
@@ -171,19 +215,30 @@ namespace MiniCRM.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(OrderCreateViewModel model)
         {
-            
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Order.Create"))
+            {
+                return Forbid();
+            }
+
             if (!ModelState.IsValid)
             {
                 FillCreateLists(model);
                 return View(model);
             }
 
-            // Giriş sistemi henüz olmadığı için geçici kullanıcı Id'si.
-            int createdByUserId = 1;
+            
 
             bool result = _orderService.CreateOrder(
                 model,
-                createdByUserId,
+                userId.Value,
                 out string message);
 
             if (result)
@@ -219,6 +274,19 @@ namespace MiniCRM.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Order.Edit"))
+            {
+                return Forbid();
+            }
             var order = _orderService.GetById(id);
 
             if (order == null)
@@ -262,6 +330,19 @@ namespace MiniCRM.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Update(int id,OrderCreateViewModel model)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Order.Edit"))
+            {
+                return Forbid();
+            }
             if (!ModelState.IsValid)
             {
                 FillCreateLists(model);
@@ -293,6 +374,19 @@ namespace MiniCRM.Controllers
         [HttpPost]
         public IActionResult Complete(int id)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Order.Edit"))
+            {
+                return Forbid();
+            }
             if (_orderService.CompleteOrder(id, out string message))
             {
                 TempData["SuccessMessage"] = message;
@@ -308,6 +402,19 @@ namespace MiniCRM.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Cancel(int id)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Order.Delete"))
+            {
+                return Forbid();
+            }
             if (_orderService.CancelOrder(id, out string message))
             {
                 TempData["SuccessMessage"] = message;

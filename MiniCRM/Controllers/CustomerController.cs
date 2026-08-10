@@ -7,10 +7,12 @@ namespace MiniCRM.Controllers
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
+        private readonly IAuthorizationService _authorizationService;
 
-        public CustomerController(ICustomerService customerService)
+        public CustomerController(ICustomerService customerService, IAuthorizationService authorizationService)
         {
             _customerService = customerService;
+            _authorizationService = authorizationService;
         }
         public IActionResult Index(
             string? search,
@@ -19,6 +21,20 @@ namespace MiniCRM.Controllers
             int pageNumber = 1,
             int pageSize = 10)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Customer.View"))
+            {
+                return Forbid();
+            }
+
             var customers = _customerService.GetFilteredPaged(
                 search,
                 companyName,
@@ -57,12 +73,40 @@ namespace MiniCRM.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Customer.Create"))
+            {
+                return Forbid();
+            }
+
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Customers customer)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Customer.Create"))
+            {
+                return Forbid();
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(customer);
@@ -83,6 +127,20 @@ namespace MiniCRM.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Customer.Edit"))
+            {
+                return Forbid();
+            }
+
             var customer = _customerService.GetById(id);
 
             if (customer == null)
@@ -92,9 +150,22 @@ namespace MiniCRM.Controllers
 
             return View(customer);
         }
-
+        [HttpPost]
         public IActionResult Update(Customers customer)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Customer.Edit"))
+            {
+                return Forbid();
+            }
             if (!ModelState.IsValid)
             {
                 return View(customer);
@@ -113,7 +184,22 @@ namespace MiniCRM.Controllers
 
         public IActionResult Deactivate(int id)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Customer.Delete"))
+            {
+                return Forbid();
+            }
+
             bool result = _customerService.Deactivate(id, out string message);
+
             if (result)
             {
                 TempData["SuccessMessage"] = message;
@@ -122,11 +208,12 @@ namespace MiniCRM.Controllers
             {
                 TempData["ErrorMessage"] = message;
             }
+
             return RedirectToAction(nameof(Index));
         }
 
-        
 
 
-}
+
+    }
 }

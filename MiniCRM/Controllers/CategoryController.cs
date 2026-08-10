@@ -7,15 +7,31 @@ namespace MiniCRM.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
+        private readonly IAuthorizationService _authorizationService;
 
         public CategoryController(
-            ICategoryService categoryService)
+            ICategoryService categoryService,
+            IAuthorizationService authorizationService)
         {
             _categoryService = categoryService;
+            _authorizationService = authorizationService;
         }
 
         public IActionResult Index()
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.View"))
+            {
+                return Forbid();
+            }
             var categories =
                 _categoryService.GetAllCategories();
 
@@ -38,6 +54,19 @@ namespace MiniCRM.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.Create"))
+            {
+                return Forbid();
+            }
             return View(new Category
             {
                 IsActive = true
@@ -48,6 +77,19 @@ namespace MiniCRM.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category category)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.Create"))
+            {
+                return Forbid();
+            }
             if (!ModelState.IsValid)
             {
                 return View(category);
@@ -71,6 +113,19 @@ namespace MiniCRM.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.Edit"))
+            {
+                return Forbid();
+            }
             var category =
                 _categoryService.GetById(id);
 
@@ -86,6 +141,19 @@ namespace MiniCRM.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Update(Category category)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.Edit"))
+            {
+                return Forbid();
+            }
             if (!ModelState.IsValid)
             {
                 return View(category);
@@ -110,6 +178,19 @@ namespace MiniCRM.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Deactivate(int id)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.Delete"))
+            {
+                return Forbid();
+            }
             bool result = _categoryService.Deactivate(
                 id,
                 out string message);

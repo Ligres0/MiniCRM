@@ -9,13 +9,28 @@ namespace MiniCRM.Controllers
     public class DashboardController: Controller
     {
         private readonly IDashboardService _dashboardService;
+        private readonly IAuthorizationService _authorizationService;
 
-        public DashboardController(IDashboardService dashboardService)
+        public DashboardController(IDashboardService dashboardService,IAuthorizationService authorizationService)
         {
+            _authorizationService = authorizationService;
             _dashboardService = dashboardService;
         }
         public IActionResult Index()
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Dashboard.View"))
+            {
+                return Forbid();
+            }
             var activeProducts = _dashboardService.GetActiveProducts();
             var totalCustomers = _dashboardService.GetTotalCustomers();
             var todayOrderCount = _dashboardService.GetTodayOrderCount();

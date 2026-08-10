@@ -9,13 +9,16 @@ namespace MiniCRM.Controllers
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly IAuthorizationService _authorizationService;
 
         public ProductController(
             IProductService productService,
-            ICategoryService categoryService)
+            ICategoryService categoryService,
+            IAuthorizationService authorizationService)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _authorizationService = authorizationService;
         }
 
         public IActionResult Index(
@@ -24,6 +27,19 @@ namespace MiniCRM.Controllers
             bool? isActive,
             int pageNumber = 1)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.View"))
+            {
+                return Forbid();
+            }
             const int pageSize = 10;
 
             if (pageNumber < 1)
@@ -82,6 +98,20 @@ namespace MiniCRM.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.Create"))
+            {
+                return Forbid();
+            }
+
             var viewModel = new ProductFormViewModel
             {
                 IsActive = true,
@@ -95,6 +125,20 @@ namespace MiniCRM.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(ProductFormViewModel model)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.Create"))
+            {
+                return Forbid();
+            }
+
             if (!ModelState.IsValid)
             {
                 model.Categories = _categoryService.GetAllActive();
@@ -125,6 +169,20 @@ namespace MiniCRM.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.Edit"))
+            {
+                return Forbid();
+            }
+
             var existingProduct = _productService.GetById(id);
 
             if (existingProduct == null)
@@ -150,6 +208,19 @@ namespace MiniCRM.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Update(ProductFormViewModel model)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.Edit"))
+            {
+                return Forbid();
+            }
             if (!ModelState.IsValid)
             {
                 model.Categories = _categoryService.GetAllActive();
@@ -183,6 +254,19 @@ namespace MiniCRM.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Deactivate(int id)
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(
+                userId.Value,
+                "Product.Delete"))
+            {
+                return Forbid();
+            }
             bool result = _productService.Deactivate(id, out string message);
 
             if (result)
