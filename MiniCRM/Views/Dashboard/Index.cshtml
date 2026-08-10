@@ -1,7 +1,15 @@
-﻿@model MiniCRM.ViewModels.DashboardViewModel
+﻿@inject MiniCRM.Services.IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Http
+@using System.Linq
 
 @{
-    ViewData["Title"] = Localization.GetText("Dashboard");
+    int? userId = Context.Session.GetInt32("UserId");
+
+    bool canViewOrders =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Order.View");
 }
 
 <style>
@@ -749,13 +757,16 @@
 
                     </div>
 
-                    <a asp-controller="Order"
-                       asp-action="Index"
-                       class="btn btn-sm btn-outline-primary">
+                    @if (canViewOrders)
+                    {
+                        <a asp-controller="Order"
+                           asp-action="Index"
+                           class="btn btn-sm btn-outline-primary">
 
-                        @Localization.GetText("ViewAllOrders")
+                            @Localization.GetText("ViewAllOrders")
 
-                    </a>
+                        </a>
+                    }
 
                 </div>
 
@@ -871,14 +882,17 @@
 
                                         <td class="text-end">
 
-                                            <a asp-controller="Order"
-                                               asp-action="Details"
-                                               asp-route-id="@order.Id"
-                                               class="btn btn-sm btn-outline-primary">
+                                            @if (canViewOrders)
+                                            {
+                                                <a asp-controller="Order"
+                                                   asp-action="Details"
+                                                   asp-route-id="@order.Id"
+                                                   class="btn btn-sm btn-outline-primary">
 
-                                                @Localization.GetText("Details")
+                                                    @Localization.GetText("Details")
 
-                                            </a>
+                                                </a>
+                                            }
 
                                         </td>
 

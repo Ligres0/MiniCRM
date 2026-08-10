@@ -1,26 +1,44 @@
 ﻿using MiniCRM.Models;
 using MiniCRM.Repositories;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace MiniCRM.Services
 {
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IMemoryCache _cache;
 
         public CategoryService(
-            ICategoryRepository categoryRepository)
+            ICategoryRepository categoryRepository, IMemoryCache cache)
         {
             _categoryRepository = categoryRepository;
+            _cache = cache;
         }
 
         public List<Category> GetAllCategories()
         {
-            return _categoryRepository.GetAllCategories();
+            string cacheKey = "Categories:All";
+            if (!_cache.TryGetValue(cacheKey, out List<Category>? categories))
+            {
+                categories =  _categoryRepository.GetAllCategories();
+
+                _cache.Set(cacheKey, categories, TimeSpan.FromMinutes(20));
+            }
+            return categories ?? new List<Category>();
+        
         }
 
         public List<Category> GetAllActive()
         {
-            return _categoryRepository.GetAllActive();
+            string cacheKey = "Categories:Active";
+            if(!_cache.TryGetValue(cacheKey,
+                out List<Category>? categories))
+            {
+                categories = _categoryRepository.GetAllActive();
+                _cache.Set(cacheKey, categories,TimeSpan.FromMinutes(20));
+            }
+            return categories ?? new List<Category>();
         }
 
         public Category? GetById(int id)
@@ -55,6 +73,7 @@ namespace MiniCRM.Services
                 message = "Category could not be created.";
                 return false;
             }
+            ClearCategoryCache();
 
             message = "Category created successfully.";
             return true;
@@ -93,6 +112,7 @@ namespace MiniCRM.Services
                 message = "Category could not be updated.";
                 return false;
             }
+            ClearCategoryCache();
 
             message = "Category updated successfully.";
             return true;
@@ -124,9 +144,15 @@ namespace MiniCRM.Services
                 message = "Category could not be deactivated.";
                 return false;
             }
+            ClearCategoryCache();
 
             message = "Category deactivated successfully.";
             return true;
+        }
+        private void ClearCategoryCache()
+        {
+            _cache.Remove("Categories:All");
+            _cache.Remove("Categories:Active");
         }
     }
 }
