@@ -13,5 +13,6 @@ namespace MiniCRM.Services
         List<Order> GetLastOrders();
         List<TopSellingProductViewModel> GetTopSellingProducts();
         void ClearDashboardCache();
+        List<DailyRevenueViewModel> GetLast7DaysRevenue();
     }
 }

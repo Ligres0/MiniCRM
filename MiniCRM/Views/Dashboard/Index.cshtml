@@ -393,6 +393,41 @@
             </div>
 
         </div>
+        <div class="row mb-4">
+
+            <div class="col-12">
+
+                <section class="dashboard-section">
+
+                    <div class="section-header">
+
+                        <div>
+
+                            <h2>
+                                Son 7 Günlük Ciro
+                            </h2>
+
+                            <p>
+                                Tamamlanan siparişlerden elde edilen
+                                günlük ciro değişimi
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div style="height: 350px;">
+
+                        <canvas id="revenueChart">
+                        </canvas>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
 
         <!-- Active Products -->
         <div class="col-md-6 col-xl-3">
@@ -932,3 +967,90 @@
     </div>
 
 </div>
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        const revenueLabels = [
+            @foreach (var item in Model.Last7DaysRevenue)
+            {
+                    <text>
+                            '@item.Date.ToString("dd/MM")',
+                    </text>
+            }
+        ];
+
+        const revenueValues = [
+            @foreach (var item in Model.Last7DaysRevenue)
+            {
+                    <text>
+                            @item.Revenue.ToString(
+                                    System.Globalization.CultureInfo.InvariantCulture
+                            ),
+                    </text>
+            }
+        ];
+
+        const revenueCanvas =
+            document.getElementById(
+                'revenueChart'
+            );
+
+        if (revenueCanvas) {
+
+            new Chart(
+                revenueCanvas,
+                {
+                    type: 'line',
+
+                    data: {
+
+                        labels: revenueLabels,
+
+                        datasets: [
+                            {
+                                label: 'Ciro (TL)',
+
+                                data: revenueValues,
+
+                                tension: 0.35,
+
+                                fill: false,
+
+                                borderWidth: 3,
+
+                                pointRadius: 4,
+
+                                pointHoverRadius: 6
+                            }
+                        ]
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: true
+                            }
+                        },
+
+                        scales: {
+
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                }
+            );
+        }
+
+    </script>
+}

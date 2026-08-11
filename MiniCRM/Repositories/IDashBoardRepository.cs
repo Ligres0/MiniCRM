@@ -13,6 +13,7 @@ namespace MiniCRM.Repositories
         List<Product> GetCriticalStockProducts(int criticalStockLevel);
         List<Order> GetLastOrders();
         List<TopSellingProductViewModel> GetTopSellingProducts();
+        public List<DailyRevenueViewModel> GetLast7DaysRevenue();
 
     }
 }

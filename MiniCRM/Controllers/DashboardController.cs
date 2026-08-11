@@ -38,6 +38,7 @@ namespace MiniCRM.Controllers
             var criticalStockProducts = _dashboardService.GetCriticalStockProducts(100);
             var lastOrders = _dashboardService.GetLastOrders();
             var topSellingProducts = _dashboardService.GetTopSellingProducts();
+            var last7DaysRevenue = _dashboardService.GetLast7DaysRevenue();
             var viewModel = new DashboardViewModel
             {
                 TotalCustomers = totalCustomers,
@@ -46,7 +47,8 @@ namespace MiniCRM.Controllers
                 TodayRevenue = todayRevenue,
                 CriticalStockProducts = criticalStockProducts,
                 LastOrders = lastOrders,
-                TopSellingProducts = topSellingProducts
+                TopSellingProducts = topSellingProducts,
+                Last7DaysRevenue = last7DaysRevenue,
             };
             return View(viewModel);
         }

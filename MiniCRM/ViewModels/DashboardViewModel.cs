@@ -1,4 +1,5 @@
-﻿using MiniCRM.Models;
+﻿
+using MiniCRM.Models;
 
 namespace MiniCRM.ViewModels
 {
@@ -11,5 +12,7 @@ namespace MiniCRM.ViewModels
         public List<Product> CriticalStockProducts { get; set; } = new List<Product>();
         public List<Order> LastOrders { get; set; } 
         public List<TopSellingProductViewModel> TopSellingProducts { get; set; } = new List<TopSellingProductViewModel>();
+        public List<DailyRevenueViewModel> Last7DaysRevenue { get; set; } = new List<DailyRevenueViewModel>();
+
     }
 }

@@ -109,6 +109,34 @@ namespace MiniCRM.Services
             _cache.Remove("Dashboard:CriticalStock:100");
             _cache.Remove("Dashboard:LastOrders");
             _cache.Remove("Dashboard:TopSellingProducts");
+            _cache.Remove("Dashboard:Last7DaysRevenue");
+        }
+
+        public List<DailyRevenueViewModel> GetLast7DaysRevenue()
+        {
+            string cacheKey = "Dashboard:Last7DaysRevenue";
+
+            if(!_cache.TryGetValue(cacheKey,out List<DailyRevenueViewModel>? revenues))
+            {
+                var databaseRevenues = _dashboardRepository.GetLast7DaysRevenue();
+                revenues = _dashboardRepository.GetLast7DaysRevenue();
+
+                for(int i =6; i>=0; i--)
+                {
+                    DateTime date = DateTime.Today.AddDays(-i);
+
+                    var revenueForDay = databaseRevenues.FirstOrDefault(x => x.Date.Date == date.Date);
+
+                    revenues.Add(new DailyRevenueViewModel{
+                        Date = date,
+                        Revenue = revenueForDay?.Revenue ?? 0
+                    });
+                }
+
+                _cache.Set(cacheKey, revenues, TimeSpan.FromMinutes(5));
+            }
+
+            return revenues ?? new List<DailyRevenueViewModel>();
         }
     }
 }

@@ -105,6 +105,31 @@ namespace MiniCRM.Repositories
                 }
             ).ToList();
         }
+        public List<DailyRevenueViewModel> GetLast7DaysRevenue()
+        {
+            using var connection = CreateConnection();
+
+            const string sql = """
+                SELECT 
+                    CAST(OrderDate AS DATE) AS Date,
+                    SUM(TotalAmount) AS Revenue
+                FROM Orders
+                WHERE
+                    Status = @CompletedStatus
+                    AND OrderDate >= CAST(DATEADD(DAY, -6,GETDATE()) AS DATE)
+                GROUP BY
+                    CAST(OrderDate AS DATE)
+                ORDER BY
+                    Date ASC;
+                """;
+
+            return connection.Query<DailyRevenueViewModel>(
+                sql,
+                new
+                {
+                    CompletedStatus = Order.OrderStatus.Completed
+                }).ToList();
+        }
     }
     
 }
