@@ -8,7 +8,8 @@
     var completeConfirm =
         Localization.GetText("ConfirmCompleteOrder");
 
-    int? userId = Context.Session.GetInt32("UserId");
+    int? userId =
+        Context.Session.GetInt32("UserId");
 
     bool canEdit =
         userId.HasValue &&
@@ -36,128 +37,288 @@
 
             _ => Model.Order.Status.ToString()
         };
+
+    string statusClass =
+        Model.Order.Status switch
+        {
+            MiniCRM.Models.Order.OrderStatus.Draft =>
+                "status-draft",
+
+            MiniCRM.Models.Order.OrderStatus.Completed =>
+                "status-completed",
+
+            MiniCRM.Models.Order.OrderStatus.Cancelled =>
+                "status-cancelled",
+
+            _ => ""
+        };
 }
 
-<div class="container mt-4">
+<style>
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
-        </div>
+    .order-details-page {
+        --crm-primary: #4f46e5;
+        --crm-secondary: #7c3aed;
+        --crm-dark: #0f172a;
+        --crm-muted: #64748b;
+        --crm-border: #e2e8f0;
     }
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">
-            @TempData["ErrorMessage"]
-        </div>
+    .order-details-header {
+        position: relative;
+        overflow: hidden;
+        padding: 28px;
+        border-radius: 20px;
+        color: white;
+        background: linear-gradient( 135deg, var(--crm-primary), var(--crm-secondary) );
+        box-shadow: 0 12px 30px rgba(79, 70, 229, 0.20);
     }
 
+        .order-details-header::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            top: -90px;
+            right: -50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.09);
+        }
 
-    <div class="d-flex
-        justify-content-between
-        align-items-center
-        mb-4">
+    .order-details-header-content {
+        position: relative;
+        z-index: 2;
+    }
 
-        <div>
+    .order-icon {
+        width: 62px;
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.18);
+        font-size: 1.4rem;
+        font-weight: 800;
+    }
 
-            <h2>
-                @Localization.GetText("Order")
-                #@Model.Order.Id
-            </h2>
+    .details-card {
+        overflow: hidden;
+        border: 0;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+    }
 
-            <p class="text-muted mb-0">
-                @Localization.GetText("OrderDetailsDescription")
-            </p>
+    .info-box {
+        height: 100%;
+        padding: 20px;
+        border: 1px solid var(--crm-border);
+        border-radius: 15px;
+        background: white;
+    }
 
-        </div>
+    .info-label {
+        margin-bottom: 7px;
+        color: var(--crm-muted);
+        font-size: 0.82rem;
+        font-weight: 650;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
 
-        <a asp-action="Index"
-           class="btn btn-outline-secondary">
+    .info-value {
+        color: var(--crm-dark);
+        font-weight: 700;
+    }
 
-            @Localization.GetText("BackToOrders")
+    .total-value {
+        color: var(--crm-primary);
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
 
-        </a>
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 650;
+        white-space: nowrap;
+    }
 
-    </div>
+    .status-draft {
+        color: #92400e;
+        background: #fef3c7;
+    }
+
+    .status-completed {
+        color: #166534;
+        background: #dcfce7;
+    }
+
+    .status-cancelled {
+        color: #991b1b;
+        background: #fee2e2;
+    }
+
+    .header-status-wrapper {
+        display: inline-flex;
+        padding: 5px;
+        border-radius: 999px;
+        background: white;
+    }
+
+    .details-table thead th {
+        color: #475569;
+        background: #f8fafc;
+        border-bottom: 1px solid var(--crm-border);
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+    }
+
+    .details-table td {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        border-color: #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .details-table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+        .details-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+    .product-name {
+        color: var(--crm-dark);
+        font-weight: 700;
+    }
+
+    .line-price {
+        font-weight: 750;
+    }
+
+    .action-area {
+        padding: 20px;
+        border: 1px solid var(--crm-border);
+        border-radius: 18px;
+        background: #f8fafc;
+    }
+
+    .action-button {
+        min-width: 125px;
+        border-radius: 10px;
+    }
+
+</style>
 
 
-    <!-- Order Info -->
-    <div class="card mb-4">
+<div class="container-fluid py-4 order-details-page">
 
-        <div class="card-header">
-            @Localization.GetText("OrderInformation")
-        </div>
+    <div class="mx-auto"
+         style="max-width: 1050px;">
 
-        <div class="card-body">
 
-            <div class="row g-3">
+        <!-- Messages -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert
+                alert-success
+                alert-dismissible
+                fade
+                show
+                shadow-sm">
 
-                <div class="col-md-4">
+                @TempData["SuccessMessage"]
 
-                    <strong>
-                        @Localization.GetText("Customer")
-                    </strong>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
 
-                    <div>
-                        @Model.CustomerName
+            </div>
+        }
+
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert
+                alert-danger
+                alert-dismissible
+                fade
+                show
+                shadow-sm">
+
+                @TempData["ErrorMessage"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+
+            </div>
+        }
+
+
+        <!-- Header -->
+
+        <div class="order-details-header mb-4">
+
+            <div class="order-details-header-content">
+
+                <div class="d-flex
+                    flex-column
+                    flex-md-row
+                    justify-content-between
+                    align-items-md-center
+                    gap-3">
+
+                    <div class="d-flex
+                        align-items-center
+                        gap-3">
+
+                        <div class="order-icon">
+                            S
+                        </div>
+
+                        <div>
+
+                            <h1 class="h3 fw-bold mb-1">
+
+                                @Localization.GetText("Order")
+                                #@Model.Order.Id
+
+                            </h1>
+
+                            <p class="mb-0 opacity-75">
+
+                                @Localization.GetText(
+                                    "OrderDetailsDescription"
+                                )
+
+                            </p>
+
+                        </div>
+
                     </div>
 
-                </div>
 
+                    <div class="header-status-wrapper">
 
-                <div class="col-md-4">
+                        <span class="status-badge @statusClass">
 
-                    <strong>
-                        @Localization.GetText("OrderDate")
-                    </strong>
+                            ● @statusText
 
-                    <div>
+                        </span>
 
-                        @Model.Order.OrderDate.ToString(
-                            "dd.MM.yyyy HH:mm"
-                        )
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-4">
-
-                    <strong>
-                        @Localization.GetText("Status")
-                    </strong>
-
-                    <div>
-                        @statusText
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-4">
-
-                    <strong>
-                        @Localization.GetText("CreatedByUserId")
-                    </strong>
-
-                    <div>
-                        @Model.Order.CreatedByUserId
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-4">
-
-                    <strong>
-                        @Localization.GetText("TotalAmount")
-                    </strong>
-
-                    <div>
-                        @Model.Order.TotalAmount.ToString("N2") TL
                     </div>
 
                 </div>
@@ -166,82 +327,428 @@
 
         </div>
 
-    </div>
+
+        <!-- Order Information -->
+
+        <div class="card details-card mb-4">
+
+            <div class="card-header
+                bg-white
+                border-0
+                p-4">
+
+                <h2 class="h5 fw-bold mb-0">
+
+                    @Localization.GetText(
+                        "OrderInformation"
+                    )
+
+                </h2>
+
+            </div>
 
 
-    <!-- Products -->
-    <div class="card mb-4">
+            <div class="card-body
+                px-4
+                pb-4
+                pt-0">
 
-        <div class="card-header">
-            @Localization.GetText("Products")
+                <div class="row g-4">
+
+
+                    <!-- Customer -->
+
+                    <div class="col-12 col-md-6 col-lg-4">
+
+                        <div class="info-box">
+
+                            <div class="info-label">
+
+                                @Localization.GetText(
+                                    "Customer"
+                                )
+
+                            </div>
+
+                            <div class="info-value">
+
+                                @Model.CustomerName
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Order Date -->
+
+                    <div class="col-12 col-md-6 col-lg-4">
+
+                        <div class="info-box">
+
+                            <div class="info-label">
+
+                                @Localization.GetText(
+                                    "OrderDate"
+                                )
+
+                            </div>
+
+                            <div class="info-value">
+
+                                @(Model.Order.OrderDate.ToString("dd/MM/yyyy"))
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Status -->
+
+                    <div class="col-12 col-md-6 col-lg-4">
+
+                        <div class="info-box">
+
+                            <div class="info-label">
+
+                                @Localization.GetText(
+                                    "Status"
+                                )
+
+                            </div>
+
+                            <span class="status-badge @statusClass">
+
+                                ● @statusText
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Created By -->
+
+                    <div class="col-12 col-md-6 col-lg-4">
+
+                        <div class="info-box">
+
+                            <div class="info-label">
+
+                                @Localization.GetText(
+                                    "CreatedByUserId"
+                                )
+
+                            </div>
+
+                            <div class="info-value">
+
+                                #@Model.Order.CreatedByUserId
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Total Amount -->
+
+                    <div class="col-12 col-md-6 col-lg-4">
+
+                        <div class="info-box">
+
+                            <div class="info-label">
+
+                                @Localization.GetText(
+                                    "TotalAmount"
+                                )
+
+                            </div>
+
+                            <div class="total-value">
+
+                                @(Model.Order.TotalAmount.ToString("N2")) TL
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="card-body">
 
-            @if (Model.Items.Count == 0)
-            {
-                <div class="alert alert-info mb-0">
-                    @Localization.GetText("NoProductsInOrder")
+        <!-- Products -->
+
+        <div class="card details-card mb-4">
+
+            <div class="card-header
+                bg-white
+                border-0
+                p-4">
+
+                <div class="d-flex
+                    justify-content-between
+                    align-items-center">
+
+                    <h2 class="h5 fw-bold mb-0">
+
+                        @Localization.GetText(
+                            "Products"
+                        )
+
+                    </h2>
+
+                    <span class="badge
+                        rounded-pill
+                        bg-primary">
+
+                        @Model.Items.Count
+
+                    </span>
+
                 </div>
-            }
-            else
-            {
-                <div class="table-responsive">
 
-                    <table class="table table-bordered align-middle">
+            </div>
 
-                        <thead>
 
-                            <tr>
+            <div class="card-body p-0">
 
-                                <th>
-                                    @Localization.GetText("Product")
-                                </th>
+                @if (Model.Items.Count == 0)
+                {
+                    <div class="p-4">
 
-                                <th>
-                                    @Localization.GetText("Quantity")
-                                </th>
+                        <div class="alert
+                            alert-info
+                            mb-0">
 
-                                <th>
-                                    @Localization.GetText("UnitPrice")
-                                </th>
+                            @Localization.GetText(
+                                "NoProductsInOrder"
+                            )
 
-                                <th>
-                                    @Localization.GetText("LineTotal")
-                                </th>
+                        </div>
 
-                            </tr>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
 
-                        </thead>
+                        <table class="table
+                            details-table
+                            align-middle
+                            mb-0">
 
-                        <tbody>
+                            <thead>
 
-                            @foreach (var item in Model.Items)
-                            {
                                 <tr>
 
-                                    <td>
-                                        @item.ProductName
-                                    </td>
+                                    <th class="ps-4">
 
-                                    <td>
-                                        @item.Quantity
-                                    </td>
+                                        @Localization.GetText(
+                                            "Product"
+                                        )
 
-                                    <td>
-                                        @item.UnitPrice.ToString("N2") TL
-                                    </td>
+                                    </th>
 
-                                    <td>
-                                        @item.TotalPrice.ToString("N2") TL
-                                    </td>
+                                    <th>
+
+                                        @Localization.GetText(
+                                            "Quantity"
+                                        )
+
+                                    </th>
+
+                                    <th>
+
+                                        @Localization.GetText(
+                                            "UnitPrice"
+                                        )
+
+                                    </th>
+
+                                    <th class="text-end pe-4">
+
+                                        @Localization.GetText(
+                                            "LineTotal"
+                                        )
+
+                                    </th>
 
                                 </tr>
-                            }
 
-                        </tbody>
+                            </thead>
 
-                    </table>
+
+                            <tbody>
+
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+
+                                        <!-- Product -->
+
+                                        <td class="ps-4">
+
+                                            <div class="product-name">
+
+                                                @item.ProductName
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <!-- Quantity -->
+
+                                        <td>
+
+                                            @item.Quantity
+
+                                        </td>
+
+
+                                        <!-- Unit Price -->
+
+                                        <td>
+
+                                            @(item.UnitPrice.ToString("N2")) TL
+
+                                        </td>
+
+
+                                        <!-- Line Total -->
+
+                                        <td class="text-end
+                                            pe-4
+                                            line-price">
+
+                                            @(item.TotalPrice.ToString("N2")) TL
+
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- Bottom Actions -->
+
+        <div class="d-flex
+            flex-column
+            flex-md-row
+            justify-content-between
+            gap-3">
+
+            <a asp-controller="Order"
+               asp-action="Index"
+               class="btn
+                btn-outline-secondary
+                action-button">
+
+                @Localization.GetText(
+                    "BackToOrders"
+                )
+
+            </a>
+
+
+            @if (
+                Model.Order.Status ==
+                MiniCRM.Models.Order.OrderStatus.Draft)
+            {
+                <div class="action-area
+                    d-flex
+                    flex-wrap
+                    justify-content-end
+                    gap-2">
+
+                    @if (canEdit)
+                    {
+                        <!-- Update -->
+
+                        <a asp-controller="Order"
+                           asp-action="Update"
+                           asp-route-id="@Model.Order.Id"
+                           class="btn
+                            btn-primary
+                            action-button">
+
+                            @Localization.GetText(
+                                "UpdateOrder"
+                            )
+
+                        </a>
+
+
+                        <!-- Complete -->
+
+                        <form asp-controller="Order"
+                              asp-action="Complete"
+                              asp-route-id="@Model.Order.Id"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="btn
+                                btn-success
+                                action-button"
+                                    onclick="return confirm('@completeConfirm');">
+
+                                @Localization.GetText(
+                                    "Complete"
+                                )
+
+                            </button>
+
+                        </form>
+                    }
+
+
+                    @if (canDelete)
+                    {
+                        <!-- Cancel -->
+
+                        <form asp-controller="Order"
+                              asp-action="Cancel"
+                              asp-route-id="@Model.Order.Id"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="btn
+                                btn-danger
+                                action-button">
+
+                                @Localization.GetText(
+                                    "CancelOrder"
+                                )
+
+                            </button>
+
+                        </form>
+                    }
 
                 </div>
             }
@@ -249,62 +756,5 @@
         </div>
 
     </div>
-
-
-    @if (
-    Model.Order.Status ==
-    MiniCRM.Models.Order.OrderStatus.Draft
-)
-    {
-        <div class="d-flex gap-2">
-
-            @if (canEdit)
-            {
-                <a asp-action="Update"
-                   asp-route-id="@Model.Order.Id"
-                   class="btn btn-primary">
-
-                    @Localization.GetText("UpdateOrder")
-
-                </a>
-
-                <form asp-action="Complete"
-                      asp-route-id="@Model.Order.Id"
-                      method="post">
-
-                    @Html.AntiForgeryToken()
-
-                    <button type="submit"
-                            class="btn btn-success"
-                            onclick="return confirm('@completeConfirm');">
-
-                        @Localization.GetText("Complete")
-
-                    </button>
-
-                </form>
-            }
-
-            @if (canDelete)
-            {
-                <form asp-controller="Order"
-                      asp-action="Cancel"
-                      asp-route-id="@Model.Order.Id"
-                      method="post">
-
-                    @Html.AntiForgeryToken()
-
-                    <button type="submit"
-                            class="btn btn-danger">
-
-                        @Localization.GetText("CancelOrder")
-
-                    </button>
-
-                </form>
-            }
-
-        </div>
-    }
 
 </div>

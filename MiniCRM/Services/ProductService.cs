@@ -7,10 +7,12 @@ namespace MiniCRM.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IDashboardService _dashboardService;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository,IDashboardService dashboardService)
         {
             _productRepository = productRepository;
+            _dashboardService = dashboardService;
         }
 
         public List<Product> GetFilteredPaged(
@@ -64,6 +66,8 @@ namespace MiniCRM.Services
                 return false;
             }
             _productRepository.Insert(product);
+            _dashboardService.ClearDashboardCache();
+
             message = "Product inserted successfully.";
             return true;
         }
@@ -75,6 +79,8 @@ namespace MiniCRM.Services
                 return false;
             }
             _productRepository.Update(product);
+            _dashboardService.ClearDashboardCache();
+
             message = "Product updated successfully.";
             return true;
         }
@@ -86,6 +92,8 @@ namespace MiniCRM.Services
                 return false;
             }
             _productRepository.Deactivate(id);
+            _dashboardService.ClearDashboardCache();
+
             message = "Product deactivated successfully.";
             return true;
         }

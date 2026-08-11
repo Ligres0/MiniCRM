@@ -46,5 +46,21 @@ namespace MiniCRM.Repositories
                 });
             return count > 0;
         }
+        public List<string> GetUserPermissions(int userId)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = """
+                SELECT DISTINCT p.Code
+                FROM UserRoles ur
+                INNER JOIN RolePermissions rp
+                    ON ur.RoleId = rp.RoleId
+                INNER JOIN Permissions p 
+                    ON rp.PermissionId = p.Id
+                WHERE ur.UserId =@UserId;
+                """;
+
+            return connection.Query<string>(sql, new {UserId = userId}).ToList();
+        }
     }
 }

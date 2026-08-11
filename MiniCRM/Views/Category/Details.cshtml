@@ -1,95 +1,365 @@
 ﻿@model MiniCRM.Models.Category
+@inject MiniCRM.Services.IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = Localization.GetText("CategoryDetails");
+
+    int? userId =
+        Context.Session.GetInt32("UserId");
+
+    bool canEdit =
+        userId.HasValue &&
+        AuthorizationService.HasPermission(
+            userId.Value,
+            "Product.Edit");
+
+    string firstLetter =
+        string.IsNullOrWhiteSpace(Model.Name)
+            ? "?"
+            : Model.Name.Substring(0, 1).ToUpper();
 }
 
-<div class="container py-4">
+<style>
 
-    <div class="mx-auto" style="max-width: 700px;">
+    .category-details-page {
+        --crm-primary: #4f46e5;
+        --crm-secondary: #7c3aed;
+        --crm-dark: #0f172a;
+        --crm-muted: #64748b;
+        --crm-border: #e2e8f0;
+    }
 
-        <div class="d-flex
-            justify-content-between
-            align-items-center
-            mb-4">
+    .category-details-header {
+        position: relative;
+        overflow: hidden;
+        padding: 28px;
+        border-radius: 20px;
+        color: white;
+        background: linear-gradient( 135deg, var(--crm-primary), var(--crm-secondary) );
+        box-shadow: 0 12px 30px rgba(79, 70, 229, 0.20);
+    }
 
-            <div>
+        .category-details-header::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            top: -90px;
+            right: -50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.09);
+        }
 
-                <h1 class="fw-bold mb-1">
-                    @Localization.GetText("CategoryDetails")
-                </h1>
+    .category-details-header-content {
+        position: relative;
+        z-index: 2;
+    }
 
-                <p class="text-muted mb-0">
-                    @Localization.GetText("CategoryInformation")
-                </p>
+    .category-large-avatar {
+        width: 62px;
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.18);
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    .category-details-card {
+        border: 0;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    .info-box {
+        height: 100%;
+        padding: 22px;
+        border: 1px solid var(--crm-border);
+        border-radius: 15px;
+        background: white;
+    }
+
+    .info-label {
+        margin-bottom: 7px;
+        color: var(--crm-muted);
+        font-size: 0.82rem;
+        font-weight: 650;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .info-value {
+        color: var(--crm-dark);
+        font-size: 1.05rem;
+        font-weight: 700;
+    }
+
+    .category-name-value {
+        color: var(--crm-primary);
+        font-size: 1.3rem;
+        font-weight: 800;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 650;
+    }
+
+    .status-active {
+        color: #166534;
+        background: #dcfce7;
+    }
+
+    .status-passive {
+        color: #991b1b;
+        background: #fee2e2;
+    }
+
+    .details-actions {
+        padding-top: 22px;
+        border-top: 1px solid var(--crm-border);
+    }
+
+    .details-button {
+        min-width: 125px;
+        border-radius: 10px;
+    }
+
+</style>
+
+
+<div class="container-fluid py-4 category-details-page">
+
+    <div class="mx-auto"
+         style="max-width: 850px;">
+
+
+        <!-- Header -->
+
+        <div class="category-details-header mb-4">
+
+            <div class="category-details-header-content">
+
+                <div class="d-flex
+                    flex-column
+                    flex-md-row
+                    justify-content-between
+                    align-items-md-center
+                    gap-3">
+
+                    <div class="d-flex
+                        align-items-center
+                        gap-3">
+
+                        <div class="category-large-avatar">
+
+                            @firstLetter
+
+                        </div>
+
+                        <div>
+
+                            <h1 class="h3 fw-bold mb-1">
+
+                                @Model.Name
+
+                            </h1>
+
+                            <div class="opacity-75">
+
+                                @Localization.GetText("CategoryId"):
+                                #@Model.Id
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        @if (Model.IsActive)
+                        {
+                            <span class="status-badge
+                                bg-light
+                                text-success">
+
+                                ● @Localization.GetText("Active")
+
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status-badge
+                                bg-light
+                                text-danger">
+
+                                ● @Localization.GetText("Inactive")
+
+                            </span>
+                        }
+
+                    </div>
+
+                </div>
 
             </div>
 
-            @if (Model.IsActive)
-            {
-                <span class="badge bg-success fs-6">
-
-                    @Localization.GetText("Active")
-
-                </span>
-            }
-            else
-            {
-                <span class="badge bg-secondary fs-6">
-
-                    @Localization.GetText("Inactive")
-
-                </span>
-            }
-
         </div>
 
-        <div class="card border-0 shadow-sm">
 
-            <div class="card-body p-4">
+        <!-- Information -->
 
-                <div class="mb-3">
+        <div class="card category-details-card">
 
-                    <div class="text-muted small">
-                        @Localization.GetText("CategoryId")
-                    </div>
-
-                    <div class="fw-semibold">
-                        #@Model.Id
-                    </div>
-
-                </div>
+            <div class="card-body p-4 p-lg-5">
 
                 <div class="mb-4">
 
-                    <div class="text-muted small">
-                        @Localization.GetText("CategoryName")
-                    </div>
+                    <h2 class="h5 fw-bold mb-1">
 
-                    <div class="fw-semibold fs-5">
-                        @Model.Name
+                        @Localization.GetText("CategoryInformation")
+
+                    </h2>
+
+                    <div class="text-secondary">
+
+                        @Localization.GetText("CategoryDetails")
+
                     </div>
 
                 </div>
 
-                <div class="d-flex justify-content-end gap-2">
+
+                <div class="row g-4">
+
+
+                    <!-- Id -->
+
+                    <div class="col-12 col-md-6">
+
+                        <div class="info-box">
+
+                            <div class="info-label">
+
+                                @Localization.GetText("CategoryId")
+
+                            </div>
+
+                            <div class="info-value">
+
+                                #@Model.Id
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Name -->
+
+                    <div class="col-12 col-md-6">
+
+                        <div class="info-box">
+
+                            <div class="info-label">
+
+                                @Localization.GetText("CategoryName")
+
+                            </div>
+
+                            <div class="category-name-value">
+
+                                @Model.Name
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Status -->
+
+                    <div class="col-12">
+
+                        <div class="info-box">
+
+                            <div class="info-label">
+
+                                @Localization.GetText("Status")
+
+                            </div>
+
+
+                            @if (Model.IsActive)
+                            {
+                                <span class="status-badge status-active">
+
+                                    ● @Localization.GetText("Active")
+
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-passive">
+
+                                    ● @Localization.GetText("Inactive")
+
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Actions -->
+
+                <div class="details-actions
+                    mt-4
+                    d-flex
+                    flex-column
+                    flex-sm-row
+                    justify-content-end
+                    gap-2">
 
                     <a asp-controller="Category"
                        asp-action="Index"
-                       class="btn btn-outline-secondary">
+                       class="btn
+                        btn-outline-secondary
+                        details-button">
 
                         @Localization.GetText("BackToList")
 
                     </a>
 
-                    <a asp-controller="Category"
-                       asp-action="Update"
-                       asp-route-id="@Model.Id"
-                       class="btn btn-primary">
 
-                        @Localization.GetText("EditCategory")
+                    @if (canEdit)
+                    {
+                        <a asp-controller="Category"
+                           asp-action="Update"
+                           asp-route-id="@Model.Id"
+                           class="btn
+                            btn-primary
+                            details-button">
 
-                    </a>
+                            @Localization.GetText("EditCategory")
+
+                        </a>
+                    }
 
                 </div>
 

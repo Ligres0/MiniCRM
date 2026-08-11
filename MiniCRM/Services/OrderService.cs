@@ -9,6 +9,8 @@ namespace MiniCRM.Services
         private readonly IOrderRepository _orderRepository;
         private readonly ICustomerService _customerService;
         private readonly IProductService _productService;
+        private readonly IDashboardService _dashboardService;
+
 
         public OrderService(
             IOrderRepository orderRepository,
@@ -185,6 +187,8 @@ namespace MiniCRM.Services
                     message = "Order could not be created.";
                     return false;
                 }
+                _dashboardService.ClearDashboardCache();
+
 
                 message = "Order created successfully.";
                 return true;
@@ -294,6 +298,8 @@ namespace MiniCRM.Services
                     return false;
                 }
             }
+            _dashboardService.ClearDashboardCache();
+
 
             message = "Order updated successfully.";
             return true;
@@ -371,6 +377,8 @@ namespace MiniCRM.Services
                 message = "Order could not be completed.";
                 return false;
             }
+            _dashboardService.ClearDashboardCache();
+
 
             message = "Order completed successfully.";
             return true;
@@ -409,6 +417,7 @@ namespace MiniCRM.Services
                     message = "Order could not be cancelled.";
                     return false;
                 }
+                _dashboardService.ClearDashboardCache();
 
                 message = "Order cancelled successfully.";
                 return true;

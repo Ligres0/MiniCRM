@@ -1,214 +1,422 @@
 ﻿@model MiniCRM.ViewModels.OrderCreateViewModel
+@using System.Linq
 
 @{
-    ViewData["Title"] = Localization.GetText("UpdateOrder");
+    ViewData["Title"] =
+        Localization.GetText("UpdateOrder");
+
+    var customer =
+        Model.Customers
+            .FirstOrDefault(
+                x => x.Id == Model.CustomerId
+            );
 }
 
-<div class="container mt-4">
+<style>
 
-    <div class="mb-4">
+    .order-update-page {
+        --crm-primary: #4f46e5;
+        --crm-secondary: #7c3aed;
+        --crm-dark: #0f172a;
+        --crm-muted: #64748b;
+        --crm-border: #e2e8f0;
+    }
 
-        <h2>
-            @Localization.GetText("UpdateOrder")
-        </h2>
+    .order-update-header {
+        position: relative;
+        overflow: hidden;
+        padding: 28px;
+        border-radius: 20px;
+        color: white;
+        background: linear-gradient( 135deg, var(--crm-primary), var(--crm-secondary) );
+        box-shadow: 0 12px 30px rgba(79,70,229,0.20);
+    }
 
-        <p class="text-muted">
-            @Localization.GetText("UpdateOrderDescription")
-        </p>
+        .order-update-header::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            top: -90px;
+            right: -50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.09);
+        }
 
-    </div>
+    .order-update-header-content {
+        position: relative;
+        z-index: 2;
+    }
 
-    <form asp-controller="Order"
-          asp-action="Update"
-          asp-route-id="@Model.Id"
-          method="post">
+    .update-card {
+        overflow: hidden;
+        border: 0;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(15,23,42,0.08);
+    }
 
-        @Html.AntiForgeryToken()
+    .update-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--crm-border);
+        background: white;
+        font-weight: 750;
+    }
 
-        <input asp-for="Id"
-               type="hidden" />
+    .customer-box {
+        padding: 20px;
+        border: 1px solid #c7d2fe;
+        border-radius: 15px;
+        background: #f8faff;
+    }
 
-        <div asp-validation-summary="ModelOnly"
-             class="alert alert-danger">
+    .customer-label {
+        color: var(--crm-muted);
+        font-size: 0.82rem;
+        font-weight: 650;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .customer-value {
+        margin-top: 5px;
+        color: var(--crm-dark);
+        font-size: 1.05rem;
+        font-weight: 750;
+    }
+
+    .order-item {
+        padding: 18px;
+        margin-bottom: 14px;
+        border: 1px solid var(--crm-border);
+        border-radius: 15px;
+        background: white;
+    }
+
+    .order-update-page .form-control,
+    .order-update-page .form-select {
+        min-height: 44px;
+        border-radius: 10px;
+        border-color: var(--crm-border);
+    }
+
+        .order-update-page .form-control:focus,
+        .order-update-page .form-select:focus {
+            border-color: var(--crm-primary);
+            box-shadow: 0 0 0 0.2rem rgba(79,70,229,0.12);
+        }
+
+    .form-action-button {
+        min-width: 130px;
+        border-radius: 10px;
+    }
+
+</style>
+
+
+<div class="container-fluid
+    py-4
+    order-update-page">
+
+    <div class="mx-auto"
+         style="max-width: 1050px;">
+
+
+        <!-- Header -->
+
+        <div class="order-update-header mb-4">
+
+            <div class="order-update-header-content">
+
+                <h1 class="h3 fw-bold mb-2">
+
+                    @Localization.GetText(
+                        "UpdateOrder")
+
+                    #@Model.Id
+
+                </h1>
+
+                <p class="mb-0 opacity-75">
+
+                    @Localization.GetText(
+                        "UpdateOrderDescription")
+
+                </p>
+
+            </div>
+
         </div>
 
 
-        <!-- Customer -->
-        <div class="card mb-4">
+        <form asp-controller="Order"
+              asp-action="Update"
+              asp-route-id="@Model.Id"
+              method="post">
 
-            <div class="card-header">
-                @Localization.GetText("Customer")
+            @Html.AntiForgeryToken()
+
+            <input asp-for="Id"
+                   type="hidden" />
+
+            <input asp-for="CustomerId"
+                   type="hidden" />
+
+
+            <div asp-validation-summary="ModelOnly"
+                 class="alert alert-danger">
             </div>
 
-            <div class="card-body">
 
-                <input asp-for="CustomerId"
-                       type="hidden" />
+            <!-- Customer -->
 
-                @{
-                    var customer =
-                        Model.Customers
-                            .FirstOrDefault(
-                                x => x.Id == Model.CustomerId
-                            );
-                }
+            <div class="card
+                update-card
+                mb-4">
 
-                <input type="text"
-                       class="form-control"
-                       value="@(customer == null
-                                           ? ""
-                                           : customer.Name + " " + customer.Surname)"
-                       readonly />
+                <div class="update-card-header">
 
-            </div>
+                    @Localization.GetText(
+                        "CustomerInformation")
 
-        </div>
+                </div>
 
+                <div class="card-body p-4">
 
-        <!-- Items -->
-        <div class="card mb-4">
+                    <div class="customer-box">
 
-            <div class="card-header d-flex
-                justify-content-between">
+                        <div class="customer-label">
 
-                <span>
-                    @Localization.GetText("OrderItems")
-                </span>
-
-                <button type="button"
-                        id="addItemButton"
-                        class="btn btn-sm btn-success">
-
-                    @Localization.GetText("AddProduct")
-
-                </button>
-
-            </div>
-
-            <div class="card-body">
-
-                <div id="orderItemsContainer">
-
-                    @for (int i = 0; i < Model.Items.Count; i++)
-                    {
-                        <div class="order-item row g-3
-                            align-items-end mb-3">
-
-                            <div class="col-md-6">
-
-                                <label class="form-label">
-                                    @Localization.GetText("Product")
-                                </label>
-
-                                <select asp-for="Items[i].ProductId"
-                                        class="form-select"
-                                        data-field="ProductId">
-
-                                    <option value="0">
-                                        @Localization.GetText("SelectProduct")
-                                    </option>
-
-                                    @foreach (var product in Model.Products)
-                                    {
-                                        <option value="@product.Id">
-
-                                            @product.Name
-                                            -
-                                            @product.Price.ToString("N2") TL
-                                            -
-                                            @Localization.GetText("Stock"):
-                                            @product.Stock
-
-                                        </option>
-                                    }
-
-                                </select>
-
-                            </div>
-
-                            <div class="col-md-3">
-
-                                <label class="form-label">
-                                    @Localization.GetText("Quantity")
-                                </label>
-
-                                <input asp-for="Items[i].Quantity"
-                                       class="form-control"
-                                       data-field="Quantity"
-                                       min="1" />
-
-                            </div>
-
-                            <div class="col-md-3">
-
-                                <button type="button"
-                                        class="btn btn-outline-danger remove-item-button">
-
-                                    @Localization.GetText("Remove")
-
-                                </button>
-
-                            </div>
+                            @Localization.GetText(
+                                "Customer")
 
                         </div>
-                    }
+
+                        <div class="customer-value">
+
+                            @(customer == null
+                                ? "-"
+                                : customer.Name
+                                  + " "
+                                  + customer.Surname)
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+
+            <!-- Products -->
+
+            <div class="card
+                update-card
+                mb-4">
+
+                <div class="update-card-header">
+
+                    <div class="d-flex
+                        justify-content-between
+                        align-items-center
+                        gap-3">
+
+                        <span>
+
+                            @Localization.GetText(
+                                "OrderItems")
+
+                        </span>
+
+                        <button type="button"
+                                id="addItemButton"
+                                class="btn
+                            btn-sm
+                            btn-primary">
+
+                            + @Localization.GetText(
+                                                            "AddProduct")
+
+                        </button>
+
+                    </div>
+
+                </div>
 
 
-        <div class="d-flex justify-content-end gap-2">
+                <div class="card-body p-4">
 
-            <a asp-controller="Order"
-               asp-action="Index"
-               class="btn btn-outline-secondary">
+                    <div id="orderItemsContainer">
 
-                @Localization.GetText("Cancel")
+                        @for (
+                            int i = 0;
+                            i < Model.Items.Count;
+                            i++)
+                        {
+                            <div class="order-item row
+                                g-3
+                                align-items-end">
 
-            </a>
+                                <div class="col-12 col-lg-7">
 
-            <button type="submit"
-                    class="btn btn-primary">
+                                    <label class="form-label
+                                        fw-semibold">
 
-                @Localization.GetText("SaveChanges")
+                                        @Localization.GetText(
+                                            "Product")
 
-            </button>
+                                    </label>
 
-        </div>
+                                    <select asp-for="Items[i].ProductId"
+                                            class="form-select"
+                                            data-field="ProductId">
 
-    </form>
+                                        <option value="0">
+
+                                            @Localization.GetText(
+                                                "SelectProduct")
+
+                                        </option>
+
+                                        @foreach (
+                                            var product
+                                            in Model.Products)
+                                        {
+                                            <option value="@product.Id">
+
+                                                @product.Name
+                                                -
+                                                @product.Price.ToString("N2")
+                                                TL
+                                                -
+                                                @Localization.GetText("Stock"):
+                                                @product.Stock
+
+                                            </option>
+                                        }
+
+                                    </select>
+
+                                </div>
+
+
+                                <div class="col-12 col-md-6 col-lg-3">
+
+                                    <label class="form-label
+                                        fw-semibold">
+
+                                        @Localization.GetText(
+                                            "Quantity")
+
+                                    </label>
+
+                                    <input asp-for="Items[i].Quantity"
+                                           type="number"
+                                           class="form-control"
+                                           data-field="Quantity"
+                                           min="1" />
+
+                                </div>
+
+
+                                <div class="col-12 col-md-6 col-lg-2">
+
+                                    <button type="button"
+                                            class="btn
+                                        btn-outline-danger
+                                        w-100
+                                        remove-item-button">
+
+                                        @Localization.GetText(
+                                            "Remove")
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Actions -->
+
+            <div class="d-flex
+                flex-column
+                flex-sm-row
+                justify-content-end
+                gap-2">
+
+                <a asp-controller="Order"
+                   asp-action="Index"
+                   class="btn
+                    btn-outline-secondary
+                    form-action-button">
+
+                    @Localization.GetText("Cancel")
+
+                </a>
+
+                <button type="submit"
+                        class="btn
+                    btn-primary
+                    form-action-button">
+
+                    @Localization.GetText(
+                        "SaveChanges")
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 
 
+<!-- Dynamic Item -->
+
 <template id="orderItemTemplate">
 
-    <div class="order-item row g-3
-        align-items-end mb-3">
+    <div class="order-item row
+        g-3
+        align-items-end">
 
-        <div class="col-md-6">
+        <div class="col-12 col-lg-7">
 
-            <label class="form-label">
+            <label class="form-label fw-semibold">
+
                 @Localization.GetText("Product")
+
             </label>
 
             <select class="form-select"
                     data-field="ProductId">
 
                 <option value="0">
-                    @Localization.GetText("SelectProduct")
+
+                    @Localization.GetText(
+                        "SelectProduct")
+
                 </option>
 
-                @foreach (var product in Model.Products)
+                @foreach (
+                    var product
+                    in Model.Products)
                 {
                     <option value="@product.Id">
 
                         @product.Name
                         -
-                        @product.Price.ToString("N2") TL
+                        @product.Price.ToString("N2")
+                        TL
                         -
                         @Localization.GetText("Stock"):
                         @product.Stock
@@ -220,10 +428,14 @@
 
         </div>
 
-        <div class="col-md-3">
 
-            <label class="form-label">
-                @Localization.GetText("Quantity")
+        <div class="col-12 col-md-6 col-lg-3">
+
+            <label class="form-label fw-semibold">
+
+                @Localization.GetText(
+                    "Quantity")
+
             </label>
 
             <input type="number"
@@ -234,10 +446,14 @@
 
         </div>
 
-        <div class="col-md-3">
+
+        <div class="col-12 col-md-6 col-lg-2">
 
             <button type="button"
-                    class="btn btn-outline-danger remove-item-button">
+                    class="btn
+                btn-outline-danger
+                w-100
+                remove-item-button">
 
                 @Localization.GetText("Remove")
 
@@ -257,38 +473,54 @@
     <script>
 
         const container =
-            document.getElementById("orderItemsContainer");
+            document.getElementById(
+                "orderItemsContainer"
+            );
 
         const template =
-            document.getElementById("orderItemTemplate");
+            document.getElementById(
+                "orderItemTemplate"
+            );
 
         const addButton =
-            document.getElementById("addItemButton");
+            document.getElementById(
+                "addItemButton"
+            );
 
 
         function updateIndexes() {
 
             const items =
-                container.querySelectorAll(".order-item");
+                container.querySelectorAll(
+                    ".order-item"
+                );
 
-            items.forEach((item, index) => {
+            items.forEach(
+                (item, index) => {
 
-                const product =
-                    item.querySelector(
-                        '[data-field="ProductId"]'
-                    );
+                    const product =
+                        item.querySelector(
+                            '[data-field="ProductId"]'
+                        );
 
-                const quantity =
-                    item.querySelector(
-                        '[data-field="Quantity"]'
-                    );
+                    const quantity =
+                        item.querySelector(
+                            '[data-field="Quantity"]'
+                        );
 
-                product.name =
-                    `Items[${index}].ProductId`;
+                    product.name =
+                        `Items[${index}].ProductId`;
 
-                quantity.name =
-                    `Items[${index}].Quantity`;
-            });
+                    product.id =
+                        `Items_${index}__ProductId`;
+
+                    quantity.name =
+                        `Items[${index}].Quantity`;
+
+                    quantity.id =
+                        `Items_${index}__Quantity`;
+                }
+            );
         }
 
 
@@ -297,7 +529,8 @@
             function() {
 
                 const clone =
-                    template.content.cloneNode(true);
+                    template.content
+                        .cloneNode(true);
 
                 container.appendChild(clone);
 
@@ -311,9 +544,11 @@
             function(event) {
 
                 if (
-                    event.target.classList.contains(
-                        "remove-item-button"
-                    )
+                    event.target
+                        .classList
+                        .contains(
+                            "remove-item-button"
+                        )
                 ) {
 
                     event.target

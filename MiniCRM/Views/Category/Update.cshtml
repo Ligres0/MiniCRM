@@ -4,25 +4,141 @@
     ViewData["Title"] = Localization.GetText("UpdateCategory");
 }
 
-<div class="container py-4">
+<style>
 
-    <div class="mx-auto" style="max-width: 700px;">
+    .category-form-page {
+        --crm-primary: #4f46e5;
+        --crm-secondary: #7c3aed;
+        --crm-dark: #0f172a;
+        --crm-muted: #64748b;
+        --crm-border: #e2e8f0;
+    }
 
-        <div class="mb-4">
+    .category-form-header {
+        position: relative;
+        overflow: hidden;
+        padding: 28px;
+        border-radius: 20px;
+        color: white;
+        background: linear-gradient( 135deg, var(--crm-primary), var(--crm-secondary) );
+        box-shadow: 0 12px 30px rgba(79, 70, 229, 0.20);
+    }
 
-            <h1 class="fw-bold">
-                @Localization.GetText("UpdateCategory")
-            </h1>
+        .category-form-header::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            top: -85px;
+            right: -45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.09);
+        }
 
-            <p class="text-muted">
-                @Localization.GetText("EditCategoryInformation")
-            </p>
+    .category-form-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .category-form-card {
+        border: 0;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    .category-form-page .form-control {
+        min-height: 46px;
+        border-radius: 11px;
+        border-color: var(--crm-border);
+    }
+
+        .category-form-page .form-control:focus {
+            border-color: var(--crm-primary);
+            box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.12);
+        }
+
+    .field-card {
+        padding: 20px;
+        border: 1px solid var(--crm-border);
+        border-radius: 15px;
+        background: white;
+    }
+
+    .active-box {
+        padding: 18px 20px;
+        border: 1px solid var(--crm-border);
+        border-radius: 15px;
+        background: #f8fafc;
+    }
+
+    .category-number-box {
+        padding: 18px 20px;
+        border: 1px solid var(--crm-border);
+        border-radius: 15px;
+        background: #f8fafc;
+    }
+
+    .category-number-label {
+        color: var(--crm-muted);
+        font-size: 0.82rem;
+        font-weight: 650;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .category-number-value {
+        margin-top: 5px;
+        color: var(--crm-dark);
+        font-weight: 700;
+    }
+
+    .form-actions {
+        padding-top: 22px;
+        border-top: 1px solid var(--crm-border);
+    }
+
+    .form-action-button {
+        min-width: 130px;
+        border-radius: 10px;
+    }
+
+</style>
+
+
+<div class="container-fluid py-4 category-form-page">
+
+    <div class="mx-auto"
+         style="max-width: 800px;">
+
+
+        <!-- Header -->
+
+        <div class="category-form-header mb-4">
+
+            <div class="category-form-header-content">
+
+                <h1 class="h3 fw-bold mb-2">
+
+                    @Localization.GetText("UpdateCategory")
+
+                </h1>
+
+                <p class="mb-0 opacity-75">
+
+                    @Localization.GetText("EditCategoryInformation")
+
+                </p>
+
+            </div>
 
         </div>
 
-        <div class="card border-0 shadow-sm">
 
-            <div class="card-body p-4">
+        <!-- Form -->
+
+        <div class="card category-form-card">
+
+            <div class="card-body p-4 p-lg-5">
 
                 <form asp-controller="Category"
                       asp-action="Update"
@@ -33,58 +149,121 @@
                     <input type="hidden"
                            asp-for="Id" />
 
+
                     <div asp-validation-summary="ModelOnly"
-                         class="text-danger mb-3">
+                         class="alert alert-danger">
                     </div>
 
-                    <div class="mb-3">
 
-                        <label asp-for="Name"
-                               class="form-label fw-semibold">
+                    <div class="row g-4">
 
-                            @Localization.GetText("CategoryName")
 
-                        </label>
+                        <!-- Name -->
 
-                        <input asp-for="Name"
-                               class="form-control" />
+                        <div class="col-12">
 
-                        <span asp-validation-for="Name"
-                              class="text-danger">
-                        </span>
+                            <div class="field-card">
 
-                    </div>
+                                <label asp-for="Name"
+                                       class="form-label fw-semibold">
 
-                    <div class="form-check form-switch mb-4">
+                                    @Localization.GetText("CategoryName")
 
-                        <input asp-for="IsActive"
-                               class="form-check-input" />
+                                </label>
 
-                        <label asp-for="IsActive"
-                               class="form-check-label">
+                                <input asp-for="Name"
+                                       class="form-control" />
 
-                            @Localization.GetText("Active")
+                                <span asp-validation-for="Name"
+                                      class="text-danger small">
+                                </span>
 
-                        </label>
+                            </div>
 
-                    </div>
+                        </div>
 
-                    <div class="d-flex justify-content-end gap-2">
 
-                        <a asp-controller="Category"
-                           asp-action="Index"
-                           class="btn btn-outline-secondary">
+                        <!-- Category Id -->
 
-                            @Localization.GetText("Cancel")
+                        <div class="col-12 col-md-6">
 
-                        </a>
+                            <div class="category-number-box h-100">
 
-                        <button type="submit"
-                                class="btn btn-primary">
+                                <div class="category-number-label">
 
-                            @Localization.GetText("SaveChanges")
+                                    @Localization.GetText("CategoryId")
 
-                        </button>
+                                </div>
+
+                                <div class="category-number-value">
+
+                                    #@Model.Id
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Active -->
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="active-box h-100">
+
+                                <div class="form-check form-switch">
+
+                                    <input asp-for="IsActive"
+                                           class="form-check-input" />
+
+                                    <label asp-for="IsActive"
+                                           class="form-check-label fw-semibold">
+
+                                        @Localization.GetText("Active")
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Actions -->
+
+                        <div class="col-12">
+
+                            <div class="form-actions
+                                d-flex
+                                flex-column
+                                flex-sm-row
+                                justify-content-end
+                                gap-2">
+
+                                <a asp-controller="Category"
+                                   asp-action="Index"
+                                   class="btn
+                                    btn-outline-secondary
+                                    form-action-button">
+
+                                    @Localization.GetText("Cancel")
+
+                                </a>
+
+                                <button type="submit"
+                                        class="btn
+                                    btn-primary
+                                    form-action-button">
+
+                                    @Localization.GetText("SaveChanges")
+
+                                </button>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
@@ -98,8 +277,13 @@
 
 </div>
 
+
 @section Scripts {
+
     @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial"
+        );
     }
+
 }

@@ -7,10 +7,12 @@ namespace MiniCRM.Services
     {
 
         private readonly ICustomerRepository _customerRepository;
+        private readonly IDashboardService _dashboardService;
 
-        public CustomerService(ICustomerRepository customerRepository)
+        public CustomerService(ICustomerRepository customerRepository, IDashboardService dashboardService)
         {
             _customerRepository = customerRepository;
+            _dashboardService = dashboardService;
         }
         public List<Customers> GetAllActive()
         {
@@ -77,8 +79,21 @@ namespace MiniCRM.Services
 
             customer.IsActive = true;
             int rowsAffected = _customerRepository.Insert(customer);
-            message = rowsAffected > 0 ? "Customer inserted successfully." : "Failed to insert customer.";
-            return rowsAffected > 0;
+            if (rowsAffected > 0)
+            {
+                _dashboardService.ClearDashboardCache();
+
+                message =
+                    "Customer inserted successfully.";
+
+                return true;
+            }
+
+            message =
+                "Failed to insert customer.";
+
+            return false;
+
         }
 
         public bool Update(Customers customer, out string message)
@@ -89,15 +104,39 @@ namespace MiniCRM.Services
                 return false;
             }
             int rowsAffected = _customerRepository.Update(customer);
-            message = rowsAffected > 0 ? "Customer updated successfully." : "Failed to update customer.";
-            return rowsAffected > 0;
+            if (rowsAffected > 0)
+            {
+                _dashboardService.ClearDashboardCache();
+
+                message =
+                    "Customer updated successfully.";
+
+                return true;
+            }
+
+            message =
+                "Failed to update customer.";
+
+            return false;
         }
 
         public bool Deactivate(int id, out string message)
         {
             int rowsAffected = _customerRepository.Deactivate(id);
-            message = rowsAffected > 0 ? "Customer deactivated successfully." : "Failed to deactivate customer.";
-            return rowsAffected > 0;
+            if (rowsAffected > 0)
+            {
+                _dashboardService.ClearDashboardCache();
+
+                message =
+                    "Customer deactivated successfully.";
+
+                return true;
+            }
+
+            message =
+                "Failed to deactivate customer.";
+
+            return false;
         }
     }
 

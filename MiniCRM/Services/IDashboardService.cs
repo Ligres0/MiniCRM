@@ -12,5 +12,6 @@ namespace MiniCRM.Services
         List<Product> GetCriticalStockProducts(int criticalStockLevel);
         List<Order> GetLastOrders();
         List<TopSellingProductViewModel> GetTopSellingProducts();
+        void ClearDashboardCache();
     }
 }

@@ -1,385 +1,666 @@
 ﻿@model MiniCRM.ViewModels.OrderCreateViewModel
 
 @{
-    ViewData["Title"] = Localization.GetText("CreateOrder");
+    ViewData["Title"] =
+        Localization.GetText("CreateOrder");
 
     var currentCulture =
-        Context.Request.Cookies["Culture"] ?? "en-US";
+        Context.Request.Cookies["Culture"]
+        ?? "en-US";
 
     var customerInfoLoadError =
-        Localization.GetText("CustomerInfoLoadError");
+        Localization.GetText(
+            "CustomerInfoLoadError");
 
     var productInfoLoadError =
-        Localization.GetText("ProductInfoLoadError");
+        Localization.GetText(
+            "ProductInfoLoadError");
 
     var maximumAvailableStockText =
-        Localization.GetText("MaximumAvailableStock");
+        Localization.GetText(
+            "MaximumAvailableStock");
 }
 
-<div class="container mt-4">
+<style>
 
-    <div class="mb-4">
+    .order-form-page {
+        --crm-primary: #4f46e5;
+        --crm-secondary: #7c3aed;
+        --crm-dark: #0f172a;
+        --crm-muted: #64748b;
+        --crm-border: #e2e8f0;
+    }
 
-        <h2>
-            @Localization.GetText("CreateNewOrder")
-        </h2>
+    .order-form-header {
+        position: relative;
+        overflow: hidden;
+        padding: 28px;
+        border-radius: 20px;
+        color: white;
+        background: linear-gradient( 135deg, var(--crm-primary), var(--crm-secondary) );
+        box-shadow: 0 12px 30px rgba(79, 70, 229, 0.20);
+    }
 
-        <p class="text-muted">
-            @Localization.GetText("CreateOrderDescription")
-        </p>
+        .order-form-header::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            top: -90px;
+            right: -50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.09);
+        }
 
-    </div>
+    .order-form-header-content {
+        position: relative;
+        z-index: 2;
+    }
 
-    <form asp-controller="Order"
-          asp-action="Create"
-          method="post">
+    .form-card {
+        overflow: hidden;
+        border: 0;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(15,23,42,0.08);
+    }
 
-        @Html.AntiForgeryToken()
+    .form-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--crm-border);
+        background: white;
+    }
 
-        <div asp-validation-summary="ModelOnly"
-             class="alert alert-danger">
-        </div>
+    .form-card-title {
+        color: var(--crm-dark);
+        font-weight: 750;
+    }
 
-        <!-- Customer -->
-        <div class="card mb-4">
+    .order-form-page .form-control,
+    .order-form-page .form-select {
+        min-height: 44px;
+        border-radius: 10px;
+        border-color: var(--crm-border);
+    }
 
-            <div class="card-header">
-                @Localization.GetText("CustomerInformation")
+        .order-form-page .form-control:focus,
+        .order-form-page .form-select:focus {
+            border-color: var(--crm-primary);
+            box-shadow: 0 0 0 0.2rem rgba(79,70,229,0.12);
+        }
+
+    .customer-summary {
+        padding: 20px;
+        border: 1px solid #c7d2fe;
+        border-radius: 15px;
+        background: #f8faff;
+    }
+
+    .summary-label {
+        color: var(--crm-muted);
+        font-size: 0.82rem;
+    }
+
+    .summary-value {
+        color: var(--crm-dark);
+        font-weight: 650;
+    }
+
+    .order-item {
+        padding: 18px;
+        margin-bottom: 14px;
+        border: 1px solid var(--crm-border);
+        border-radius: 15px;
+        background: #ffffff;
+    }
+
+    .product-meta {
+        margin-top: 8px;
+        color: var(--crm-muted);
+        font-size: 0.85rem;
+    }
+
+    .line-total-box {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 13px;
+        border: 1px solid var(--crm-border);
+        border-radius: 10px;
+        color: var(--crm-dark);
+        background: #f8fafc;
+        font-weight: 700;
+    }
+
+    .order-total-card {
+        border: 0;
+        border-radius: 18px;
+        color: white;
+        background: linear-gradient( 135deg, #0f172a, #334155 );
+        box-shadow: 0 8px 25px rgba(15,23,42,0.15);
+    }
+
+    .order-total-value {
+        font-size: 1.7rem;
+        font-weight: 800;
+    }
+
+    .form-action-button {
+        min-width: 130px;
+        border-radius: 10px;
+    }
+
+</style>
+
+
+<div class="container-fluid
+    py-4
+    order-form-page">
+
+    <div class="mx-auto"
+         style="max-width: 1050px;">
+
+
+        <!-- Header -->
+
+        <div class="order-form-header mb-4">
+
+            <div class="order-form-header-content">
+
+                <h1 class="h3 fw-bold mb-2">
+
+                    @Localization.GetText(
+                        "CreateNewOrder")
+
+                </h1>
+
+                <p class="mb-0 opacity-75">
+
+                    @Localization.GetText(
+                        "CreateOrderDescription")
+
+                </p>
+
             </div>
 
-            <div class="card-body">
+        </div>
 
-                <label asp-for="CustomerId"
-                       class="form-label">
 
-                    @Localization.GetText("Customer")
+        <form asp-controller="Order"
+              asp-action="Create"
+              method="post">
 
-                </label>
+            @Html.AntiForgeryToken()
 
-                <select asp-for="CustomerId"
-                        id="customerSelect"
-                        class="form-select">
 
-                    <option value="0">
-                        @Localization.GetText("SelectCustomer")
-                    </option>
+            <div asp-validation-summary="ModelOnly"
+                 class="alert alert-danger">
+            </div>
 
-                    @foreach (var customer in Model.Customers)
-                    {
-                        <option value="@customer.Id">
-                            @customer.Name @customer.Surname
+
+            <!-- Customer -->
+
+            <div class="card
+                form-card
+                mb-4">
+
+                <div class="form-card-header">
+
+                    <div class="form-card-title">
+
+                        @Localization.GetText(
+                            "CustomerInformation")
+
+                    </div>
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    <label asp-for="CustomerId"
+                           class="form-label fw-semibold">
+
+                        @Localization.GetText(
+                            "Customer")
+
+                    </label>
+
+                    <select asp-for="CustomerId"
+                            id="customerSelect"
+                            class="form-select">
+
+                        <option value="0">
+
+                            @Localization.GetText(
+                                "SelectCustomer")
+
                         </option>
-                    }
 
-                </select>
+                        @foreach (
+                            var customer
+                            in Model.Customers)
+                        {
+                            <option value="@customer.Id">
 
-                <span asp-validation-for="CustomerId"
-                      class="text-danger">
-                </span>
+                                @customer.Name
+                                @customer.Surname
 
-                <div id="customerSummary"
-                     class="alert alert-light border mt-3 d-none">
+                            </option>
+                        }
 
-                    <h6 class="mb-3">
-                        @Localization.GetText("CustomerSummary")
-                    </h6>
+                    </select>
 
-                    <div>
+                    <span asp-validation-for="CustomerId"
+                          class="text-danger small">
+                    </span>
 
-                        <strong>
-                            @Localization.GetText("Name"):
-                        </strong>
 
-                        <span id="customerFullName">
-                            -
-                        </span>
+                    <div id="customerSummary"
+                         class="customer-summary
+                        mt-4
+                        d-none">
 
-                    </div>
+                        <h6 class="fw-bold mb-3">
 
-                    <div>
+                            @Localization.GetText(
+                                "CustomerSummary")
 
-                        <strong>
-                            @Localization.GetText("Company"):
-                        </strong>
+                        </h6>
 
-                        <span id="customerCompany">
-                            -
-                        </span>
+                        <div class="row g-3">
 
-                    </div>
+                            <div class="col-12 col-md-6">
 
-                    <div>
+                                <div class="summary-label">
+                                    @Localization.GetText("Name")
+                                </div>
 
-                        <strong>
-                            @Localization.GetText("Email"):
-                        </strong>
+                                <div id="customerFullName"
+                                     class="summary-value">
+                                    -
+                                </div>
 
-                        <span id="customerEmail">
-                            -
-                        </span>
+                            </div>
 
-                    </div>
+                            <div class="col-12 col-md-6">
 
-                    <div>
+                                <div class="summary-label">
+                                    @Localization.GetText("Company")
+                                </div>
 
-                        <strong>
-                            @Localization.GetText("Phone"):
-                        </strong>
+                                <div id="customerCompany"
+                                     class="summary-value">
+                                    -
+                                </div>
 
-                        <span id="customerPhone">
-                            -
-                        </span>
+                            </div>
 
-                    </div>
+                            <div class="col-12 col-md-6">
 
-                    <div id="customerError"
-                         class="text-danger mt-2">
+                                <div class="summary-label">
+                                    @Localization.GetText("Email")
+                                </div>
+
+                                <div id="customerEmail"
+                                     class="summary-value">
+                                    -
+                                </div>
+
+                            </div>
+
+                            <div class="col-12 col-md-6">
+
+                                <div class="summary-label">
+                                    @Localization.GetText("Phone")
+                                </div>
+
+                                <div id="customerPhone"
+                                     class="summary-value">
+                                    -
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div id="customerError"
+                             class="text-danger mt-3">
+                        </div>
+
                     </div>
 
                 </div>
 
             </div>
 
-        </div>
+
+            <!-- Products -->
+
+            <div class="card
+                form-card
+                mb-4">
+
+                <div class="form-card-header">
+
+                    <div class="d-flex
+                        justify-content-between
+                        align-items-center
+                        gap-3">
+
+                        <div class="form-card-title">
+
+                            @Localization.GetText(
+                                "OrderItems")
+
+                        </div>
+
+                        <button type="button"
+                                id="addItemButton"
+                                class="btn
+                            btn-sm
+                            btn-primary">
+
+                            + @Localization.GetText(
+                                                            "AddProduct")
+
+                        </button>
+
+                    </div>
+
+                </div>
 
 
-        <!-- Order Items -->
-        <div class="card mb-4">
+                <div class="card-body p-4">
 
-            <div class="card-header d-flex
-                justify-content-between
-                align-items-center">
+                    <div id="orderItemsContainer">
 
-                <span>
-                    @Localization.GetText("OrderItems")
-                </span>
+                        @for (
+                            int i = 0;
+                            i < Model.Items.Count;
+                            i++)
+                        {
+                            <div class="order-item row
+                                g-3
+                                align-items-end">
 
-                <button type="button"
-                        id="addItemButton"
-                        class="btn btn-sm btn-success">
+                                <div class="col-12 col-lg-5">
 
-                    @Localization.GetText("AddProduct")
+                                    <label class="form-label
+                                        fw-semibold">
+
+                                        @Localization.GetText(
+                                            "Product")
+
+                                    </label>
+
+                                    <select asp-for="Items[i].ProductId"
+                                            class="form-select
+                                        product-select"
+                                            data-field="ProductId">
+
+                                        <option value="0">
+
+                                            @Localization.GetText(
+                                                "SelectProduct")
+
+                                        </option>
+
+                                        @foreach (
+                                            var product
+                                            in Model.Products)
+                                        {
+                                            <option value="@product.Id">
+
+                                                @product.Name
+
+                                            </option>
+                                        }
+
+                                    </select>
+
+                                    <span asp-validation-for="Items[i].ProductId"
+                                          class="text-danger small">
+                                    </span>
+
+
+                                    <div class="product-meta">
+
+                                        <span class="me-3">
+
+                                            @Localization.GetText("Price"):
+
+                                            <strong class="product-price">
+                                                -
+                                            </strong>
+
+                                            TL
+
+                                        </span>
+
+                                        <span>
+
+                                            @Localization.GetText(
+                                                "AvailableStock"):
+
+                                            <strong class="product-stock">
+                                                -
+                                            </strong>
+
+                                        </span>
+
+                                    </div>
+
+                                    <div class="product-error
+                                        text-danger
+                                        small mt-1">
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12 col-md-4 col-lg-2">
+
+                                    <label class="form-label
+                                        fw-semibold">
+
+                                        @Localization.GetText(
+                                            "Quantity")
+
+                                    </label>
+
+                                    <input asp-for="Items[i].Quantity"
+                                           class="form-control
+                                    quantity-input"
+                                           data-field="Quantity"
+                                           type="number"
+                                           min="1" />
+
+                                    <span asp-validation-for="Items[i].Quantity"
+                                          class="text-danger small">
+                                    </span>
+
+                                </div>
+
+
+                                <div class="col-12 col-md-5 col-lg-3">
+
+                                    <label class="form-label
+                                        fw-semibold">
+
+                                        @Localization.GetText(
+                                            "LineTotal")
+
+                                    </label>
+
+                                    <div class="line-total-box">
+
+                                        <span class="line-total">
+                                            0,00
+                                        </span>
+
+                                        <span class="ms-1">
+                                            TL
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12 col-md-3 col-lg-2">
+
+                                    <button type="button"
+                                            class="btn
+                                        btn-outline-danger
+                                        w-100
+                                        remove-item-button">
+
+                                        @Localization.GetText(
+                                            "Remove")
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+
+                    <div id="emptyOrderMessage"
+                         class="alert
+                        alert-light
+                        border
+                        text-center
+                        mb-0">
+
+                        @Localization.GetText(
+                            "AddProductInstruction")
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Total -->
+
+            <div class="card
+                order-total-card
+                mb-4">
+
+                <div class="card-body
+                    p-4
+                    d-flex
+                    justify-content-between
+                    align-items-center">
+
+                    <div>
+
+                        <div class="opacity-75 small">
+                            @Localization.GetText(
+                                "OrderTotal")
+                        </div>
+
+                        <strong>
+                            @Localization.GetText(
+                                "TotalAmount")
+                        </strong>
+
+                    </div>
+
+                    <div class="order-total-value">
+
+                        <span id="orderTotal">
+                            0,00
+                        </span>
+
+                        TL
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Actions -->
+
+            <div class="d-flex
+                flex-column
+                flex-sm-row
+                justify-content-end
+                gap-2">
+
+                <a asp-controller="Order"
+                   asp-action="Index"
+                   class="btn
+                    btn-outline-secondary
+                    form-action-button">
+
+                    @Localization.GetText("Cancel")
+
+                </a>
+
+                <button type="submit"
+                        class="btn
+                    btn-primary
+                    form-action-button">
+
+                    @Localization.GetText(
+                        "SaveOrder")
 
                 </button>
 
             </div>
 
-            <div class="card-body">
+        </form>
 
-                <div id="orderItemsContainer">
-
-                    @for (int i = 0; i < Model.Items.Count; i++)
-                    {
-                        <div class="order-item row g-3
-                            align-items-end mb-3
-                            border-bottom pb-3">
-
-                            <div class="col-md-5">
-
-                                <label class="form-label">
-                                    @Localization.GetText("Product")
-                                </label>
-
-                                <select asp-for="Items[i].ProductId"
-                                        class="form-select product-select"
-                                        data-field="ProductId">
-
-                                    <option value="0">
-                                        @Localization.GetText("SelectProduct")
-                                    </option>
-
-                                    @foreach (var product in Model.Products)
-                                    {
-                                        <option value="@product.Id">
-                                            @product.Name
-                                        </option>
-                                    }
-
-                                </select>
-
-                                <span asp-validation-for="Items[i].ProductId"
-                                      class="text-danger">
-                                </span>
-
-                                <div class="mt-2 small">
-
-                                    <span class="me-3">
-
-                                        @Localization.GetText("Price"):
-
-                                        <strong class="product-price">
-                                            -
-                                        </strong>
-
-                                        TL
-
-                                    </span>
-
-                                    <span>
-
-                                        @Localization.GetText("AvailableStock"):
-
-                                        <strong class="product-stock">
-                                            -
-                                        </strong>
-
-                                    </span>
-
-                                </div>
-
-                                <div class="product-error
-                                    text-danger
-                                    small mt-1">
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-2">
-
-                                <label class="form-label">
-                                    @Localization.GetText("Quantity")
-                                </label>
-
-                                <input asp-for="Items[i].Quantity"
-                                       class="form-control quantity-input"
-                                       data-field="Quantity"
-                                       type="number"
-                                       min="1" />
-
-                                <span asp-validation-for="Items[i].Quantity"
-                                      class="text-danger">
-                                </span>
-
-                            </div>
-
-
-                            <div class="col-md-3">
-
-                                <label class="form-label">
-                                    @Localization.GetText("LineTotal")
-                                </label>
-
-                                <div class="form-control bg-light">
-
-                                    <span class="line-total">
-                                        0,00
-                                    </span>
-
-                                    TL
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-2">
-
-                                <button type="button"
-                                        class="btn btn-outline-danger remove-item-button">
-
-                                    @Localization.GetText("Remove")
-
-                                </button>
-
-                            </div>
-
-                        </div>
-                    }
-
-                </div>
-
-                <div id="emptyOrderMessage"
-                     class="alert alert-secondary">
-
-                    @Localization.GetText("AddProductInstruction")
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- Total -->
-        <div class="card mb-4">
-
-            <div class="card-body d-flex
-                justify-content-between
-                align-items-center">
-
-                <strong>
-                    @Localization.GetText("OrderTotal")
-                </strong>
-
-                <div class="fs-4">
-
-                    <span id="orderTotal">
-                        0,00
-                    </span>
-
-                    TL
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="d-flex justify-content-end gap-2">
-
-            <a href="@Url.Action("Index", "Order")"
-               class="btn btn-outline-secondary">
-
-                @Localization.GetText("Cancel")
-
-            </a>
-
-            <button type="submit"
-                    class="btn btn-primary">
-
-                @Localization.GetText("SaveOrder")
-
-            </button>
-
-        </div>
-
-    </form>
+    </div>
 
 </div>
 
 
-<!-- Dynamic Item Template -->
+<!-- Dynamic Product Template -->
+
 <template id="orderItemTemplate">
 
-    <div class="order-item row g-3
-        align-items-end mb-3
-        border-bottom pb-3">
+    <div class="order-item row
+        g-3
+        align-items-end">
 
-        <div class="col-md-5">
+        <div class="col-12 col-lg-5">
 
-            <label class="form-label">
+            <label class="form-label fw-semibold">
+
                 @Localization.GetText("Product")
+
             </label>
 
             <select class="form-select product-select"
                     data-field="ProductId">
 
                 <option value="0">
-                    @Localization.GetText("SelectProduct")
+
+                    @Localization.GetText(
+                        "SelectProduct")
+
                 </option>
 
                 @foreach (var product in Model.Products)
                 {
                     <option value="@product.Id">
+
                         @product.Name
+
                     </option>
                 }
 
             </select>
 
-            <div class="mt-2 small">
+
+            <div class="product-meta">
 
                 <span class="me-3">
 
@@ -395,7 +676,8 @@
 
                 <span>
 
-                    @Localization.GetText("AvailableStock"):
+                    @Localization.GetText(
+                        "AvailableStock"):
 
                     <strong class="product-stock">
                         -
@@ -413,14 +695,17 @@
         </div>
 
 
-        <div class="col-md-2">
+        <div class="col-12 col-md-4 col-lg-2">
 
-            <label class="form-label">
+            <label class="form-label fw-semibold">
+
                 @Localization.GetText("Quantity")
+
             </label>
 
             <input type="number"
-                   class="form-control quantity-input"
+                   class="form-control
+            quantity-input"
                    data-field="Quantity"
                    value="1"
                    min="1" />
@@ -428,29 +713,37 @@
         </div>
 
 
-        <div class="col-md-3">
+        <div class="col-12 col-md-5 col-lg-3">
 
-            <label class="form-label">
-                @Localization.GetText("LineTotal")
+            <label class="form-label fw-semibold">
+
+                @Localization.GetText(
+                    "LineTotal")
+
             </label>
 
-            <div class="form-control bg-light">
+            <div class="line-total-box">
 
                 <span class="line-total">
                     0,00
                 </span>
 
-                TL
+                <span class="ms-1">
+                    TL
+                </span>
 
             </div>
 
         </div>
 
 
-        <div class="col-md-2">
+        <div class="col-12 col-md-3 col-lg-2">
 
             <button type="button"
-                    class="btn btn-outline-danger remove-item-button">
+                    class="btn
+                btn-outline-danger
+                w-100
+                remove-item-button">
 
                 @Localization.GetText("Remove")
 
@@ -499,51 +792,82 @@
 
 
         const container =
-            document.getElementById("orderItemsContainer");
+            document.getElementById(
+                "orderItemsContainer"
+            );
 
         const template =
-            document.getElementById("orderItemTemplate");
+            document.getElementById(
+                "orderItemTemplate"
+            );
 
         const addButton =
-            document.getElementById("addItemButton");
+            document.getElementById(
+                "addItemButton"
+            );
 
         const emptyMessage =
-            document.getElementById("emptyOrderMessage");
+            document.getElementById(
+                "emptyOrderMessage"
+            );
 
         const orderTotalElement =
-            document.getElementById("orderTotal");
+            document.getElementById(
+                "orderTotal"
+            );
 
         const customerSelect =
-            document.getElementById("customerSelect");
+            document.getElementById(
+                "customerSelect"
+            );
 
         const customerSummary =
-            document.getElementById("customerSummary");
+            document.getElementById(
+                "customerSummary"
+            );
 
         const customerFullName =
-            document.getElementById("customerFullName");
+            document.getElementById(
+                "customerFullName"
+            );
 
         const customerCompany =
-            document.getElementById("customerCompany");
+            document.getElementById(
+                "customerCompany"
+            );
 
         const customerEmail =
-            document.getElementById("customerEmail");
+            document.getElementById(
+                "customerEmail"
+            );
 
         const customerPhone =
-            document.getElementById("customerPhone");
+            document.getElementById(
+                "customerPhone"
+            );
 
         const customerError =
-            document.getElementById("customerError");
+            document.getElementById(
+                "customerError"
+            );
 
         const productInfoUrl =
-            '@Url.Action("GetProductInfo", "Order")';
+            '@Url.Action(
+                                    "GetProductInfo",
+                                    "Order"
+            )';
 
         const customerInfoUrl =
-            '@Url.Action("GetCustomerInfo", "Order")';
+            '@Url.Action(
+                                    "GetCustomerInfo",
+                                    "Order"
+            )';
 
 
         function formatMoney(value) {
 
-            const number = Number(value);
+            const number =
+                Number(value);
 
             if (!Number.isFinite(number)) {
                 return "0,00";
@@ -561,7 +885,9 @@
 
         function clearCustomerInfo() {
 
-            customerSummary.classList.add("d-none");
+            customerSummary
+                .classList
+                .add("d-none");
 
             customerFullName.textContent = "-";
             customerCompany.textContent = "-";
@@ -576,13 +902,16 @@
             const customerId =
                 Number(customerSelect.value);
 
-            if (!customerId || customerId <= 0) {
+            if (!customerId ||
+                customerId <= 0) {
 
                 clearCustomerInfo();
                 return;
             }
 
-            customerSummary.classList.remove("d-none");
+            customerSummary
+                .classList
+                .remove("d-none");
 
             customerFullName.textContent = "...";
             customerCompany.textContent = "...";
@@ -592,18 +921,22 @@
 
             try {
 
-                const response = await fetch(
-                    `${customerInfoUrl}?customerId=${encodeURIComponent(customerId)}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Accept": "application/json"
+                const response =
+                    await fetch(
+                        `${customerInfoUrl}?customerId=${encodeURIComponent(customerId)}`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
                         }
-                    }
-                );
+                    );
 
                 if (!response.ok) {
-                    throw new Error(customerInfoLoadError);
+                    throw new Error(
+                        customerInfoLoadError
+                    );
                 }
 
                 const customer =
@@ -641,38 +974,42 @@
         function updateIndexes() {
 
             const items =
-                container.querySelectorAll(".order-item");
+                container.querySelectorAll(
+                    ".order-item"
+                );
 
-            items.forEach((item, index) => {
+            items.forEach(
+                (item, index) => {
 
-                const product =
-                    item.querySelector(
-                        '[data-field="ProductId"]'
-                    );
+                    const product =
+                        item.querySelector(
+                            '[data-field="ProductId"]'
+                        );
 
-                const quantity =
-                    item.querySelector(
-                        '[data-field="Quantity"]'
-                    );
+                    const quantity =
+                        item.querySelector(
+                            '[data-field="Quantity"]'
+                        );
 
-                if (product) {
+                    if (product) {
 
-                    product.name =
-                        `Items[${index}].ProductId`;
+                        product.name =
+                            `Items[${index}].ProductId`;
 
-                    product.id =
-                        `Items_${index}__ProductId`;
+                        product.id =
+                            `Items_${index}__ProductId`;
+                    }
+
+                    if (quantity) {
+
+                        quantity.name =
+                            `Items[${index}].Quantity`;
+
+                        quantity.id =
+                            `Items_${index}__Quantity`;
+                    }
                 }
-
-                if (quantity) {
-
-                    quantity.name =
-                        `Items[${index}].Quantity`;
-
-                    quantity.id =
-                        `Items_${index}__Quantity`;
-                }
-            });
+            );
 
             emptyMessage.style.display =
                 items.length === 0
@@ -684,14 +1021,19 @@
         function updateOrderTotal() {
 
             const items =
-                container.querySelectorAll(".order-item");
+                container.querySelectorAll(
+                    ".order-item"
+                );
 
             let total = 0;
 
             items.forEach(item => {
 
                 const lineTotal =
-                    Number(item.dataset.lineTotal || 0);
+                    Number(
+                        item.dataset.lineTotal
+                        || 0
+                    );
 
                 total += lineTotal;
             });
@@ -704,16 +1046,26 @@
         function updateLineTotal(item) {
 
             const quantityInput =
-                item.querySelector(".quantity-input");
+                item.querySelector(
+                    ".quantity-input"
+                );
 
             const lineTotalElement =
-                item.querySelector(".line-total");
+                item.querySelector(
+                    ".line-total"
+                );
 
             const unitPrice =
-                Number(item.dataset.unitPrice || 0);
+                Number(
+                    item.dataset.unitPrice
+                    || 0
+                );
 
             const quantity =
-                Number(quantityInput?.value || 0);
+                Number(
+                    quantityInput?.value
+                    || 0
+                );
 
             const lineTotal =
                 unitPrice * quantity;
@@ -735,54 +1087,78 @@
             item.dataset.stock = "0";
 
             const priceElement =
-                item.querySelector(".product-price");
+                item.querySelector(
+                    ".product-price"
+                );
 
             const stockElement =
-                item.querySelector(".product-stock");
+                item.querySelector(
+                    ".product-stock"
+                );
 
             const errorElement =
-                item.querySelector(".product-error");
+                item.querySelector(
+                    ".product-error"
+                );
 
             const lineTotalElement =
-                item.querySelector(".line-total");
+                item.querySelector(
+                    ".line-total"
+                );
 
             const quantityInput =
-                item.querySelector(".quantity-input");
+                item.querySelector(
+                    ".quantity-input"
+                );
 
             priceElement.textContent = "-";
             stockElement.textContent = "-";
             errorElement.textContent = "";
-            lineTotalElement.textContent = "0,00";
+            lineTotalElement.textContent =
+                "0,00";
 
             if (quantityInput) {
-                quantityInput.removeAttribute("max");
+                quantityInput
+                    .removeAttribute("max");
             }
 
             updateOrderTotal();
         }
 
 
-        async function loadProductInfo(productSelect) {
+        async function loadProductInfo(
+            productSelect) {
 
             const item =
-                productSelect.closest(".order-item");
+                productSelect.closest(
+                    ".order-item"
+                );
 
             const productId =
                 Number(productSelect.value);
 
             const priceElement =
-                item.querySelector(".product-price");
+                item.querySelector(
+                    ".product-price"
+                );
 
             const stockElement =
-                item.querySelector(".product-stock");
+                item.querySelector(
+                    ".product-stock"
+                );
 
             const errorElement =
-                item.querySelector(".product-error");
+                item.querySelector(
+                    ".product-error"
+                );
 
             const quantityInput =
-                item.querySelector(".quantity-input");
+                item.querySelector(
+                    ".quantity-input"
+                );
 
-            if (!productId || productId <= 0) {
+            if (!productId ||
+                productId <= 0) {
 
                 clearProductInfo(item);
                 return;
@@ -794,18 +1170,22 @@
 
             try {
 
-                const response = await fetch(
-                    `${productInfoUrl}?productId=${encodeURIComponent(productId)}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Accept": "application/json"
+                const response =
+                    await fetch(
+                        `${productInfoUrl}?productId=${encodeURIComponent(productId)}`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
                         }
-                    }
-                );
+                    );
 
                 if (!response.ok) {
-                    throw new Error(productInfoLoadError);
+                    throw new Error(
+                        productInfoLoadError
+                    );
                 }
 
                 const product =
@@ -850,7 +1230,8 @@
         function addItem() {
 
             const clone =
-                template.content.cloneNode(true);
+                template.content
+                    .cloneNode(true);
 
             container.appendChild(clone);
 
@@ -876,11 +1257,15 @@
             function(event) {
 
                 if (
-                    event.target.classList.contains(
-                        "product-select"
-                    )
+                    event.target
+                        .classList
+                        .contains(
+                            "product-select"
+                        )
                 ) {
-                    loadProductInfo(event.target);
+                    loadProductInfo(
+                        event.target
+                    );
                 }
             }
         );
@@ -891,32 +1276,46 @@
             function(event) {
 
                 if (
-                    event.target.classList.contains(
-                        "quantity-input"
-                    )
+                    event.target
+                        .classList
+                        .contains(
+                            "quantity-input"
+                        )
                 ) {
 
                     const item =
-                        event.target.closest(".order-item");
+                        event.target.closest(
+                            ".order-item"
+                        );
 
                     const stock =
-                        Number(item.dataset.stock || 0);
+                        Number(
+                            item.dataset.stock
+                            || 0
+                        );
 
                     const quantity =
-                        Number(event.target.value || 0);
+                        Number(
+                            event.target.value
+                            || 0
+                        );
 
                     const errorElement =
-                        item.querySelector(".product-error");
+                        item.querySelector(
+                            ".product-error"
+                        );
 
                     if (
                         stock > 0 &&
                         quantity > stock
                     ) {
+
                         errorElement.textContent =
                             `${maximumAvailableStockText} ${stock}.`;
                     }
                     else {
-                        errorElement.textContent = "";
+                        errorElement.textContent =
+                            "";
                     }
 
                     updateLineTotal(item);
@@ -930,9 +1329,11 @@
             function(event) {
 
                 if (
-                    event.target.classList.contains(
-                        "remove-item-button"
-                    )
+                    event.target
+                        .classList
+                        .contains(
+                            "remove-item-button"
+                        )
                 ) {
 
                     event.target
@@ -949,19 +1350,34 @@
         updateIndexes();
 
 
-        if (Number(customerSelect.value) > 0) {
+        if (
+            Number(
+                customerSelect.value
+            ) > 0
+        ) {
             loadCustomerInfo();
         }
 
 
         container
-            .querySelectorAll(".product-select")
-            .forEach(productSelect => {
+            .querySelectorAll(
+                ".product-select"
+            )
+            .forEach(
+                productSelect => {
 
-                if (Number(productSelect.value) > 0) {
-                    loadProductInfo(productSelect);
+                    if (
+                        Number(
+                            productSelect.value
+                        ) > 0
+                    ) {
+
+                        loadProductInfo(
+                            productSelect
+                        );
+                    }
                 }
-            });
+            );
 
 
         updateOrderTotal();
