@@ -80,7 +80,7 @@ namespace MiniCRM.Services
         {
             string cacheKey = "Dashboard:LastOrders";
 
-            if(_cache.TryGetValue(cacheKey,out List<Order>? orders))
+            if(!_cache.TryGetValue(cacheKey,out List<Order>? orders))
             {
                 orders = _dashboardRepository.GetLastOrders();
 
