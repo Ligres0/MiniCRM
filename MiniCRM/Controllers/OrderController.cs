@@ -157,6 +157,7 @@ namespace MiniCRM.Controllers
             }
 
             var details = _orderService.GetDetailsByOrderId(id);
+            var auditLogs =_orderService.GetAuditLogs(id);
 
             var customer = _customerService.GetById(order.CustomerId);
 
@@ -184,7 +185,8 @@ namespace MiniCRM.Controllers
                     ? "Customer not found"
                     : $"{customer.Name} {customer.Surname}",
 
-                Items = items
+                Items = items,
+                AuditLogs = auditLogs
             };
 
             return View(viewModel);
@@ -352,6 +354,7 @@ namespace MiniCRM.Controllers
             bool result = _orderService.UpdateOrder(
                 id,
                 model,
+                userId.Value,
                 out string message);
 
             if (result)
@@ -387,7 +390,7 @@ namespace MiniCRM.Controllers
             {
                 return Forbid();
             }
-            if (_orderService.CompleteOrder(id, out string message))
+            if (_orderService.CompleteOrder(id,userId.Value, out string message))
             {
                 TempData["SuccessMessage"] = message;
             }
@@ -415,7 +418,7 @@ namespace MiniCRM.Controllers
             {
                 return Forbid();
             }
-            if (_orderService.CancelOrder(id, out string message))
+            if (_orderService.CancelOrder(id,userId.Value, out string message))
             {
                 TempData["SuccessMessage"] = message;
             }

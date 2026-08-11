@@ -649,6 +649,95 @@
             </div>
 
         </div>
+        <!-- Audit Log -->
+        <section class="order-section mt-4">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Sipariş Geçmişi
+                    </h2>
+
+                    <p>
+                        Sipariş üzerinde yapılan önemli işlemler
+                    </p>
+
+                </div>
+
+            </div>
+
+            @if (Model.AuditLogs?.Any() == true)
+            {
+                <div class="p-4">
+
+                    @foreach (var log in Model.AuditLogs)
+                    {
+                        string badgeClass =
+                            log.ActionType switch
+                            {
+                                "Created" => "bg-primary",
+                                "Updated" => "bg-warning text-dark",
+                                "Completed" => "bg-success",
+                                "Cancelled" => "bg-danger",
+                                _ => "bg-secondary"
+                            };
+
+                        <div class="border-bottom pb-3 mb-3">
+
+                            <div class="d-flex
+                                justify-content-between
+                                align-items-start
+                                gap-3">
+
+                                <div>
+
+                                    <span class="badge @badgeClass mb-2">
+
+                                        @log.ActionType
+
+                                    </span>
+
+                                    <div class="fw-semibold">
+
+                                        @log.Description
+
+                                    </div>
+
+                                    <small class="text-muted">
+
+                                        Kullanıcı #@log.ChangedByUserId
+
+                                    </small>
+
+                                </div>
+
+                                <small class="text-muted text-nowrap">
+
+                                    @log.ChangedAt.ToString(
+                                        "dd.MM.yyyy HH:mm"
+                                    )
+
+                                </small>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="p-4 text-muted">
+
+                    Bu sipariş için henüz geçmiş kaydı bulunmuyor.
+
+                </div>
+            }
+
+        </section>
 
 
         <!-- Bottom Actions -->

@@ -352,6 +352,104 @@ namespace MiniCRM.Repositories
                 throw;
             }
         }
+        public void InsertStatusHistory(OrderStatusHistory history)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = @"
+        INSERT INTO OrderStatusHistories
+        (
+            OrderId,
+            OldStatus,
+            NewStatus,
+            ChangedByUserId,
+            ChangedAt
+        )
+        VALUES
+        (
+            @OrderId,
+            @OldStatus,
+            @NewStatus,
+            @ChangedByUserId,
+            @ChangedAt
+        );";
+
+            connection.Execute(sql, history);
+        }
+
+        public List<OrderStatusHistory> GetStatusHistory(int orderId)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = @"
+        SELECT
+            Id,
+            OrderId,
+            OldStatus,
+            NewStatus,
+            ChangedByUserId,
+            ChangedAt
+        FROM OrderStatusHistories
+        WHERE OrderId = @OrderId
+        ORDER BY ChangedAt DESC;";
+
+            return connection.Query<OrderStatusHistory>(
+                sql,
+                new
+                {
+                    OrderId = orderId
+                }
+            ).ToList();
+        }
+
+        public void InsertAuditLog(OrderAuditLog auditLog)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = @"
+        INSERT INTO OrderAuditLogs
+        (
+            OrderId,
+            ActionType,
+            Description,
+            ChangedByUserId,
+            ChangedAt
+        )
+        VALUES
+        (
+            @OrderId,
+            @ActionType,
+            @Description,
+            @ChangedByUserId,
+            @ChangedAt
+        );";
+
+            connection.Execute(sql, auditLog);
+        }
+        public List<OrderAuditLog> GetAuditLogs(int orderId)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = @"
+        SELECT
+            Id,
+            OrderId,
+            ActionType,
+            Description,
+            ChangedByUserId,
+            ChangedAt
+        FROM OrderAuditLogs
+        WHERE OrderId = @OrderId
+        ORDER BY ChangedAt DESC;";
+
+            return connection.Query<OrderAuditLog>(
+                sql,
+                new
+                {
+                    OrderId = orderId
+                }
+            ).ToList();
+        }
     }
 
     }

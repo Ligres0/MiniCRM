@@ -14,6 +14,7 @@
 }
 
 <style>
+
     .dashboard-page {
         --page-background: #f8fafc;
         --card-background: #ffffff;
@@ -38,7 +39,7 @@
         padding: 34px;
         border-radius: 24px;
         color: white;
-        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        background: linear-gradient( 135deg, #4f46e5, #7c3aed );
         box-shadow: 0 18px 40px rgba(79, 70, 229, 0.2);
     }
 
@@ -67,6 +68,9 @@
         margin-bottom: 0;
         color: rgba(255, 255, 255, 0.82);
     }
+
+
+    /* Summary cards */
 
     .stat-card {
         height: 100%;
@@ -137,6 +141,9 @@
         background: var(--danger-light);
     }
 
+
+    /* Sections */
+
     .dashboard-section {
         overflow: hidden;
         border: 1px solid var(--border);
@@ -182,6 +189,18 @@
         font-weight: 750;
     }
 
+
+    /* Revenue chart */
+
+    .chart-container {
+        position: relative;
+        height: 350px;
+        padding: 18px 22px 22px;
+    }
+
+
+    /* Tables */
+
     .dashboard-table {
         margin-bottom: 0;
     }
@@ -213,6 +232,9 @@
                 background: #f8fafc;
             }
 
+
+    /* Product */
+
     .product-name {
         color: var(--dark);
         font-weight: 700;
@@ -235,6 +257,9 @@
         font-size: 0.82rem;
         font-weight: 750;
     }
+
+
+    /* Orders */
 
     .order-id {
         color: var(--primary);
@@ -269,6 +294,9 @@
         background: #f1f5f9;
     }
 
+
+    /* Top sellers */
+
     .rank-badge {
         display: inline-flex;
         align-items: center;
@@ -292,6 +320,9 @@
         background: var(--success-light);
         font-weight: 750;
     }
+
+
+    /* Empty states */
 
     .empty-state {
         padding: 42px 20px;
@@ -323,6 +354,7 @@
         font-size: 0.9rem;
     }
 
+
     @@media (max-width: 767px) {
 
         .dashboard-header {
@@ -336,37 +368,70 @@
         .stat-value {
             font-size: 1.7rem;
         }
+
+        .chart-container {
+            height: 290px;
+            padding: 14px;
+        }
     }
+
 </style>
+
 
 <div class="container py-4 dashboard-page">
 
+
     <!-- Header -->
+
     <section class="dashboard-header mb-4">
 
         <div class="dashboard-header-content">
 
-            <span class="badge bg-light text-primary px-3 py-2 mb-3">
-                @Localization.GetText("DashboardOverview")
+            <span class="badge
+                bg-light
+                text-primary
+                px-3
+                py-2
+                mb-3">
+
+                @Localization.GetText(
+                    "DashboardOverview"
+                )
+
             </span>
 
+
             <h1 class="h2 mb-2">
-                @Localization.GetText("Dashboard")
+
+                @Localization.GetText(
+                    "Dashboard"
+                )
+
             </h1>
 
+
             <p>
-                @Localization.GetText("DashboardPageDescription")
+
+                @Localization.GetText(
+                    "DashboardPageDescription"
+                )
+
             </p>
 
         </div>
 
     </section>
 
+
+
     <!-- Summary Cards -->
+
     <section class="row g-4 mb-4">
 
+
         <!-- Total Customers -->
-        <div class="col-md-6 col-xl-3">
+
+        <div class="col-12 col-md-6 col-xl-3">
 
             <div class="stat-card">
 
@@ -375,17 +440,27 @@
                     <div>
 
                         <div class="stat-label">
-                            @Localization.GetText("TotalCustomers")
+
+                            @Localization.GetText(
+                                "TotalCustomers"
+                            )
+
                         </div>
 
+
                         <h2 class="stat-value">
+
                             @Model.TotalCustomers
+
                         </h2>
 
                     </div>
+
 
                     <div class="stat-icon icon-customers">
+
                         M
+
                     </div>
 
                 </div>
@@ -393,44 +468,12 @@
             </div>
 
         </div>
-        <div class="row mb-4">
 
-            <div class="col-12">
 
-                <section class="dashboard-section">
-
-                    <div class="section-header">
-
-                        <div>
-
-                            <h2>
-                                Son 7 Günlük Ciro
-                            </h2>
-
-                            <p>
-                                Tamamlanan siparişlerden elde edilen
-                                günlük ciro değişimi
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <div style="height: 350px;">
-
-                        <canvas id="revenueChart">
-                        </canvas>
-
-                    </div>
-
-                </section>
-
-            </div>
-
-        </div>
 
         <!-- Active Products -->
-        <div class="col-md-6 col-xl-3">
+
+        <div class="col-12 col-md-6 col-xl-3">
 
             <div class="stat-card">
 
@@ -439,17 +482,27 @@
                     <div>
 
                         <div class="stat-label">
-                            @Localization.GetText("ActiveProducts")
+
+                            @Localization.GetText(
+                                "ActiveProducts"
+                            )
+
                         </div>
 
+
                         <h2 class="stat-value">
+
                             @Model.ActiveProducts
+
                         </h2>
 
                     </div>
+
 
                     <div class="stat-icon icon-products">
+
                         Ü
+
                     </div>
 
                 </div>
@@ -458,8 +511,11 @@
 
         </div>
 
+
+
         <!-- Today's Orders -->
-        <div class="col-md-6 col-xl-3">
+
+        <div class="col-12 col-md-6 col-xl-3">
 
             <div class="stat-card">
 
@@ -468,17 +524,27 @@
                     <div>
 
                         <div class="stat-label">
-                            @Localization.GetText("TodayCompletedOrders")
+
+                            @Localization.GetText(
+                                "TodayCompletedOrders"
+                            )
+
                         </div>
 
+
                         <h2 class="stat-value">
+
                             @Model.TodayOrderCount
+
                         </h2>
 
                     </div>
 
+
                     <div class="stat-icon icon-orders">
+
                         S
+
                     </div>
 
                 </div>
@@ -487,8 +553,11 @@
 
         </div>
 
+
+
         <!-- Today's Revenue -->
-        <div class="col-md-6 col-xl-3">
+
+        <div class="col-12 col-md-6 col-xl-3">
 
             <div class="stat-card">
 
@@ -497,12 +566,17 @@
                     <div>
 
                         <div class="stat-label">
-                            @Localization.GetText("TodayRevenue")
+
+                            @Localization.GetText(
+                                "TodayRevenue"
+                            )
+
                         </div>
+
 
                         <h2 class="stat-value">
 
-                            @Model.TodayRevenue.ToString("N2")
+                            @(Model.TodayRevenue.ToString("N2"))
 
                             <span class="fs-6">
                                 TL
@@ -512,8 +586,11 @@
 
                     </div>
 
+
                     <div class="stat-icon icon-revenue">
+
                         ₺
+
                     </div>
 
                 </div>
@@ -525,9 +602,55 @@
     </section>
 
 
+
+    <!-- Last 7 Days Revenue Chart -->
+
+    <div class="row mb-4">
+
+        <div class="col-12">
+
+            <section class="dashboard-section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Son 7 Günlük Ciro
+                        </h2>
+
+                        <p>
+                            Tamamlanan siparişlerden elde edilen
+                            günlük ciro değişimi
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <canvas id="revenueChart">
+                    </canvas>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Dashboard Tables -->
+
     <div class="row g-4">
 
+
         <!-- Critical Stock -->
+
         <div class="col-12 col-xl-5">
 
             <section class="dashboard-section h-100">
@@ -537,20 +660,33 @@
                     <div>
 
                         <h2>
-                            @Localization.GetText("CriticalStockProducts")
+
+                            @Localization.GetText(
+                                "CriticalStockProducts"
+                            )
+
                         </h2>
 
+
                         <p>
-                            @Localization.GetText("CriticalStockDescription")
+
+                            @Localization.GetText(
+                                "CriticalStockDescription"
+                            )
+
                         </p>
 
                     </div>
 
+
                     <span class="section-count">
+
                         @(Model.CriticalStockProducts?.Count ?? 0)
+
                     </span>
 
                 </div>
+
 
                 @if (Model.CriticalStockProducts?.Any() == true)
                 {
@@ -563,53 +699,79 @@
                                 <tr>
 
                                     <th>
-                                        @Localization.GetText("Product")
+
+                                        @Localization.GetText(
+                                            "Product"
+                                        )
+
                                     </th>
+
 
                                     <th>
-                                        @Localization.GetText("Price")
+
+                                        @Localization.GetText(
+                                            "Price"
+                                        )
+
                                     </th>
 
+
                                     <th class="text-end">
-                                        @Localization.GetText("Stock")
+
+                                        @Localization.GetText(
+                                            "Stock"
+                                        )
+
                                     </th>
 
                                 </tr>
 
                             </thead>
 
+
                             <tbody>
 
-                                @foreach (var product in Model.CriticalStockProducts)
+                                @foreach (
+                                    var product
+                                    in Model.CriticalStockProducts)
                                 {
                                     <tr>
 
                                         <td>
 
                                             <div class="product-name">
+
                                                 @product.Name
+
                                             </div>
+
 
                                             <small class="text-muted">
 
-                                                @Localization.GetText("Category")
+                                                @Localization.GetText(
+                                                    "Category"
+                                                )
+
                                                 #@product.CategoryId
 
                                             </small>
 
                                         </td>
 
+
                                         <td class="price-text">
 
-                                            @product.Price.ToString("N2")
-                                            TL
+                                            @(product.Price.ToString("N2")) TL
 
                                         </td>
+
 
                                         <td class="text-end">
 
                                             <span class="stock-badge">
+
                                                 @product.Stock
+
                                             </span>
 
                                         </td>
@@ -631,12 +793,22 @@
                             ✓
                         </div>
 
+
                         <h3>
-                            @Localization.GetText("StockLevelsHealthy")
+
+                            @Localization.GetText(
+                                "StockLevelsHealthy"
+                            )
+
                         </h3>
 
+
                         <p>
-                            @Localization.GetText("NoCriticalStockProducts")
+
+                            @Localization.GetText(
+                                "NoCriticalStockProducts"
+                            )
+
                         </p>
 
                     </div>
@@ -647,7 +819,9 @@
         </div>
 
 
+
         <!-- Top Selling Products -->
+
         <div class="col-12 col-xl-7">
 
             <section class="dashboard-section h-100">
@@ -657,20 +831,33 @@
                     <div>
 
                         <h2>
-                            @Localization.GetText("Top5SellingProducts")
+
+                            @Localization.GetText(
+                                "Top5SellingProducts"
+                            )
+
                         </h2>
 
+
                         <p>
-                            @Localization.GetText("TopSellingProductsDescription")
+
+                            @Localization.GetText(
+                                "TopSellingProductsDescription"
+                            )
+
                         </p>
 
                     </div>
 
+
                     <span class="section-count">
+
                         @(Model.TopSellingProducts?.Count ?? 0)
+
                     </span>
 
                 </div>
+
 
                 @if (Model.TopSellingProducts?.Any() == true)
                 {
@@ -683,20 +870,35 @@
                                 <tr>
 
                                     <th>
-                                        @Localization.GetText("Rank")
+
+                                        @Localization.GetText(
+                                            "Rank"
+                                        )
+
                                     </th>
+
 
                                     <th>
-                                        @Localization.GetText("Product")
+
+                                        @Localization.GetText(
+                                            "Product"
+                                        )
+
                                     </th>
 
+
                                     <th class="text-end">
-                                        @Localization.GetText("TotalSold")
+
+                                        @Localization.GetText(
+                                            "TotalSold"
+                                        )
+
                                     </th>
 
                                 </tr>
 
                             </thead>
+
 
                             <tbody>
 
@@ -704,37 +906,52 @@
                                     int rank = 1;
                                 }
 
-                                @foreach (var product in Model.TopSellingProducts)
+
+                                @foreach (
+                                    var product
+                                    in Model.TopSellingProducts)
                                 {
                                     <tr>
 
                                         <td>
 
                                             <span class="rank-badge">
+
                                                 @rank
+
                                             </span>
 
                                         </td>
 
+
                                         <td>
 
                                             <div class="product-name">
+
                                                 @product.ProductName
+
                                             </div>
+
 
                                             <small class="text-muted">
 
-                                                @Localization.GetText("Product")
+                                                @Localization.GetText(
+                                                    "Product"
+                                                )
+
                                                 #@product.ProductId
 
                                             </small>
 
                                         </td>
 
+
                                         <td class="text-end">
 
                                             <span class="sold-badge">
+
                                                 @product.TotalSoldQuantity
+
                                             </span>
 
                                         </td>
@@ -758,12 +975,22 @@
                             ↗
                         </div>
 
+
                         <h3>
-                            @Localization.GetText("NoCompletedSalesData")
+
+                            @Localization.GetText(
+                                "NoCompletedSalesData"
+                            )
+
                         </h3>
 
+
                         <p>
-                            @Localization.GetText("TopSellingEmptyDescription")
+
+                            @Localization.GetText(
+                                "TopSellingEmptyDescription"
+                            )
+
                         </p>
 
                     </div>
@@ -774,7 +1001,9 @@
         </div>
 
 
+
         <!-- Last Orders -->
+
         <div class="col-12">
 
             <section class="dashboard-section">
@@ -784,137 +1013,223 @@
                     <div>
 
                         <h2>
-                            @Localization.GetText("Last10Orders")
+
+                            @Localization.GetText(
+                                "Last10Orders"
+                            )
+
                         </h2>
 
+
                         <p>
-                            @Localization.GetText("LastOrdersDescription")
+
+                            @Localization.GetText(
+                                "LastOrdersDescription"
+                            )
+
                         </p>
 
                     </div>
+
 
                     @if (canViewOrders)
                     {
                         <a asp-controller="Order"
                            asp-action="Index"
-                           class="btn btn-sm btn-outline-primary">
+                           class="btn
+                            btn-sm
+                            btn-outline-primary">
 
-                            @Localization.GetText("ViewAllOrders")
+                            @Localization.GetText(
+                                "ViewAllOrders"
+                            )
 
                         </a>
                     }
 
                 </div>
 
+
                 @if (Model.LastOrders?.Any() == true)
                 {
                     <div class="table-responsive">
 
-                        <table class="table dashboard-table align-middle">
+                        <table class="table
+                            dashboard-table
+                            align-middle">
 
                             <thead>
 
                                 <tr>
 
                                     <th>
-                                        @Localization.GetText("Order")
+
+                                        @Localization.GetText(
+                                            "Order"
+                                        )
+
                                     </th>
 
-                                    <th>
-                                        @Localization.GetText("Customer")
-                                    </th>
 
                                     <th>
-                                        @Localization.GetText("Date")
+
+                                        @Localization.GetText(
+                                            "Customer"
+                                        )
+
                                     </th>
 
-                                    <th>
-                                        @Localization.GetText("TotalAmount")
-                                    </th>
 
                                     <th>
-                                        @Localization.GetText("Status")
+
+                                        @Localization.GetText(
+                                            "Date"
+                                        )
+
                                     </th>
+
+
+                                    <th>
+
+                                        @Localization.GetText(
+                                            "TotalAmount"
+                                        )
+
+                                    </th>
+
+
+                                    <th>
+
+                                        @Localization.GetText(
+                                            "Status"
+                                        )
+
+                                    </th>
+
 
                                     <th class="text-end">
-                                        @Localization.GetText("Action")
+
+                                        @Localization.GetText(
+                                            "Action"
+                                        )
+
                                     </th>
 
                                 </tr>
 
                             </thead>
 
+
                             <tbody>
 
-                                @foreach (var order in Model.LastOrders)
+                                @foreach (
+                                    var order
+                                    in Model.LastOrders)
                                 {
                                     string statusClass =
                                         order.Status.ToString() switch
                                         {
-                                            "Draft" => "status-draft",
-                                            "Completed" => "status-completed",
-                                            "Cancelled" => "status-cancelled",
-                                            _ => "status-default"
+                                            "Draft" =>
+                                                "status-draft",
+
+                                            "Completed" =>
+                                                "status-completed",
+
+                                            "Cancelled" =>
+                                                "status-cancelled",
+
+                                            _ =>
+                                                "status-default"
                                         };
+
 
                                     string statusText =
                                         order.Status.ToString() switch
                                         {
                                             "Draft" =>
-                                                Localization.GetText("StatusDraft"),
+                                                Localization.GetText(
+                                                    "StatusDraft"
+                                                ),
 
                                             "Completed" =>
-                                                Localization.GetText("StatusCompleted"),
+                                                Localization.GetText(
+                                                    "StatusCompleted"
+                                                ),
 
                                             "Cancelled" =>
-                                                Localization.GetText("StatusCancelled"),
+                                                Localization.GetText(
+                                                    "StatusCancelled"
+                                                ),
 
-                                            _ => order.Status.ToString()
+                                            _ =>
+                                                order.Status.ToString()
                                         };
+
 
                                     <tr>
 
                                         <td>
 
                                             <span class="order-id">
+
                                                 #@order.Id
+
                                             </span>
 
                                         </td>
 
+
                                         <td>
 
-                                            @Localization.GetText("Customer")
+                                            @Localization.GetText(
+                                                "Customer"
+                                            )
+
                                             #@order.CustomerId
 
                                         </td>
 
+
                                         <td>
 
                                             <div>
-                                                @order.OrderDate.ToString("dd.MM.yyyy")
+
+                                                @(order.OrderDate.ToString(
+                                                    "dd.MM.yyyy"
+                                                ))
+
                                             </div>
 
+
                                             <small class="text-muted">
-                                                @order.OrderDate.ToString("HH:mm")
+
+                                                @(order.OrderDate.ToString(
+                                                    "HH:mm"
+                                                ))
+
                                             </small>
 
                                         </td>
 
+
                                         <td class="price-text">
 
-                                            @order.TotalAmount.ToString("N2")
-                                            TL
+                                            @(order.TotalAmount.ToString("N2")) TL
 
                                         </td>
+
 
                                         <td>
 
-                                            <span class="status-badge @statusClass">
+                                            <span class="status-badge
+                                                @statusClass">
+
                                                 @statusText
+
                                             </span>
 
                                         </td>
+
 
                                         <td class="text-end">
 
@@ -923,9 +1238,13 @@
                                                 <a asp-controller="Order"
                                                    asp-action="Details"
                                                    asp-route-id="@order.Id"
-                                                   class="btn btn-sm btn-outline-primary">
+                                                   class="btn
+                                                    btn-sm
+                                                    btn-outline-primary">
 
-                                                    @Localization.GetText("Details")
+                                                    @Localization.GetText(
+                                                        "Details"
+                                                    )
 
                                                 </a>
                                             }
@@ -949,12 +1268,22 @@
                             S
                         </div>
 
+
                         <h3>
-                            @Localization.GetText("NoOrdersFound")
+
+                            @Localization.GetText(
+                                "NoOrdersFound"
+                            )
+
                         </h3>
 
+
                         <p>
-                            @Localization.GetText("NewOrdersWillAppear")
+
+                            @Localization.GetText(
+                                "NewOrdersWillAppear"
+                            )
+
                         </p>
 
                     </div>
@@ -967,6 +1296,9 @@
     </div>
 
 </div>
+
+
+
 @section Scripts {
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -974,29 +1306,36 @@
     <script>
 
         const revenueLabels = [
-            @foreach (var item in Model.Last7DaysRevenue)
+
+                    @foreach (var item in Model.Last7DaysRevenue)
             {
-                    <text>
-                            '@item.Date.ToString("dd/MM")',
-                    </text>
-            }
-        ];
+                <text>
+                        '@item.Date.ToString("dd/MM")',
+                </text>
+                    }
+
+                ];
+
 
         const revenueValues = [
-            @foreach (var item in Model.Last7DaysRevenue)
+
+                    @foreach (var item in Model.Last7DaysRevenue)
             {
-                    <text>
-                            @item.Revenue.ToString(
-                                    System.Globalization.CultureInfo.InvariantCulture
-                            ),
-                    </text>
-            }
-        ];
+                <text>
+                                    @item.Revenue.ToString(
+            System.Globalization.CultureInfo.InvariantCulture
+            ),
+                </text>
+                    }
+
+                ];
+
 
         const revenueCanvas =
             document.getElementById(
                 'revenueChart'
             );
+
 
         if (revenueCanvas) {
 
@@ -1007,44 +1346,77 @@
 
                     data: {
 
-                        labels: revenueLabels,
+                        labels:
+                            revenueLabels,
 
                         datasets: [
                             {
-                                label: 'Ciro (TL)',
+                                label:
+                                    'Ciro (TL)',
 
-                                data: revenueValues,
+                                data:
+                                    revenueValues,
 
-                                tension: 0.35,
+                                tension:
+                                    0.35,
 
-                                fill: false,
+                                fill:
+                                    false,
 
-                                borderWidth: 3,
+                                borderWidth:
+                                    3,
 
-                                pointRadius: 4,
+                                pointRadius:
+                                    4,
 
-                                pointHoverRadius: 6
+                                pointHoverRadius:
+                                    6
                             }
                         ]
                     },
 
                     options: {
 
-                        responsive: true,
+                        responsive:
+                            true,
 
-                        maintainAspectRatio: false,
+                        maintainAspectRatio:
+                            false,
+
+                        interaction: {
+                            intersect:
+                                false,
+
+                            mode:
+                                'index'
+                        },
 
                         plugins: {
 
                             legend: {
-                                display: true
+                                display:
+                                    true
                             }
                         },
 
                         scales: {
 
                             y: {
-                                beginAtZero: true
+
+                                beginAtZero:
+                                    true,
+
+                                ticks: {
+
+                                    callback:
+                                        function(value) {
+
+                                            return value
+                                                .toLocaleString(
+                                                    'tr-TR'
+                                                ) + ' TL';
+                                        }
+                                }
                             }
                         }
                     }

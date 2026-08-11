@@ -33,5 +33,13 @@ namespace MiniCRM.Repositories
         int CreateOrderTransaction(Order order, List<OrderDetails> details, int createdByUserId);
 
         int CancelOrderTransaction(int orderId, int createdByUserId);
+        void InsertStatusHistory(OrderStatusHistory history);
+
+        List<OrderStatusHistory> GetStatusHistory(int orderId);
+
+        void InsertAuditLog(OrderAuditLog auditLog);
+
+        List<OrderAuditLog> GetAuditLogs(int orderId);
+
     }
 }

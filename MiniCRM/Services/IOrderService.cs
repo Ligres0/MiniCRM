@@ -37,14 +37,20 @@ namespace MiniCRM.Services
         bool UpdateOrder(
             int orderId,
             OrderCreateViewModel viewModel,
+            int changedByUserId,
             out string message);
 
         bool CompleteOrder(
             int orderId,
+            int changedByUserId,
             out string message);
 
         bool CancelOrder(
             int orderId,
+            int changedByUserId,
             out string message);
+
+        List<OrderStatusHistory> GetStatusHistory(int orderId);
+        List<OrderAuditLog> GetAuditLogs(int orderId);
     }
 }

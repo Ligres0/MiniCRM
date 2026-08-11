@@ -2,6 +2,7 @@
 using MiniCRM.Repositories;
 using MiniCRM.ViewModels;
 
+
 namespace MiniCRM.Services
 {
     public class OrderService : IOrderService
@@ -15,11 +16,13 @@ namespace MiniCRM.Services
         public OrderService(
             IOrderRepository orderRepository,
             ICustomerService customerService,
-            IProductService productService)
+            IProductService productService,
+            IDashboardService dashboardService)
         {
             _orderRepository = orderRepository;
             _customerService = customerService;
             _productService = productService;
+            _dashboardService = dashboardService;
         }
 
 
@@ -187,6 +190,17 @@ namespace MiniCRM.Services
                     message = "Order could not be created.";
                     return false;
                 }
+                var auditLog = new OrderAuditLog
+                {
+                    OrderId = orderId,
+                    ActionType = "Created",
+                    Description = "Order created as Draft.",
+                    ChangedByUserId = createdByUserId,
+                    ChangedAt = DateTime.Now
+                };
+
+                _orderRepository.InsertAuditLog(auditLog);
+
                 _dashboardService.ClearDashboardCache();
 
 
@@ -202,6 +216,7 @@ namespace MiniCRM.Services
         public bool UpdateOrder(
     int orderId,
     OrderCreateViewModel viewModel,
+    int changedByUserId,
     out string message)
         {
             var existingOrder =
@@ -225,6 +240,10 @@ namespace MiniCRM.Services
                 message = "Order must have at least one item.";
                 return false;
             }
+            var oldDetails = _orderRepository.GetDetailsByOrderId(orderId);
+
+            decimal oldTotalAmount =
+                existingOrder.TotalAmount;
 
             var newDetails = new List<OrderDetails>();
             decimal totalAmount = 0;
@@ -298,6 +317,87 @@ namespace MiniCRM.Services
                     return false;
                 }
             }
+            var changes = new List<string>();
+
+            foreach (var newDetail in newDetails)
+            {
+                var oldDetail =
+                    oldDetails.FirstOrDefault(
+                        x => x.ProductId == newDetail.ProductId);
+
+                var product =
+                    _productService.GetById(
+                        newDetail.ProductId);
+
+                string productName =
+                    product?.Name ?? $"Product #{newDetail.ProductId}";
+
+
+                // Önceden siparişte olmayan ürün eklenmiş
+                if (oldDetail == null)
+                {
+                    changes.Add(
+                        $"{productName} added to order " +
+                        $"(Quantity: {newDetail.Quantity}).");
+
+                    continue;
+                }
+
+
+                // Ürünün miktarı değiştirilmiş
+                if (oldDetail.Quantity != newDetail.Quantity)
+                {
+                    changes.Add(
+                        $"{productName} quantity changed " +
+                        $"from {oldDetail.Quantity} " +
+                        $"to {newDetail.Quantity}.");
+                }
+            }
+            foreach (var oldDetail in oldDetails)
+            {
+                bool stillExists =
+                    newDetails.Any(
+                        x => x.ProductId == oldDetail.ProductId);
+
+                if (!stillExists)
+                {
+                    var product =
+                        _productService.GetById(
+                            oldDetail.ProductId);
+
+                    string productName =
+                        product?.Name ?? $"Product #{oldDetail.ProductId}";
+
+                    changes.Add(
+                        $"{productName} removed from order " +
+                        $"(Previous quantity: {oldDetail.Quantity}).");
+                }
+            }
+            if (oldTotalAmount != totalAmount)
+            {
+                changes.Add(
+                    $"Total amount changed from " +
+                    $"{oldTotalAmount:N2} TL to " +
+                    $"{totalAmount:N2} TL.");
+            }
+            if (changes.Any())
+            {
+                var auditLog = new OrderAuditLog
+                {
+                    OrderId = orderId,
+                    ActionType = "Updated",
+
+                    Description =
+                        string.Join(" ", changes),
+
+                    ChangedByUserId = changedByUserId,
+
+                    ChangedAt = DateTime.Now
+                };
+
+                _orderRepository.InsertAuditLog(
+                    auditLog);
+            }
             _dashboardService.ClearDashboardCache();
 
 
@@ -307,6 +407,7 @@ namespace MiniCRM.Services
 
         public bool CompleteOrder(
             int orderId,
+            int changedByUserId,
             out string message)
         {
             var order =
@@ -377,14 +478,29 @@ namespace MiniCRM.Services
                 message = "Order could not be completed.";
                 return false;
             }
-            _dashboardService.ClearDashboardCache();
 
+            var auditLog = new OrderAuditLog
+            {
+                OrderId = orderId,
+                ActionType = "Completed",
+                Description = "Order status changed from Draft to Completed.",
+                ChangedByUserId = changedByUserId,
+                ChangedAt = DateTime.Now
+            };
+
+            _orderRepository.InsertAuditLog(auditLog);
+
+            _dashboardService.ClearDashboardCache();
 
             message = "Order completed successfully.";
             return true;
+
+
+            
         }
         public bool CancelOrder(
             int orderId,
+            int changedByUserId,
             out string message)
         {
             var order =
@@ -417,6 +533,17 @@ namespace MiniCRM.Services
                     message = "Order could not be cancelled.";
                     return false;
                 }
+                var auditLog = new OrderAuditLog
+                {
+                    OrderId = orderId,
+                    ActionType = "Cancelled",
+                    Description = "Order status changed from Draft to Cancelled.",
+                    ChangedByUserId = changedByUserId,
+                    ChangedAt = DateTime.Now
+                };
+
+                _orderRepository.InsertAuditLog(auditLog);
+
                 _dashboardService.ClearDashboardCache();
 
                 message = "Order cancelled successfully.";
@@ -427,6 +554,20 @@ namespace MiniCRM.Services
                 message = ex.Message;
                 return false;
             }
+        }
+
+        public List<OrderStatusHistory> GetStatusHistory(int orderId)
+        {
+            return _orderRepository.GetStatusHistory(orderId);
+        }
+        public List<OrderAuditLog> GetAuditLogs(int orderId)
+        {
+            if (orderId <= 0)
+            {
+                return new List<OrderAuditLog>();
+            }
+
+            return _orderRepository.GetAuditLogs(orderId);
         }
 
 

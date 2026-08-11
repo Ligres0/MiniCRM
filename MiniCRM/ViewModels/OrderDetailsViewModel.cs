@@ -13,5 +13,7 @@ namespace MiniCRM.ViewModels
         public string? CreatedByUserName { get; set; }
 
         public List<OrderItemViewModel> Items { get; set; } = new();
+        public List<OrderAuditLog> AuditLogs { get; set; }
+    = new List<OrderAuditLog>();
     }
 }
