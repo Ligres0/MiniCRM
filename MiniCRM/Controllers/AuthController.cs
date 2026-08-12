@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MiniCRM.Repositories;
+using Microsoft.AspNetCore.Identity;
+using MiniCRM.Models;
 
 namespace MiniCRM.Controllers
 {
@@ -30,7 +32,15 @@ namespace MiniCRM.Controllers
                 ViewBag.Error = "Kullanıcı bulunamadı.";
                 return View();
             }
-            if (user.PasswordHash != password) 
+            var passwordHasher = new PasswordHasher<User>();
+
+            var result = passwordHasher.VerifyHashedPassword(
+                user,
+                user.PasswordHash,
+                password
+            );
+
+            if (result == PasswordVerificationResult.Failed)
             {
                 ViewBag.Error = "Şifre yanlış.";
                 return View();

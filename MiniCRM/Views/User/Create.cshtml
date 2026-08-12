@@ -1,0 +1,134 @@
+﻿@model MiniCRM.ViewModels.UserCreateViewModel
+
+@{
+    ViewData["Title"] = "Yeni Kullanıcı Oluştur";
+}
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-md-8 col-lg-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <h2 class="mb-3">
+                        Yeni Kullanıcı Oluştur
+                    </h2>
+
+                    <p class="text-muted">
+                        Yeni kullanıcı başlangıçta herhangi bir role sahip olmayacaktır.
+                    </p>
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    <form asp-controller="User"
+                          asp-action="Create"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label asp-for="UserName"
+                                   class="form-label">
+                                Kullanıcı Adı
+                            </label>
+
+                            <input asp-for="UserName"
+                                   class="form-control" />
+
+                            <span asp-validation-for="UserName"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label asp-for="Email"
+                                   class="form-label">
+                                E-posta
+                            </label>
+
+                            <input asp-for="Email"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Email"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label asp-for="Password"
+                                   class="form-label">
+                                Şifre
+                            </label>
+
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Password"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label asp-for="ConfirmPassword"
+                                   class="form-label">
+                                Şifre Tekrar
+                            </label>
+
+                            <input asp-for="ConfirmPassword"
+                                   type="password"
+                                   class="form-control" />
+
+                            <span asp-validation-for="ConfirmPassword"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            Kullanıcı Oluştur
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

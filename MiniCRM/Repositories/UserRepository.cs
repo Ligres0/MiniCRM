@@ -43,5 +43,51 @@ namespace MiniCRM.Repositories
                 sql,
                 new { UserName = username });
         }
+        public bool UsernameExists(string username)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = """
+                SELECT COUNT(1)
+                FROM Users
+                WHERE UserName = @UserName;
+                """;
+
+            int count = connection.ExecuteScalar<int>(
+                sql,
+                new
+                {
+                    UserName = username
+                });
+
+            return count > 0;
+        }
+
+        public int Insert(User user)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = """
+                INSERT INTO Users
+                (
+                    UserName,
+                    PasswordHash,
+                    Email,
+                    IsActive,
+                    CreatedDate
+                )
+                VALUES
+                (
+                    @UserName,
+                    @PasswordHash,
+                    @Email,
+                    @IsActive,
+                    @IsActive,
+                );
+                SELECT CAST(SCOPE_IDENTITY() AS INT);
+                """;
+
+            return connection.QuerySingle<int>(sql, user);
+        }
     }
 }

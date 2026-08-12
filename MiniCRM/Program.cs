@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+using MiniCRM.Models;
 using MiniCRM.Repositories;
 using MiniCRM.Services;
 
@@ -22,8 +24,15 @@ builder.Services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
 builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 builder.Services.AddSession();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddHttpContextAccessor();
+
+
+
+
+
 
 var app = builder.Build();
 
