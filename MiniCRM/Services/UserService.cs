@@ -9,12 +9,17 @@ namespace MiniCRM.Services
 
     {
         private readonly IUserRepository _userRepository;
-        private readonly PasswordHasher<User> _passwordHasher;
+        private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IAuthorizationService _authorizationService;
 
-        public UserService(IUserRepository userRepository, PasswordHasher<User> passwordHasher) 
+        public UserService(
+            IUserRepository userRepository,
+            IPasswordHasher<User> passwordHasher,
+            IAuthorizationService authorizationService)
         {
             _userRepository = userRepository;
-            _passwordHasher = new PasswordHasher<User>();
+            _passwordHasher = passwordHasher;
+            _authorizationService = authorizationService;
         }
 
 
@@ -50,5 +55,76 @@ namespace MiniCRM.Services
             return true;
         }
 
+        public List<UserListViewModel> GetAllWithRoles()
+        {
+            return _userRepository.GetAllWithRoles();
         }
+        public UserRoleEditViewModel? GetUserRoleEditModel(
+    int userId)
+        {
+            var users =
+                _userRepository.GetAllWithRoles();
+
+            var user =
+                users.FirstOrDefault(
+                    x => x.Id == userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var allRoles =
+                _userRepository.GetAllRoles();
+
+            var selectedRoleIds =
+                _userRepository.GetUserRoleIds(
+                    userId);
+
+            return new UserRoleEditViewModel
+            {
+                UserId = user.Id,
+
+                UserName = user.UserName,
+
+                AllRoles = allRoles,
+
+                SelectedRoleIds =
+                    selectedRoleIds
+            };
+        }
+        public bool UpdateUserRoles(
+    int userId,
+    List<int> roleIds,
+    out string message)
+        {
+            if (userId <= 0)
+            {
+                message = "Invalid user.";
+                return false;
+            }
+
+            roleIds ??= new List<int>();
+
+            try
+            {
+                _userRepository.UpdateUserRoles(
+                    userId,
+                    roleIds);
+
+                _authorizationService.ClearPermissionCache(
+                    userId);
+
+                message = "User roles updated successfully.";
+                return true;
+            }
+            catch
+            {
+                message = "User roles could not be updated.";
+                return false;
+            }
+        }
+
+
+    }
 }

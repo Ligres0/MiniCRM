@@ -4,30 +4,455 @@
     ViewData["Title"] = "Yeni Kullanıcı Oluştur";
 }
 
-<div class="container py-4">
+<style>
+
+    .user-create-page {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --purple: #7c3aed;
+        --dark: #0f172a;
+        --muted: #64748b;
+        --border: #e2e8f0;
+        --background: #f8fafc;
+    }
+
+
+    .user-create-header {
+        position: relative;
+        overflow: hidden;
+
+        padding: 30px 32px;
+        margin-bottom: 24px;
+
+        border-radius: 22px;
+
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                #4f46e5,
+                #7c3aed
+            );
+
+        box-shadow:
+            0 18px 40px
+            rgba(79, 70, 229, 0.20);
+    }
+
+
+    .user-create-header::after {
+        content: "";
+
+        position: absolute;
+
+        width: 160px;
+        height: 160px;
+
+        top: -70px;
+        right: -40px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(255, 255, 255, 0.10);
+    }
+
+
+    .user-create-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .user-create-header h1 {
+        margin-bottom: 6px;
+
+        font-size: 1.75rem;
+        font-weight: 800;
+    }
+
+
+    .user-create-header p {
+        margin-bottom: 0;
+
+        color:
+            rgba(255, 255, 255, 0.80);
+
+        font-size: 0.95rem;
+    }
+
+
+    .user-card {
+        overflow: hidden;
+
+        border:
+            1px solid
+            var(--border);
+
+        border-radius: 20px;
+
+        background: white;
+
+        box-shadow:
+            0 10px 30px
+            rgba(15, 23, 42, 0.07);
+    }
+
+
+    .user-card-header {
+        padding: 20px 24px;
+
+        border-bottom:
+            1px solid
+            var(--border);
+
+        background: #ffffff;
+    }
+
+
+    .user-card-header h2 {
+        margin-bottom: 4px;
+
+        color: var(--dark);
+
+        font-size: 1.1rem;
+        font-weight: 750;
+    }
+
+
+    .user-card-header p {
+        margin-bottom: 0;
+
+        color: var(--muted);
+
+        font-size: 0.87rem;
+    }
+
+
+    .user-card-body {
+        padding: 26px;
+    }
+
+
+    .form-label {
+        margin-bottom: 7px;
+
+        color: #334155;
+
+        font-size: 0.9rem;
+        font-weight: 650;
+    }
+
+
+    .form-control {
+        min-height: 46px;
+
+        border:
+            1px solid
+            #dbe3ee;
+
+        border-radius: 12px;
+
+        padding:
+            10px 14px;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .form-control:focus {
+        border-color:
+            var(--primary);
+
+        box-shadow:
+            0 0 0 4px
+            rgba(79, 70, 229, 0.10);
+    }
+
+
+    .input-description {
+        margin-top: 5px;
+
+        color:
+            var(--muted);
+
+        font-size: 0.78rem;
+    }
+
+
+    .role-info-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+
+        padding: 14px 16px;
+        margin-bottom: 22px;
+
+        border-radius: 14px;
+
+        color:
+            #4338ca;
+
+        background:
+            #eef2ff;
+
+        font-size: 0.87rem;
+    }
+
+
+    .role-info-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        width: 32px;
+        height: 32px;
+
+        border-radius: 10px;
+
+        background:
+            rgba(79, 70, 229, 0.12);
+
+        font-weight: 800;
+    }
+
+
+    .btn-create-user {
+        min-height: 46px;
+
+        padding:
+            10px 22px;
+
+        border: 0;
+        border-radius: 12px;
+
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                #4f46e5,
+                #7c3aed
+            );
+
+        font-weight: 700;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .btn-create-user:hover {
+        color: white;
+
+        transform:
+            translateY(-1px);
+
+        box-shadow:
+            0 10px 20px
+            rgba(79, 70, 229, 0.22);
+    }
+
+
+    .btn-cancel-user {
+        min-height: 46px;
+
+        padding:
+            10px 22px;
+
+        border:
+            1px solid
+            #cbd5e1;
+
+        border-radius: 12px;
+
+        color:
+            #475569;
+
+        background:
+            white;
+
+        font-weight: 650;
+    }
+
+
+    .btn-cancel-user:hover {
+        background:
+            #f8fafc;
+
+        color:
+            #0f172a;
+    }
+
+
+    .validation-summary-errors {
+        padding: 12px 14px;
+
+        margin-bottom: 18px;
+
+        border-radius: 12px;
+
+        color:
+            #991b1b;
+
+        background:
+            #fee2e2;
+    }
+
+
+    .validation-summary-errors ul {
+        margin-bottom: 0;
+    }
+
+
+    .success-alert {
+        padding: 14px 16px;
+
+        margin-bottom: 20px;
+
+        border: 0;
+        border-radius: 12px;
+
+        color:
+            #166534;
+
+        background:
+            #dcfce7;
+
+        font-weight: 600;
+    }
+
+
+    .text-danger {
+        display: block;
+
+        margin-top: 5px;
+
+        font-size: 0.8rem;
+    }
+
+
+    @@media (max-width: 767px) {
+
+        .user-create-header {
+            padding:
+                24px 20px;
+        }
+
+        .user-card-body {
+            padding:
+                20px;
+        }
+
+        .user-action-buttons {
+            flex-direction: column-reverse;
+        }
+
+        .user-action-buttons .btn {
+            width: 100%;
+        }
+    }
+
+</style>
+
+
+<div class="container py-4 user-create-page">
+
+    <!-- Header -->
+
+    <section class="user-create-header">
+
+        <div class="user-create-header-content">
+
+            <div class="mb-2">
+
+                <span class="badge
+                    bg-light
+                    text-primary
+                    px-3
+                    py-2">
+
+                    Kullanıcı Yönetimi
+
+                </span>
+
+            </div>
+
+
+            <h1>
+                Yeni Kullanıcı Oluştur
+            </h1>
+
+
+            <p>
+                Sisteme yeni bir kullanıcı hesabı ekleyin.
+                Oluşturulan kullanıcı başlangıçta herhangi bir role
+                veya yetkiye sahip olmayacaktır.
+            </p>
+
+        </div>
+
+    </section>
+
 
     <div class="row justify-content-center">
 
-        <div class="col-12 col-md-8 col-lg-6">
+        <div class="col-12 col-lg-8 col-xl-7">
 
-            <div class="card shadow-sm border-0">
+            <section class="user-card">
 
-                <div class="card-body p-4">
+                <div class="user-card-header">
 
-                    <h2 class="mb-3">
-                        Yeni Kullanıcı Oluştur
+                    <h2>
+                        Kullanıcı Bilgileri
                     </h2>
 
-                    <p class="text-muted">
-                        Yeni kullanıcı başlangıçta herhangi bir role sahip olmayacaktır.
+                    <p>
+                        Kullanıcının sisteme giriş yapacağı temel bilgileri girin.
                     </p>
+
+                </div>
+
+
+                <div class="user-card-body">
 
                     @if (TempData["SuccessMessage"] != null)
                     {
-                        <div class="alert alert-success">
-                            @TempData["SuccessMessage"]
+                        <div class="success-alert">
+
+                            ✓ @TempData["SuccessMessage"]
+
                         </div>
                     }
+
+
+                    <div class="role-info-box">
+
+                        <div class="role-info-icon">
+                            i
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Rol ataması daha sonra yapılacaktır.
+                            </strong>
+
+                            <div class="mt-1">
+                                Bu kullanıcı oluşturulduğunda herhangi bir
+                                modüle erişim yetkisine sahip olmayacaktır.
+                            </div>
+
+                        </div>
+
+                    </div>
+
 
                     <form asp-controller="User"
                           asp-action="Create"
@@ -35,20 +460,32 @@
 
                         @Html.AntiForgeryToken()
 
-                        <div asp-validation-summary="ModelOnly"
-                             class="text-danger mb-3">
+
+                        <div asp-validation-summary="ModelOnly">
                         </div>
 
 
-                        <div class="mb-3">
+                        <!-- Username -->
+
+                        <div class="mb-4">
 
                             <label asp-for="UserName"
                                    class="form-label">
+
                                 Kullanıcı Adı
+
                             </label>
 
+
                             <input asp-for="UserName"
-                                   class="form-control" />
+                                   class="form-control"
+                                   placeholder="Örn: deniz.uzuner" />
+
+
+                            <div class="input-description">
+                                Kullanıcının giriş yaparken kullanacağı kullanıcı adı.
+                            </div>
+
 
                             <span asp-validation-for="UserName"
                                   class="text-danger">
@@ -57,15 +494,28 @@
                         </div>
 
 
-                        <div class="mb-3">
+                        <!-- Email -->
+
+                        <div class="mb-4">
 
                             <label asp-for="Email"
                                    class="form-label">
-                                E-posta
+
+                                E-posta Adresi
+
                             </label>
 
+
                             <input asp-for="Email"
-                                   class="form-control" />
+                                   type="email"
+                                   class="form-control"
+                                   placeholder="ornek@minicrm.com" />
+
+
+                            <div class="input-description">
+                                Kullanıcı hesabına ait e-posta adresi.
+                            </div>
+
 
                             <span asp-validation-for="Email"
                                   class="text-danger">
@@ -74,54 +524,89 @@
                         </div>
 
 
-                        <div class="mb-3">
+                        <div class="row">
 
-                            <label asp-for="Password"
-                                   class="form-label">
-                                Şifre
-                            </label>
 
-                            <input asp-for="Password"
-                                   type="password"
-                                   class="form-control" />
+                            <!-- Password -->
 
-                            <span asp-validation-for="Password"
-                                  class="text-danger">
-                            </span>
+                            <div class="col-12 col-md-6 mb-4">
+
+                                <label asp-for="Password"
+                                       class="form-label">
+
+                                    Şifre
+
+                                </label>
+
+
+                                <input asp-for="Password"
+                                       type="password"
+                                       class="form-control"
+                                       placeholder="En az 6 karakter" />
+
+
+                                <span asp-validation-for="Password"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- Confirm Password -->
+
+                            <div class="col-12 col-md-6 mb-4">
+
+                                <label asp-for="ConfirmPassword"
+                                       class="form-label">
+
+                                    Şifre Tekrar
+
+                                </label>
+
+
+                                <input asp-for="ConfirmPassword"
+                                       type="password"
+                                       class="form-control"
+                                       placeholder="Şifreyi tekrar girin" />
+
+
+                                <span asp-validation-for="ConfirmPassword"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
 
                         </div>
 
 
-                        <div class="mb-3">
+                        <div class="d-flex
+                            justify-content-end
+                            gap-2
+                            user-action-buttons">
 
-                            <label asp-for="ConfirmPassword"
-                                   class="form-label">
-                                Şifre Tekrar
-                            </label>
+                            <a asp-controller="Dashboard"
+                               asp-action="Index"
+                               class="btn btn-cancel-user">
 
-                            <input asp-for="ConfirmPassword"
-                                   type="password"
-                                   class="form-control" />
+                                İptal
 
-                            <span asp-validation-for="ConfirmPassword"
-                                  class="text-danger">
-                            </span>
+                            </a>
+
+
+                            <button type="submit"
+                                    class="btn btn-create-user">
+
+                                Kullanıcı Oluştur
+
+                            </button>
 
                         </div>
-
-
-                        <button type="submit"
-                                class="btn btn-primary w-100">
-
-                            Kullanıcı Oluştur
-
-                        </button>
 
                     </form>
 
                 </div>
 
-            </div>
+            </section>
 
         </div>
 
@@ -129,6 +614,9 @@
 
 </div>
 
+
 @section Scripts {
+
     <partial name="_ValidationScriptsPartial" />
+
 }

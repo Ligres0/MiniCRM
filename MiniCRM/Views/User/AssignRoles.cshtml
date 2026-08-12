@@ -1,0 +1,452 @@
+﻿@model MiniCRM.ViewModels.UserRoleEditViewModel
+
+@{
+    ViewData["Title"] = "Rol Yönetimi";
+}
+
+<style>
+
+    .role-page {
+        --primary: #4f46e5;
+        --purple: #7c3aed;
+        --dark: #0f172a;
+        --muted: #64748b;
+        --border: #e2e8f0;
+    }
+
+    .role-header {
+        position: relative;
+        overflow: hidden;
+        padding: 30px 32px;
+        margin-bottom: 24px;
+        border-radius: 22px;
+        color: white;
+        background: linear-gradient( 135deg, #4f46e5, #7c3aed );
+        box-shadow: 0 18px 40px rgba(79, 70, 229, 0.20);
+    }
+
+        .role-header::after {
+            content: "";
+            position: absolute;
+            width: 170px;
+            height: 170px;
+            top: -75px;
+            right: -45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+    .role-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .role-header h1 {
+        margin-bottom: 6px;
+        font-size: 1.75rem;
+        font-weight: 800;
+    }
+
+    .role-header p {
+        margin-bottom: 0;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 0.95rem;
+    }
+
+    .role-card {
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+    }
+
+    .role-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+    }
+
+        .role-card-header h2 {
+            margin-bottom: 4px;
+            color: var(--dark);
+            font-size: 1.1rem;
+            font-weight: 750;
+        }
+
+        .role-card-header p {
+            margin-bottom: 0;
+            color: var(--muted);
+            font-size: 0.87rem;
+        }
+
+    .role-card-body {
+        padding: 26px;
+    }
+
+    .user-box {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 18px;
+        margin-bottom: 24px;
+        border: 1px solid #e0e7ff;
+        border-radius: 14px;
+        background: #f5f7ff;
+    }
+
+    .user-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        color: white;
+        background: linear-gradient( 135deg, #4f46e5, #7c3aed );
+        font-weight: 800;
+    }
+
+    .user-box-title {
+        color: var(--dark);
+        font-weight: 750;
+    }
+
+    .user-box-subtitle {
+        color: var(--muted);
+        font-size: 0.82rem;
+    }
+
+    .role-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .role-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        cursor: pointer;
+        transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+    }
+
+        .role-option:hover {
+            border-color: #c7d2fe;
+            background: #f8faff;
+            transform: translateY(-1px);
+        }
+
+    .role-option-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .role-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        color: #4338ca;
+        background: #eef2ff;
+        font-weight: 800;
+    }
+
+    .role-name {
+        color: var(--dark);
+        font-weight: 700;
+    }
+
+    .role-description {
+        color: var(--muted);
+        font-size: 0.8rem;
+    }
+
+    .role-checkbox {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .role-info {
+        padding: 14px 16px;
+        margin-top: 22px;
+        border-radius: 12px;
+        color: #475569;
+        background: #f8fafc;
+        font-size: 0.85rem;
+    }
+
+    .role-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .btn-save-role {
+        padding: 10px 20px;
+        border: 0;
+        border-radius: 11px;
+        color: white;
+        background: linear-gradient( 135deg, #4f46e5, #7c3aed );
+        font-weight: 700;
+    }
+
+        .btn-save-role:hover {
+            color: white;
+            box-shadow: 0 8px 18px rgba(79, 70, 229, 0.20);
+        }
+
+    .btn-back {
+        padding: 10px 20px;
+        border: 1px solid #cbd5e1;
+        border-radius: 11px;
+        color: #475569;
+        background: white;
+        font-weight: 650;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            color: #0f172a;
+            background: #f8fafc;
+        }
+
+    @@media (max-width: 767px) {
+
+        .role-header {
+            padding: 24px 20px;
+        }
+
+        .role-card-body {
+            padding: 20px;
+        }
+
+        .role-actions {
+            flex-direction: column-reverse;
+        }
+
+            .role-actions a,
+            .role-actions button {
+                width: 100%;
+                text-align: center;
+            }
+    }
+
+</style>
+
+
+<div class="container py-4 role-page">
+
+    <!-- Header -->
+
+    <section class="role-header">
+
+        <div class="role-header-content">
+
+            <span class="badge
+                bg-light
+                text-primary
+                px-3
+                py-2
+                mb-2">
+
+                Kullanıcı Yönetimi
+
+            </span>
+
+            <h1>
+                Rol Yönetimi
+            </h1>
+
+            <p>
+                Kullanıcının sistemde sahip olacağı rolleri belirleyin.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-lg-8 col-xl-7">
+
+            <section class="role-card">
+
+                <div class="role-card-header">
+
+                    <h2>
+                        Rol Atama
+                    </h2>
+
+                    <p>
+                        Kullanıcı için bir veya birden fazla rol seçebilirsiniz.
+                    </p>
+
+                </div>
+
+
+                <div class="role-card-body">
+
+                    <!-- Kullanıcı Bilgisi -->
+
+                    <div class="user-box">
+
+                        <div class="user-avatar">
+
+                            @Model.UserName
+                            .Substring(0, 1)
+                            .ToUpper()
+
+                        </div>
+
+                        <div>
+
+                            <div class="user-box-title">
+                                @Model.UserName
+                            </div>
+
+                            <div class="user-box-subtitle">
+                                Kullanıcı #@Model.UserId
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Form -->
+
+                    <form asp-controller="User"
+                          asp-action="AssignRoles"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <input type="hidden"
+                               asp-for="UserId" />
+
+
+                        <input type="hidden"
+                               asp-for="UserName" />
+
+
+                        <div class="role-list">
+
+                            @foreach (var role in Model.AllRoles)
+                            {
+                                bool isSelected =
+                                    Model.SelectedRoleIds
+                                        .Contains(role.Id);
+
+                                <label class="role-option">
+
+                                    <div class="role-option-info">
+
+                                        <div class="role-icon">
+                                            R
+                                        </div>
+
+                                        <div>
+
+                                            <div class="role-name">
+
+                                                @role.Name
+
+                                            </div>
+
+                                            <div class="role-description">
+
+                                                @if (role.Name == "Admin")
+                                                {
+                                                    <span>
+                                                        Tüm yönetim işlemlerine erişebilir.
+                                                    </span>
+                                                }
+                                                else if (role.Name == "Sales")
+                                                {
+                                                    <span>
+                                                        Müşteri ve sipariş işlemlerine erişebilir.
+                                                    </span>
+                                                }
+                                                else if (role.Name == "Warehouse")
+                                                {
+                                                    <span>
+                                                        Ürün ve stok işlemlerine erişebilir.
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span>
+                                                        Sistem rolü
+                                                    </span>
+                                                }
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <input type="checkbox"
+                                           name="SelectedRoleIds"
+                                           value="@role.Id"
+                                           checked="@isSelected"
+                                           class="form-check-input role-checkbox" />
+
+                                </label>
+                            }
+
+                        </div>
+
+
+                        <div class="role-info">
+
+                            Kullanıcıya rol atanmadığında sistemde herhangi
+                            bir yetkiye sahip olmayacaktır. Kullanıcının
+                            erişebileceği işlemler seçilen rollerin
+                            permission'larına göre belirlenecektir.
+
+                        </div>
+
+
+                        <div class="role-actions">
+
+                            <a asp-controller="User"
+                               asp-action="Index"
+                               class="btn-back">
+
+                                Geri Dön
+
+                            </a>
+
+
+                            <button type="submit"
+                                    class="btn btn-save-role">
+
+                                Rolleri Kaydet
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</div>

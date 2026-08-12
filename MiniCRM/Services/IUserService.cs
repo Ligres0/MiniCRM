@@ -1,4 +1,5 @@
-﻿using MiniCRM.ViewModels;
+﻿using MiniCRM.Models;
+using MiniCRM.ViewModels;
 
 namespace MiniCRM.Services
 {
@@ -7,5 +8,12 @@ namespace MiniCRM.Services
         bool CreateUser(
             UserCreateViewModel model,
             out string message);
+
+        List<UserListViewModel> GetAllWithRoles();
+        UserRoleEditViewModel? GetUserRoleEditModel(int userId);
+        bool UpdateUserRoles(
+    int userId,
+    List<int> roleIds,
+    out string message);
     }
 }

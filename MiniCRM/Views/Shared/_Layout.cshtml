@@ -29,6 +29,12 @@
         AuthorizationService.HasPermission(
             userId!.Value,
             "Order.View");
+
+    bool canCreateUser =
+        isLoggedIn &&
+        AuthorizationService.HasPermission(
+            userId!.Value,
+            "User.Create");
 }
 
 <!DOCTYPE html>
@@ -183,6 +189,23 @@
                                    asp-action="Index">
 
                                     @Localization.GetText("Orders")
+
+                                </a>
+
+                            </li>
+                        }
+
+
+                        <!-- User Management -->
+                        @if (canCreateUser)
+                        {
+                            <li class="nav-item">
+
+                                <a class="nav-link text-dark"
+                                   asp-controller="User"
+                                   asp-action="Create">
+
+                                    Kullanıcı Yönetimi
 
                                 </a>
 
