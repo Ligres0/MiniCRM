@@ -26,6 +26,13 @@ builder.Services.AddSession();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<
+    IRolePermissionRepository,
+    RolePermissionRepository>();
+
+builder.Services.AddScoped<
+    IRolePermissionService,
+    RolePermissionService>();
 
 builder.Services.AddHttpContextAccessor();
 

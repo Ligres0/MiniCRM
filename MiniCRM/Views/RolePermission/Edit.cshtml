@@ -1,0 +1,428 @@
+﻿@model MiniCRM.ViewModels.RolePermissionEditViewModel
+
+@{
+    ViewData["Title"] = "Rol Yetkileri";
+
+    var permissionGroups = Model.AllPermissions
+        .GroupBy(x =>
+        {
+            if (string.IsNullOrWhiteSpace(x.Code))
+                return "Diğer";
+
+            var parts = x.Code.Split('.');
+
+            return parts.Length > 0
+                ? parts[0]
+                : "Diğer";
+        })
+        .OrderBy(x => x.Key);
+}
+
+<style>
+
+    .permission-page {
+        --primary: #4f46e5;
+        --primary-light: #eef2ff;
+        --purple: #7c3aed;
+        --dark: #0f172a;
+        --muted: #64748b;
+        --border: #e2e8f0;
+    }
+
+    .permission-header {
+        position: relative;
+        overflow: hidden;
+        padding: 30px 32px;
+        margin-bottom: 24px;
+        border-radius: 22px;
+        color: white;
+        background: linear-gradient( 135deg, #4f46e5, #7c3aed );
+        box-shadow: 0 18px 40px rgba(79, 70, 229, 0.20);
+    }
+
+        .permission-header::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            top: -80px;
+            right: -45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+    .permission-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .permission-header h1 {
+        margin-bottom: 6px;
+        font-size: 1.75rem;
+        font-weight: 800;
+    }
+
+    .permission-header p {
+        margin-bottom: 0;
+        color: rgba(255, 255, 255, 0.82);
+    }
+
+    .permission-card {
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+    }
+
+    .permission-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+    }
+
+        .permission-card-header h2 {
+            margin-bottom: 4px;
+            color: var(--dark);
+            font-size: 1.1rem;
+            font-weight: 750;
+        }
+
+        .permission-card-header p {
+            margin-bottom: 0;
+            color: var(--muted);
+            font-size: 0.87rem;
+        }
+
+    .permission-card-body {
+        padding: 24px;
+    }
+
+    .role-info-box {
+        padding: 16px 18px;
+        margin-bottom: 24px;
+        border: 1px solid #e0e7ff;
+        border-radius: 14px;
+        background: #f5f7ff;
+    }
+
+    .role-info-label {
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .role-info-name {
+        color: var(--dark);
+        font-size: 1.05rem;
+        font-weight: 800;
+    }
+
+    .permission-group {
+        margin-bottom: 22px;
+    }
+
+        .permission-group:last-child {
+            margin-bottom: 0;
+        }
+
+    .permission-group-title {
+        padding-bottom: 9px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        font-size: 0.87rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .permission-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .permission-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+        .permission-option:hover {
+            border-color: #c7d2fe;
+            background: #f8faff;
+            transform: translateY(-1px);
+        }
+
+    .permission-name {
+        color: #334155;
+        font-size: 0.88rem;
+        font-weight: 650;
+    }
+
+    .permission-checkbox {
+        flex-shrink: 0;
+        width: 19px;
+        height: 19px;
+        cursor: pointer;
+    }
+
+    .permission-info {
+        padding: 14px 16px;
+        margin-top: 22px;
+        border-radius: 12px;
+        color: #475569;
+        background: #f8fafc;
+        font-size: 0.84rem;
+    }
+
+    .permission-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .btn-save-permission {
+        padding: 10px 20px;
+        border: 0;
+        border-radius: 11px;
+        color: white;
+        background: linear-gradient( 135deg, #4f46e5, #7c3aed );
+        font-weight: 700;
+    }
+
+        .btn-save-permission:hover {
+            color: white;
+            box-shadow: 0 8px 18px rgba(79, 70, 229, 0.20);
+        }
+
+    .btn-back {
+        padding: 10px 20px;
+        border: 1px solid #cbd5e1;
+        border-radius: 11px;
+        color: #475569;
+        background: white;
+        font-weight: 650;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            color: #0f172a;
+            background: #f8fafc;
+        }
+
+    .validation-summary-errors {
+        padding: 12px 14px;
+        margin-bottom: 18px;
+        border-radius: 12px;
+        color: #991b1b;
+        background: #fee2e2;
+    }
+
+    @@media (max-width: 767px) {
+
+        .permission-header {
+            padding: 24px 20px;
+        }
+
+        .permission-card-body {
+            padding: 20px;
+        }
+
+        .permission-list {
+            grid-template-columns: 1fr;
+        }
+
+        .permission-actions {
+            flex-direction: column-reverse;
+        }
+
+            .permission-actions a,
+            .permission-actions button {
+                width: 100%;
+                text-align: center;
+            }
+    }
+
+</style>
+
+
+<div class="container py-4 permission-page">
+
+    <!-- Üst başlık -->
+
+    <section class="permission-header">
+
+        <div class="permission-header-content">
+
+            <span class="badge
+                bg-light
+                text-primary
+                px-3
+                py-2
+                mb-2">
+
+                Rol Yönetimi
+
+            </span>
+
+            <h1>
+                Rol Yetkileri
+            </h1>
+
+            <p>
+                Rolün sistem içerisinde hangi işlemlere
+                erişebileceğini belirleyin.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-xl-10">
+
+            <section class="permission-card">
+
+                <div class="permission-card-header">
+
+                    <h2>
+                        Permission Yönetimi
+                    </h2>
+
+                    <p>
+                        Seçili permissionlar bu role atanacaktır.
+                    </p>
+
+                </div>
+
+
+                <div class="permission-card-body">
+
+                    <!-- Düzenlenen rol -->
+
+                    <div class="role-info-box">
+
+                        <div class="role-info-label">
+                            Düzenlenen Rol
+                        </div>
+
+                        <div class="role-info-name">
+                            @Model.RoleName
+                        </div>
+
+                    </div>
+
+
+                    <form asp-controller="RolePermission"
+                          asp-action="Edit"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <input type="hidden"
+                               asp-for="RoleId" />
+
+
+                        <div asp-validation-summary="ModelOnly">
+                        </div>
+
+
+                        <!-- Permission Grupları -->
+                        @foreach (var group in permissionGroups)
+                        {
+                            <div class="permission-group">
+
+                                <div class="permission-group-title">
+
+                                    @group.Key
+
+                                </div>
+
+
+                                <div class="permission-list">
+
+                                    @foreach (var permission in group)
+                                    {
+                                        bool isSelected =
+                                            Model.SelectedPermissionIds
+                                                .Contains(permission.Id);
+
+
+                                        <label class="permission-option">
+
+                                            <span class="permission-name">
+
+                                                @permission.Code
+
+                                            </span>
+
+
+                                            <input type="checkbox"
+                                                   name="SelectedPermissionIds"
+                                                   value="@permission.Id"
+                                                   checked="@isSelected"
+                                                   class="form-check-input permission-checkbox" />
+
+                                        </label>
+                                    }
+
+                                </div>
+
+                            </div>
+                        }
+
+
+                        <div class="permission-info">
+
+                            Kaydedilen değişiklikler bu role sahip
+                            tüm kullanıcıları etkileyecektir.
+                            Kullanıcıların permission cache'leri
+                            değişiklik sonrasında temizlenecektir.
+
+                        </div>
+
+
+                        <div class="permission-actions">
+
+                            <a asp-controller="User"
+                               asp-action="Index"
+                               class="btn-back">
+
+                                Geri Dön
+
+                            </a>
+
+
+                            <button type="submit"
+                                    class="btn btn-save-permission">
+
+                                Yetkileri Kaydet
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</div>

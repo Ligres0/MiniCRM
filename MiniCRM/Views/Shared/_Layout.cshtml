@@ -35,6 +35,11 @@
         AuthorizationService.HasPermission(
             userId!.Value,
             "User.Create");
+    bool canManageRoles =
+isLoggedIn &&
+AuthorizationService.HasPermission(
+    userId!.Value,
+    "Role.Manage");
 }
 
 <!DOCTYPE html>
@@ -218,7 +223,20 @@
 
                             </li>
                         }
+                        @if (canManageRoles)
+                        {
+                            <li class="nav-item ms-lg-2">
 
+                                <a asp-controller="RolePermission"
+                                   asp-action="Index"
+                                   class="btn btn-outline-secondary">
+
+                                    Rol Yetkileri
+
+                                </a>
+
+                            </li>
+                        }
                         @if (isLoggedIn)
                         {
                             <li class="nav-item">

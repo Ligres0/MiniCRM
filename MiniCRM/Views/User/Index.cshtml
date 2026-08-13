@@ -298,13 +298,26 @@
             </div>
 
 
-            <a asp-controller="User"
-               asp-action="Create"
-               class="btn-create-user">
+            <div class="d-flex gap-2">
 
-                + Yeni Kullanıcı
+                <a asp-controller="RolePermission"
+                   asp-action="Index"
+                   class="btn btn-outline-primary">
 
-            </a>
+                    Rol Yetkileri
+
+                </a>
+
+
+                <a asp-controller="User"
+                   asp-action="Create"
+                   class="btn-create-user">
+
+                    + Yeni Kullanıcı
+
+                </a>
+
+            </div>
 
         </div>
 
