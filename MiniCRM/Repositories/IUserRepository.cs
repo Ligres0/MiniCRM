@@ -17,5 +17,7 @@ namespace MiniCRM.Repositories
         void UpdateUserRoles(
     int userId,
     List<int> roleIds);
+        bool EmailExists(string email);
+        bool HasAnyRole(int userId);
     }
 }

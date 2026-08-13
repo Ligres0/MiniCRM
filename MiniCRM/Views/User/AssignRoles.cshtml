@@ -299,12 +299,16 @@
 
                     <div class="user-box">
 
-                        <div class="user-avatar">
+                        <<div class="user-info">
+                            <div>
+                                <div class="user-info-label">
+                                    Kullanıcı
+                                </div>
 
-                            @Model.UserName
-                            .Substring(0, 1)
-                            .ToUpper()
-
+                                <div class="user-info-name">
+                                    @Model.UserName
+                                </div>
+                            </div>
                         </div>
 
                         <div>

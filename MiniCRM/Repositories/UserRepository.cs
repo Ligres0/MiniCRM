@@ -243,5 +243,43 @@ namespace MiniCRM.Repositories
                 throw;
             }
         }
+        public bool EmailExists(string email)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = """
+        SELECT COUNT(1)
+        FROM Users
+        WHERE Email = @Email;
+        """;
+
+            int count = connection.ExecuteScalar<int>(
+                sql,
+                new
+                {
+                    Email = email
+                });
+
+            return count > 0;
+        }
+        public bool HasAnyRole(int userId)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = """
+        SELECT COUNT(1)
+        FROM UserRoles
+        WHERE UserId = @UserId;
+        """;
+
+            int count = connection.ExecuteScalar<int>(
+                sql,
+                new
+                {
+                    UserId = userId
+                });
+
+            return count > 0;
+        }
     }
 }

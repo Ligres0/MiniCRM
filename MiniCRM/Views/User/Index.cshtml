@@ -441,11 +441,12 @@
                                 <!-- İşlemler -->
 
                                 <td class="text-end">
-
                                     @if (string.IsNullOrWhiteSpace(
                                         user.RoleNames))
                                     {
-                                        <a href="#"
+                                        <a asp-controller="User"
+                                           asp-action="AssignRoles"
+                                           asp-route-id="@user.Id"
                                            class="btn-role">
 
                                             Rol Ata
@@ -454,7 +455,9 @@
                                     }
                                     else
                                     {
-                                        <a href="#"
+                                        <a asp-controller="User"
+                                           asp-action="AssignRoles"
+                                           asp-route-id="@user.Id"
                                            class="btn-role">
 
                                             Rol Yönet

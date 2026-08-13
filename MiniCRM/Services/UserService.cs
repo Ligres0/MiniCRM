@@ -31,6 +31,11 @@ namespace MiniCRM.Services
                 return false;
             }
 
+            if (_userRepository.EmailExists(model.Email))
+            {
+                message = "Email already exists.";
+                return false;
+            }
             var user = new User
             {
                 UserName = model.UserName,
@@ -59,8 +64,8 @@ namespace MiniCRM.Services
         {
             return _userRepository.GetAllWithRoles();
         }
-        public UserRoleEditViewModel? GetUserRoleEditModel(
-    int userId)
+        public UserRoleEditViewModel? GetUserRoleEditModel(int userId)
+
         {
             var users =
                 _userRepository.GetAllWithRoles();
@@ -94,9 +99,9 @@ namespace MiniCRM.Services
             };
         }
         public bool UpdateUserRoles(
-    int userId,
-    List<int> roleIds,
-    out string message)
+            int userId,
+            List<int> roleIds,
+            out string message)
         {
             if (userId <= 0)
             {
@@ -123,6 +128,10 @@ namespace MiniCRM.Services
                 message = "User roles could not be updated.";
                 return false;
             }
+        }
+        public bool HasAnyRole(int userId)
+        {
+            return _userRepository.HasAnyRole(userId);
         }
 
 

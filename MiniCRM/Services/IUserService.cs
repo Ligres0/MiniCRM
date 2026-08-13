@@ -15,5 +15,7 @@ namespace MiniCRM.Services
     int userId,
     List<int> roleIds,
     out string message);
+        bool HasAnyRole(int userId);
     }
+
 }

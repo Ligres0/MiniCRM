@@ -2,16 +2,19 @@
 using MiniCRM.Repositories;
 using Microsoft.AspNetCore.Identity;
 using MiniCRM.Models;
+using MiniCRM.Services;
 
 namespace MiniCRM.Controllers
 {
     public class AuthController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
         
-        public AuthController (IUserRepository userRepository)
+        public AuthController (IUserRepository userRepository, IUserService userService)
         {
             _userRepository = userRepository;
+            _userService = userService;
         } 
 
         
@@ -45,7 +48,14 @@ namespace MiniCRM.Controllers
                 ViewBag.Error = "Şifre yanlış.";
                 return View();
             }
+            if (!_userService.HasAnyRole(user.Id))
+            {
+                ModelState.AddModelError(
+                    "",
+                    "Hesabınıza henüz bir rol atanmadı. Lütfen sistem yöneticisi ile iletişime geçin.");
 
+                return View();
+            }
             HttpContext.Session.SetInt32("UserId", user.Id);
 
             return RedirectToAction("Index","Dashboard");

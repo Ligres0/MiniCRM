@@ -133,8 +133,7 @@ namespace MiniCRM.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AssignRoles(
-    UserRoleEditViewModel model)
+        public IActionResult AssignRoles(UserRoleEditViewModel model)
         {
             int? currentUserId =
                 HttpContext.Session.GetInt32("UserId");

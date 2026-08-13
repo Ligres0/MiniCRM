@@ -196,14 +196,21 @@
                         }
 
 
+                        
+
+                    </ul>
+
+
+                    <!-- Sağ taraf -->
+                    <ul class="navbar-nav ms-auto">
                         <!-- User Management -->
                         @if (canCreateUser)
                         {
-                            <li class="nav-item">
+                            <li class="nav-item ms-lg-2">
 
-                                <a class="nav-link text-dark"
-                                   asp-controller="User"
-                                   asp-action="Create">
+                                <a asp-controller="User"
+                                   asp-action="Index"
+                                   class="btn btn-outline-primary">
 
                                     Kullanıcı Yönetimi
 
@@ -211,12 +218,6 @@
 
                             </li>
                         }
-
-                    </ul>
-
-
-                    <!-- Sağ taraf -->
-                    <ul class="navbar-nav ms-auto">
 
                         @if (isLoggedIn)
                         {
