@@ -24,5 +24,6 @@ namespace MiniCRM.Repositories
         void IncrementFailedLoginAttempts(int userId);
         void LockUser(int userId,DateTime lockoutEnd);
         void ResetLoginAttempts(int userId);
+
     }
 }

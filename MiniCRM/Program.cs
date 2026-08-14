@@ -24,10 +24,31 @@ builder.Services.AddScoped<ILocalizationService, LocalizationService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
 builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
-builder.Services.AddSession();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout =
+        TimeSpan.FromMinutes(20);
+
+    options.Cookie.HttpOnly = true;
+
+    options.Cookie.IsEssential = true;
+
+    options.Cookie.SameSite =
+        SameSiteMode.Lax;
+
+    options.Cookie.SecurePolicy =
+        CookieSecurePolicy.Always;
+});
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<
+    IUserActivityLogRepository,
+    UserActivityLogRepository>();
+
+builder.Services.AddScoped<
+    IUserActivityLogService,
+    UserActivityLogService>();
 builder.Services.AddScoped<
     IRolePermissionRepository,
     RolePermissionRepository>();

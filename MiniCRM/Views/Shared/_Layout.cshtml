@@ -2,9 +2,12 @@
 @inject MiniCRM.Services.IAuthorizationService AuthorizationService
 
 @{
-    int? userId = Context.Session.GetInt32("UserId");
+    int? userId =
+        Context.Session.GetInt32("UserId");
 
-    bool isLoggedIn = userId.HasValue;
+    bool isLoggedIn =
+        userId.HasValue;
+
 
     bool canViewDashboard =
         isLoggedIn &&
@@ -12,11 +15,13 @@
             userId!.Value,
             "Dashboard.View");
 
+
     bool canViewCustomers =
         isLoggedIn &&
         AuthorizationService.HasPermission(
             userId!.Value,
             "Customer.View");
+
 
     bool canViewProducts =
         isLoggedIn &&
@@ -24,23 +29,35 @@
             userId!.Value,
             "Product.View");
 
+
     bool canViewOrders =
         isLoggedIn &&
         AuthorizationService.HasPermission(
             userId!.Value,
             "Order.View");
 
+
     bool canCreateUser =
         isLoggedIn &&
         AuthorizationService.HasPermission(
             userId!.Value,
             "User.Create");
+
+
     bool canManageRoles =
-isLoggedIn &&
-AuthorizationService.HasPermission(
-    userId!.Value,
-    "Role.Manage");
+        isLoggedIn &&
+        AuthorizationService.HasPermission(
+            userId!.Value,
+            "Role.Manage");
+
+
+    bool canViewActivityLogs =
+        isLoggedIn &&
+        AuthorizationService.HasPermission(
+            userId!.Value,
+            "User.View");
 }
+
 
 <!DOCTYPE html>
 
@@ -53,18 +70,23 @@ AuthorizationService.HasPermission(
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0" />
 
+
     <title>
         @ViewData["Title"] - MiniCRM
     </title>
 
+
     <script type="importmap"></script>
+
 
     <link rel="stylesheet"
           href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
+
     <link rel="stylesheet"
           href="~/css/site.css"
           asp-append-version="true" />
+
 
     <link rel="stylesheet"
           href="~/MiniCRM.styles.css"
@@ -87,7 +109,9 @@ AuthorizationService.HasPermission(
 
             <div class="container-fluid">
 
+
                 <!-- Logo -->
+
                 <a class="navbar-brand fw-bold"
                    asp-controller="Home"
                    asp-action="Index">
@@ -98,6 +122,7 @@ AuthorizationService.HasPermission(
 
 
                 <!-- Mobile menu button -->
+
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
@@ -116,6 +141,7 @@ AuthorizationService.HasPermission(
 
 
                     <!-- Sol taraf -->
+
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
 
@@ -170,6 +196,7 @@ AuthorizationService.HasPermission(
 
 
                             <!-- Category de Product.View kullanıyor -->
+
                             <li class="nav-item">
 
                                 <a class="nav-link text-dark"
@@ -201,13 +228,14 @@ AuthorizationService.HasPermission(
                         }
 
 
-                        
-
                     </ul>
 
 
                     <!-- Sağ taraf -->
-                    <ul class="navbar-nav ms-auto">
+
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+
+
                         <!-- User Management -->
                         @if (canCreateUser)
                         {
@@ -223,6 +251,9 @@ AuthorizationService.HasPermission(
 
                             </li>
                         }
+
+
+                        <!-- Role Permissions -->
                         @if (canManageRoles)
                         {
                             <li class="nav-item ms-lg-2">
@@ -237,15 +268,36 @@ AuthorizationService.HasPermission(
 
                             </li>
                         }
+
+
+                        <!-- Activity Logs -->
+                        @if (canViewActivityLogs)
+                        {
+                            <li class="nav-item ms-lg-2">
+
+                                <a asp-controller="UserActivityLog"
+                                   asp-action="Index"
+                                   class="btn btn-outline-secondary">
+
+                                    Aktivite Geçmişi
+
+                                </a>
+
+                            </li>
+                        }
+
+
+                        <!-- Logout -->
                         @if (isLoggedIn)
                         {
-                            <li class="nav-item">
+                            <li class="nav-item ms-lg-2">
 
                                 <form asp-controller="Auth"
                                       asp-action="Logout"
                                       method="post">
 
                                     @Html.AntiForgeryToken()
+
 
                                     <button type="submit"
                                             class="btn btn-outline-danger">
@@ -258,9 +310,12 @@ AuthorizationService.HasPermission(
 
                             </li>
                         }
+
                         else
                         {
-                            <li class="nav-item">
+                            <!-- Login -->
+
+                            <li class="nav-item ms-lg-2">
 
                                 <a asp-controller="Auth"
                                    asp-action="Login"
@@ -272,6 +327,7 @@ AuthorizationService.HasPermission(
 
                             </li>
                         }
+
 
                     </ul>
 
@@ -320,6 +376,7 @@ AuthorizationService.HasPermission(
     @await RenderSectionAsync(
         "Scripts",
         required: false)
+
 
 </body>
 

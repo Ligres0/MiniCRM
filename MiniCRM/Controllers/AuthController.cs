@@ -11,11 +11,14 @@ namespace MiniCRM.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
+
+        private readonly IUserActivityLogService _activityLogService;
         
-        public AuthController (IUserRepository userRepository, IUserService userService)
+        public AuthController (IUserRepository userRepository, IUserService userService, IUserActivityLogService activityLogService)
         {
             _userRepository = userRepository;
             _userService = userService;
+            _activityLogService = activityLogService;
         } 
 
         
@@ -26,14 +29,28 @@ namespace MiniCRM.Controllers
             return View();
         }
 
-     
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Logout()
         {
+            int? userId =
+                HttpContext.Session
+                    .GetInt32("UserId");
+
+            if (userId.HasValue)
+            {
+                _activityLogService.Log(
+                    userId.Value,
+                    "Logout",
+                    "Kullanıcı sistemden çıkış yaptı.");
+            }
+
             HttpContext.Session.Clear();
 
-            return RedirectToAction("Login", "Auth");
+            return RedirectToAction(
+                "Login",
+                "Auth");
         }
 
         [HttpPost]
@@ -122,6 +139,11 @@ namespace MiniCRM.Controllers
             HttpContext.Session.SetInt32(
                 "UserId",
                 user.Id);
+
+            _activityLogService.Log(
+                 user.Id,
+                 "Login",
+                "Kullanıcı sisteme giriş yaptı.");
 
 
             return RedirectToAction(

@@ -12,16 +12,21 @@ namespace MiniCRM.Controllers
         private readonly IAuthorizationService
             _authorizationService;
 
+        private readonly IUserActivityLogService _activityLogService;
+
 
         public RolePermissionController(
             IRolePermissionService rolePermissionService,
-            IAuthorizationService authorizationService)
+            IAuthorizationService authorizationService,
+            IUserActivityLogService activityLogService)
         {
             _rolePermissionService =
                 rolePermissionService;
 
             _authorizationService =
                 authorizationService;
+
+            _activityLogService = activityLogService;
         }
 
 
@@ -194,6 +199,10 @@ namespace MiniCRM.Controllers
                 ModelState.AddModelError(string.Empty, message);
                 return View(model);
             }
+            _activityLogService.Log(
+                userId.Value,
+                "RoleCreated",
+                $"{model.Name} rolü oluşturuldu.");
 
             TempData["SuccessMessage"] = message;
 

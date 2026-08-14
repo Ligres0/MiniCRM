@@ -8,11 +8,13 @@ namespace MiniCRM.Controllers
     {
         private readonly IUserService _userService;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IUserActivityLogService _activityLogService;
 
-        public UserController(IUserService userService, IAuthorizationService authorizationService)
+        public UserController(IUserService userService, IAuthorizationService authorizationService, IUserActivityLogService activityLogService)
         {
             _userService = userService;
             _authorizationService = authorizationService;
+            _activityLogService = activityLogService;
         }
 
         [HttpGet]
@@ -29,7 +31,7 @@ namespace MiniCRM.Controllers
                 "User.Create"))
             {
                 return StatusCode(
-    StatusCodes.Status403Forbidden);
+                        StatusCodes.Status403Forbidden);
             }
 
             return View(
@@ -53,7 +55,7 @@ namespace MiniCRM.Controllers
                 "User.Create"))
             {
                 return StatusCode(
-    StatusCodes.Status403Forbidden);
+                        StatusCodes.Status403Forbidden);
             }
 
             if (!ModelState.IsValid)
@@ -74,6 +76,11 @@ namespace MiniCRM.Controllers
 
                 return View(model);
             }
+
+            _activityLogService.Log(
+                userId.Value,
+                "UserCreated",
+                $"{model.UserName} kullanıcısı oluşturuldu.");
 
             TempData["SuccessMessage"] =
                 message;
@@ -182,6 +189,10 @@ namespace MiniCRM.Controllers
 
                 return View(refreshedModel);
             }
+            _activityLogService.Log(
+                    currentUserId.Value,
+                    "UserRolesUpdated",
+                     $"{model.UserName} kullanıcısının rolleri değiştirildi.");
 
             TempData["SuccessMessage"] =
                 message;
