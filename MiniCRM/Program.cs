@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using MiniCRM.Models;
 using MiniCRM.Repositories;
 using MiniCRM.Services;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +37,23 @@ builder.Services.AddScoped<
     RolePermissionService>();
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter(
+        policyName: "LoginPolicy",
+        options =>
+        {
+            options.PermitLimit = 5;
 
+            options.Window =
+                TimeSpan.FromMinutes(1);
+
+            options.QueueLimit = 0;
+
+            options.QueueProcessingOrder =
+                QueueProcessingOrder.OldestFirst;
+        });
+});
 
 
 
@@ -50,7 +68,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseRateLimiter();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSession();

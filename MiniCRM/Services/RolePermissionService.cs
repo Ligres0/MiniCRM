@@ -108,6 +108,31 @@ namespace MiniCRM.Services
         {
             return _userRepository.GetAllRoles();
         }
+
+        public bool CreateRole(RoleCreateViewModel model, out int roleId, out string message)
+        {
+            roleId = 0;
+
+            string roleName = model.Name.Trim();
+
+            if (_rolePermissionRepository.RoleNameExists(roleName))
+            {
+                message = "Role already exists.";
+                return false;
+
+            }
+            roleId = _rolePermissionRepository.InsertRole(roleName);
+
+            if(roleId <= 0)
+            {
+                message = "Role could not be created. ";
+                return false;
+            }
+
+            message = "Role created successfully. ";
+
+            return true;
+        }
     }
 }
 

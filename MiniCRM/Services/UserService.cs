@@ -134,6 +134,37 @@ namespace MiniCRM.Services
             return _userRepository.HasAnyRole(userId);
         }
 
+        public bool HandleFailedLogin(User user ,out string message)
+        {
+            int newFailedAttempts = user.FaildeLoginAttempts + 1;
+
+            _userRepository.IncrementFailedLoginAttempts(user.Id);
+
+
+            if(newFailedAttempts >= 5)
+            {
+                DateTime lockoutEnd = DateTime.Now.AddMinutes(15);
+
+                _userRepository.LockUser(user.Id, lockoutEnd);
+
+                message = "Çok fazla hatalı giriş yapıldı." + "Hesabınız 15 dakika kilitlendi.";
+
+                return true;
+            }
+
+            int remainingAttempts = 5 - newFailedAttempts;
+
+            message = $"Şifre yanlış. Kalan deneme hakkı: " +
+                      $"{remainingAttempts}";
+
+            return false;
+        }
+
+        public void HandleSuccessfulLogin(int userId)
+        {
+            _userRepository.ResetLoginAttempts(userId);
+        }
+
 
     }
 }

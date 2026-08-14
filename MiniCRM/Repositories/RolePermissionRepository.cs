@@ -124,5 +124,44 @@ namespace MiniCRM.Repositories
                 })
                 .ToList();
         }
+
+        public bool RoleNameExists(string name)
+        {
+            using var connection = CreateConnection();
+            const string sql = """
+                SELECT COUNT(1)
+                FROM Roles
+                WHERE Name = @Name;
+                """;
+
+            int count = connection.ExecuteScalar<int>(sql,
+                new
+                {
+                    Name = name
+                });
+            return count > 0;
+        }
+        
+        public int InsertRole(string name)
+        {
+            using var connection = CreateConnection();
+            const string sql = """
+                INSERT INTO Roles
+                (
+                    Name
+                )
+                VALUES
+                (
+                    @Name
+                );
+                SELECT CAST(SCOPE_IDENTITY() AS INT);
+
+                """;
+
+            return connection.QuerySingle<int>(sql, new
+            {
+                Name = name
+            });
+        }
     }
 }

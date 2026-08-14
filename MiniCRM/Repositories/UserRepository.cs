@@ -281,5 +281,61 @@ namespace MiniCRM.Repositories
 
             return count > 0;
         }
+
+        public void IncrementFailedLoginAttempts(int userId)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = """
+                UPDATE Users
+                SET FailedLoginAttempts = FailedLoginAttempts +1
+                WHERE Id = @UserId;
+                """;
+
+            connection.Execute(sql,
+                new
+                {
+                    UserId = userId
+                });
+        }
+
+        public void LockUser(int userId,DateTime lockoutEnd)
+        {
+            using var connection = CreateConnection();
+
+            const string sql = """
+                UPDATE Users
+                SET LockoutEnd = @LockoutEnd
+                WHERE Id = @UserId;
+                """;
+
+
+            connection.Execute(sql,
+                new
+                {
+                    UserId = userId,
+                    LockoutEnd = lockoutEnd
+
+                });
+        }
+
+        public void ResetLoginAttempts(int userId)
+        {
+            using var connection = CreateConnection();
+            const string sql = """
+                UPDATE Users
+                SET
+                    FailedLoginAttempts = 0,
+                    LockoutEnd = NULL
+                WHERE Id = @UserId;
+                """;
+
+            connection.Execute(sql,
+                new
+                {
+                    UserId = userId
+                });
+        }
+
     }
 }

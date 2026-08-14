@@ -147,5 +147,60 @@ namespace MiniCRM.Controllers
 
             return View(roles);
         }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (!userId.HasValue)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (!_authorizationService.HasPermission(userId.Value, "Role.Manage"))
+            {
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            return View(new RoleCreateViewModel());
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(RoleCreateViewModel model)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (!userId.HasValue)
+            {
+                return RedirectToAction("Login", " Auth");
+            }
+            if (!_authorizationService.HasPermission(userId.Value, "Role.Manage"))
+            {
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            bool result = _rolePermissionService.CreateRole(model, out int roleId, out string message);
+
+            if (!result)
+            {
+                ModelState.AddModelError(string.Empty, message);
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = message;
+
+            return RedirectToAction(nameof(Edit), new
+            {
+                id = roleId
+            });
+        }
     }
 }

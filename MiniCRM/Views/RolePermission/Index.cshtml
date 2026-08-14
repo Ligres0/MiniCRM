@@ -28,58 +28,93 @@
 
         <div class="card-body p-4">
 
-            <h5 class="fw-bold mb-1">
-                Roller
-            </h5>
+            <div class="d-flex
+                justify-content-between
+                align-items-center
+                mb-4">
 
-            <p class="text-muted mb-4">
-                Yetkilerini değiştirmek istediğiniz rolü seçin.
-            </p>
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+                        Roller
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        Yetkilerini değiştirmek istediğiniz rolü seçin.
+                    </p>
+
+                </div>
 
 
-            @foreach (var role in Model)
+                <a asp-controller="RolePermission"
+                   asp-action="Create"
+                   class="btn btn-primary">
+
+                    + Yeni Rol
+
+                </a>
+
+            </div>
+
+
+            @if (Model != null && Model.Any())
             {
-                <div class="d-flex
-                    justify-content-between
-                    align-items-center
-                    border
-                    rounded-3
-                    p-3
-                    mb-3">
+                @foreach (var role in Model)
+                {
+                    <div class="d-flex
+                        justify-content-between
+                        align-items-center
+                        border
+                        rounded-3
+                        p-3
+                        mb-3">
 
-                    <div>
+                        <div>
 
-                        <div class="fw-bold">
-                            @role.Name
+                            <div class="fw-bold">
+                                @role.Name
+                            </div>
+
+                            <small class="text-muted">
+                                Rol #@role.Id
+                            </small>
+
                         </div>
 
-                        <small class="text-muted">
-                            Rol #@role.Id
-                        </small>
+
+                        <a asp-controller="RolePermission"
+                           asp-action="Edit"
+                           asp-route-id="@role.Id"
+                           class="btn btn-outline-primary">
+
+                            Yetkileri Yönet
+
+                        </a>
 
                     </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-light border">
 
-
-                    <a asp-controller="RolePermission"
-                       asp-action="Edit"
-                       asp-route-id="@role.Id"
-                       class="btn btn-outline-primary">
-
-                        Yetkileri Yönet
-
-                    </a>
+                    Sistemde henüz rol bulunmuyor.
 
                 </div>
             }
 
 
-            <a asp-controller="User"
-               asp-action="Index"
-               class="btn btn-outline-secondary mt-2">
+            <div class="mt-4">
 
-                Kullanıcı Yönetimine Dön
+                <a asp-controller="User"
+                   asp-action="Index"
+                   class="btn btn-outline-secondary">
 
-            </a>
+                    Kullanıcı Yönetimine Dön
+
+                </a>
+
+            </div>
 
         </div>
 

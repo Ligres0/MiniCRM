@@ -1,4 +1,5 @@
-﻿using MiniCRM.Models;
+﻿using AspNetCoreGeneratedDocument;
+using MiniCRM.Models;
 using MiniCRM.ViewModels;
 using MiniCRM.ViewModels;
 
@@ -19,5 +20,9 @@ namespace MiniCRM.Repositories
     List<int> roleIds);
         bool EmailExists(string email);
         bool HasAnyRole(int userId);
+
+        void IncrementFailedLoginAttempts(int userId);
+        void LockUser(int userId,DateTime lockoutEnd);
+        void ResetLoginAttempts(int userId);
     }
 }

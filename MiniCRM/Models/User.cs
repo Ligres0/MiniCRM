@@ -13,5 +13,8 @@
         public bool IsActive { get; set; }
 
         public DateTime CreatedDate { get; set; }
+        public int FaildeLoginAttempts { get; set; }
+        public DateTime? LockoutEnd { get; set; }
+
     }
 }

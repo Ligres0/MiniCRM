@@ -1,0 +1,425 @@
+﻿@model MiniCRM.ViewModels.RoleCreateViewModel
+
+@{
+    ViewData["Title"] = "Yeni Rol Oluştur";
+}
+
+<style>
+
+    .role-create-page {
+        --primary: #4f46e5;
+        --primary-light: #eef2ff;
+        --purple: #7c3aed;
+        --dark: #0f172a;
+        --muted: #64748b;
+        --border: #e2e8f0;
+        --danger: #dc2626;
+        --danger-light: #fee2e2;
+    }
+
+    .role-create-header {
+        position: relative;
+        overflow: hidden;
+
+        padding: 30px 32px;
+        margin-bottom: 24px;
+
+        border-radius: 22px;
+
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                #4f46e5,
+                #7c3aed
+            );
+
+        box-shadow:
+            0 18px 40px
+            rgba(79, 70, 229, 0.20);
+    }
+
+    .role-create-header::after {
+        content: "";
+
+        position: absolute;
+
+        width: 180px;
+        height: 180px;
+
+        top: -80px;
+        right: -45px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(255, 255, 255, 0.10);
+    }
+
+    .role-create-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .role-create-header h1 {
+        margin-bottom: 6px;
+
+        font-size: 1.75rem;
+        font-weight: 800;
+    }
+
+    .role-create-header p {
+        margin-bottom: 0;
+
+        color:
+            rgba(255, 255, 255, 0.82);
+
+        font-size: 0.95rem;
+    }
+
+    .role-create-card {
+        overflow: hidden;
+
+        border:
+            1px solid
+            var(--border);
+
+        border-radius: 20px;
+
+        background: white;
+
+        box-shadow:
+            0 10px 30px
+            rgba(15, 23, 42, 0.07);
+    }
+
+    .role-create-card-header {
+        padding: 20px 24px;
+
+        border-bottom:
+            1px solid
+            var(--border);
+    }
+
+    .role-create-card-header h2 {
+        margin-bottom: 4px;
+
+        color:
+            var(--dark);
+
+        font-size: 1.1rem;
+        font-weight: 750;
+    }
+
+    .role-create-card-header p {
+        margin-bottom: 0;
+
+        color:
+            var(--muted);
+
+        font-size: 0.87rem;
+    }
+
+    .role-create-card-body {
+        padding: 26px;
+    }
+
+    .form-label {
+        color:
+            var(--dark);
+
+        font-weight: 700;
+
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        min-height: 46px;
+
+        border:
+            1px solid
+            var(--border);
+
+        border-radius: 11px;
+
+        box-shadow: none;
+    }
+
+    .form-control:focus {
+        border-color:
+            #a5b4fc;
+
+        box-shadow:
+            0 0 0 0.2rem
+            rgba(79, 70, 229, 0.10);
+    }
+
+    .role-create-info {
+        padding: 14px 16px;
+        margin-top: 20px;
+
+        border-radius: 12px;
+
+        color:
+            #475569;
+
+        background:
+            #f8fafc;
+
+        font-size:
+            0.84rem;
+    }
+
+    .role-create-actions {
+        display: flex;
+        justify-content: flex-end;
+
+        gap: 10px;
+
+        margin-top: 24px;
+    }
+
+    .btn-create-role {
+        padding:
+            10px 20px;
+
+        border: 0;
+
+        border-radius: 11px;
+
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                #4f46e5,
+                #7c3aed
+            );
+
+        font-weight: 700;
+    }
+
+    .btn-create-role:hover {
+        color: white;
+
+        box-shadow:
+            0 8px 18px
+            rgba(79, 70, 229, 0.20);
+    }
+
+    .btn-back {
+        padding:
+            10px 20px;
+
+        border:
+            1px solid
+            #cbd5e1;
+
+        border-radius: 11px;
+
+        color:
+            #475569;
+
+        background: white;
+
+        font-weight: 650;
+
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        color:
+            #0f172a;
+
+        background:
+            #f8fafc;
+    }
+
+    .validation-summary-errors {
+        padding: 12px 14px;
+
+        margin-bottom: 18px;
+
+        border-radius: 12px;
+
+        color:
+            #991b1b;
+
+        background:
+            var(--danger-light);
+    }
+
+    .field-validation-error {
+        display: block;
+
+        margin-top: 6px;
+
+        color:
+            var(--danger);
+
+        font-size:
+            0.82rem;
+    }
+
+    @@media (max-width: 767px) {
+
+        .role-create-header {
+            padding:
+                24px 20px;
+        }
+
+        .role-create-card-body {
+            padding:
+                20px;
+        }
+
+        .role-create-actions {
+            flex-direction:
+                column-reverse;
+        }
+
+        .role-create-actions a,
+        .role-create-actions button {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+</style>
+
+
+<div class="container py-4 role-create-page">
+
+    <!-- Header -->
+
+    <section class="role-create-header">
+
+        <div class="role-create-header-content">
+
+            <span class="badge
+                bg-light
+                text-primary
+                px-3
+                py-2
+                mb-2">
+
+                Rol Yönetimi
+
+            </span>
+
+            <h1>
+                Yeni Rol Oluştur
+            </h1>
+
+            <p>
+                Sistemde kullanılacak yeni bir rol oluşturun.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-lg-7 col-xl-6">
+
+            <section class="role-create-card">
+
+                <div class="role-create-card-header">
+
+                    <h2>
+                        Rol Bilgileri
+                    </h2>
+
+                    <p>
+                        Yeni rol için benzersiz bir isim belirleyin.
+                    </p>
+
+                </div>
+
+
+                <div class="role-create-card-body">
+
+                    <form asp-controller="RolePermission"
+                          asp-action="Create"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <div asp-validation-summary="ModelOnly">
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label asp-for="Name"
+                                   class="form-label">
+
+                                Rol Adı
+
+                            </label>
+
+
+                            <input asp-for="Name"
+                                   class="form-control"
+                                   placeholder="Örn: Manager, Support, Finance" />
+
+
+                            <span asp-validation-for="Name"
+                                  class="field-validation-error">
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="role-create-info">
+
+                            Rol oluşturulduktan sonra otomatik olarak
+                            permission yönetim ekranına yönlendirileceksiniz.
+                            Yeni rol başlangıçta herhangi bir permission'a
+                            sahip olmayacaktır.
+
+                        </div>
+
+
+                        <div class="role-create-actions">
+
+                            <a asp-controller="RolePermission"
+                               asp-action="Index"
+                               class="btn-back">
+
+                                Geri Dön
+
+                            </a>
+
+
+                            <button type="submit"
+                                    class="btn btn-create-role">
+
+                                Rolü Oluştur
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

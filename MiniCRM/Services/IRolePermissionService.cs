@@ -15,5 +15,7 @@ namespace MiniCRM.Services
             out string message);
 
         List<Role> GetAllRoles();
+
+        bool CreateRole(RoleCreateViewModel model, out int roleId, out string message);
     }
 }
